@@ -25,8 +25,18 @@ const Map = () => {
         map.on('load', () => {
             geolocate.trigger();
         });
+
+        navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
     }, []);
 
+    const handlePositionUpdate = (pos: any) => {
+        console.log(pos);
+    }
+
+    const handlePositionError = (err: any) => {
+        console.warn('ERROR(' + err.code + '): ' + err.message);
+    }
+ 
     return (
         <div id='map' className={styles.map} />
     );
