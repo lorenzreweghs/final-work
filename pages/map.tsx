@@ -8,10 +8,10 @@ const Map = () => {
     useEffect(() => {
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
         const map = new mapboxgl.Map({
-            container: 'map', // container ID
-            style: 'mapbox://styles/mapbox/streets-v11', // style URL
-            center: [4.7, 50.88], // starting position [lng, lat]
-            zoom: 13 // starting zoom
+            container: 'map',
+            style: 'mapbox://styles/mapbox/outdoors-v11',
+            center: [4.7, 50.88],
+            zoom: 13
         });
 
         const geolocate = new mapboxgl.GeolocateControl({
