@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -9,7 +8,7 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
+  databaseURL: process.env.NEXT_PUBLIC_DATABASE_URL, 
 };
 
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);

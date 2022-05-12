@@ -1,10 +1,17 @@
 import { useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { useUser } from '@auth0/nextjs-auth0';
+
+import useLocation from '../src/hooks/useLocation';
 
 import styles from '../styles/Map.module.css';
 
 const Map = () => {
+    const { user, error, isLoading } = useUser();
+
+    const { updateLocation } = useLocation();
+
     useEffect(() => {
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
         const map = new mapboxgl.Map({
@@ -25,7 +32,17 @@ const Map = () => {
         map.on('load', () => {
             geolocate.trigger();
         });
+
+        navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
     }, []);
+
+    const handlePositionUpdate = (pos: any) => {
+        if (user) updateLocation(user.sub!, user.name!, pos.coords.longitude, pos.coords.latitude);
+    }
+
+    const handlePositionError = (err: any) => {
+        console.warn('ERROR(' + err.code + '): ' + err.message);
+    }
 
     return (
         <div id='map' className={styles.map} />
