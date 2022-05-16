@@ -39,7 +39,7 @@ const Map = () => {
     }, [isLoading]);
 
     const handlePositionUpdate = (pos: any) => {
-        if (user) updateLocation(user.sub!, user.name!, pos.coords.longitude, pos.coords.latitude);
+        if (user) updateLocation(user.sub!, pos.coords.longitude, pos.coords.latitude);
     }
 
     const handlePositionError = (err: any) => {
