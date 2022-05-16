@@ -11,12 +11,25 @@ export default function useSession() {
                 if (snapshot.exists()) {
                     return true;
                 }
-                return false;
             })
         } catch (e) {
             console.error(e);
         }
         return false;
+    }
+
+    async function getUsersInSession(session: string): Promise<string[]> {
+        try {
+            await get(child(ref(db), `sessions/` + session))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    return snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return [];
     }
 
     async function updateSession(userId: string, idArray: string[], name: string, session: string) {
@@ -40,6 +53,7 @@ export default function useSession() {
 
     return {
         hasSession,
+        getUsersInSession,
         updateSession,
     }
 }
