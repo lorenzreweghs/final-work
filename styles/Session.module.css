@@ -1,0 +1,48 @@
+.container {
+    min-height: 100vh;
+    height: fit-content;
+    background-color: var(--color-secondary-light);
+    position: relative;
+}
+
+.logoHeader {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 20px 50px;
+}
+
+.logoTitle {
+    font-family: var(--font-family-highlight);
+    font-size: 44px;
+}
+
+.logoX {
+    font-size: 32px;
+}
+
+.logo {
+    width: 17.5%;
+    height: 100%;
+}
+
+.title {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    text-align: center;
+    margin: 0 20px 30px;
+}
+
+.title span {
+    color: var(--color-primary);
+}
+
+.subTitle {
+    font-size: var(--font-size-smallTitle);
+    text-align: center;
+    margin: 15px 20px;
+}
+
+.subTitle span {
+    font-weight: 600;
+}
