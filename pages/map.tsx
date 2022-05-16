@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 import useLocation from '../src/hooks/useLocation';
 
@@ -50,5 +50,7 @@ const Map = () => {
         <div id='map' className={styles.map} />
     );
 }
+
+export const getServerSideProps = withPageAuthRequired();
 
 export default Map;

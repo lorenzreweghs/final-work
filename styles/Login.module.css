@@ -1,0 +1,63 @@
+.imageHeader {
+    background-image: url('../public/login-image.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 45vh;
+    position: relative;
+}
+
+.imageHeader h1 {
+    margin: 0;
+    font-family: 'Zilla Slab Highlight', cursive;
+    color: var(--color-secondary-light);
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.imageHeader .logo {
+    margin: 0;
+    width: 20%;
+    position: absolute;
+    top: 3px;
+    right: 2px;
+    -webkit-filter: drop-shadow(var(--shadow));
+    filter: drop-shadow(var(--shadow));
+}
+
+.title {
+    color: var(--color-secondary-heavy);
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin: 40px 25px;
+    margin-top: 0;
+    padding-top: 40px;
+}
+
+.title span {
+    color: var(--color-primary);
+}
+
+.subTitle {
+    text-align: center;
+    font-size: var(--font-size-subTitle);
+    margin: 20px 25px;
+}
+
+.subTitle span {
+    font-weight: 600;
+}
+
+.container main {
+    height: 55vh;
+    background-color: var(--color-secondary-light);
+    position: relative;
+}
+
+.button {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+}

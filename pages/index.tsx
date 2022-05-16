@@ -2,16 +2,13 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useUser } from '@auth0/nextjs-auth0';
 
-import styles from '../styles/Home.module.css'
+import logo from '../public/werchter-logo-white.png';
+import { Button } from '../src/components/Button';
 
-const Home: NextPage = () => {
-  const { user, error, isLoading } = useUser();
+import styles from '../styles/Login.module.css';
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-
+const Login: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
@@ -20,18 +17,24 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <a href="/api/auth/login">Login</a>
-      <a href="/api/auth/logout">Logout</a>
-      
-      {user && (
-        <div>
-          <img src={user.picture!} alt={user.name!} />
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
-        </div>
-      )}
+      <header className={styles.imageHeader}>
+        <h1>Festicon</h1>
+        <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' />
+      </header>
+
+      <main>
+        <h1 className={styles.title}><span>Festicon</span> is een uniek concept in <span>samenwerking</span> met jouw favoriete <span>festival</span>.</h1>
+        <p className={styles.subTitle}><span>Ontdek</span> het festivalterrein met vrienden</p>
+        <p className={styles.subTitle}>Mis niemand van je <span>favoriete artiesten</span></p>
+        <p className={styles.subTitle}>Leer <span>nieuwe mensen</span> kennen</p>
+
+        <div className={styles.button}>
+          <Button href='/map' text='Verdergaan' />
+          <a href='/api/auth/logout'>Logout</a>
+        </div>        
+      </main>
     </div>
   );
 }
 
-export default Home;
+export default Login;
