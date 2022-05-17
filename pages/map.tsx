@@ -8,7 +8,7 @@ import useLocation from '../src/hooks/useLocation';
 import styles from '../styles/Map.module.css';
 
 const Map = () => {
-    const { user, error, isLoading } = useUser();
+    const { user, isLoading } = useUser();
 
     const { updateLocation } = useLocation();
 
