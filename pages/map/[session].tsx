@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 
-import useLocation from '../src/hooks/useLocation';
+import useLocation from '../../src/hooks/useLocation';
 
 import styles from '../styles/Map.module.css';
 
