@@ -5,37 +5,54 @@ export default function useSession() {
     const db = getDatabase(app);
 
     async function hasSession(id: string): Promise<boolean> {
+        let bool = false;
         try {
             await get(child(ref(db), `users/${id}/session`))
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    return true;
+                    bool = true;
                 }
             })
         } catch (e) {
             console.error(e);
         }
-        return false;
+        return bool;
     }
 
-    async function getUsersInSession(session: string): Promise<string[]> {
+    async function existSession(session: string): Promise<boolean> {
+        let bool = false;
         try {
             await get(child(ref(db), `sessions/` + session))
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    return snapshot.val();
+                    bool = true;
                 }
             })
         } catch (e) {
             console.error(e);
         }
-        return [];
+        return bool;
+    }
+
+    async function getUsersInSession(session: string): Promise<string[]> {
+        let arr: string[] = [];
+        try {
+            await get(child(ref(db), `sessions/` + session))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    arr = snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return arr;
     }
 
     async function updateSession(userId: string, idArray: string[], name: string, session: string) {
         try {
             await update(ref(db, 'sessions/' + session), {
-                idArray,
+                ...idArray,
             });
         } catch (e) {
             console.error(e);
@@ -53,6 +70,7 @@ export default function useSession() {
 
     return {
         hasSession,
+        existSession,
         getUsersInSession,
         updateSession,
     }
