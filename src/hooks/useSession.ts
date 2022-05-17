@@ -34,7 +34,7 @@ export default function useSession() {
         return bool;
     }
 
-    async function getUsersInSession(session: string): Promise<string[]> {
+    async function getUsersInSession(session: any): Promise<string[]> {
         let arr: string[] = [];
         try {
             await get(child(ref(db), `sessions/` + session))
