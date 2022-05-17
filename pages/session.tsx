@@ -26,18 +26,20 @@ const Session: NextPage = () => {
       lowercase: false,
     });
     await updateSession(user?.sub!, [user?.sub!], user?.name!, session);
-    router.push('/map');
+    router.push('/map/' + session);
   }
 
   const handleChange = async (e: any) => {
     const session = e.target.value;
-    const sessionExists = await existSession(session);
-    if (sessionExists) {
-      const users = await getUsersInSession(session);
-      const userArray = users.includes(user?.sub!) ? [...users] : [...users, user?.sub!] 
-      await updateSession(user?.sub!, userArray, user?.name!, session);
-      router.push('/map');
-    } 
+    if (session) {
+      const sessionExists = await existSession(session);
+      if (sessionExists) {
+        const users = await getUsersInSession(session);
+        const userArray = users.includes(user?.sub!) ? [...users] : [...users, user?.sub!] 
+        await updateSession(user?.sub!, userArray, user?.name!, session);
+        router.push('/map/' + session);
+      }       
+    }
   }
 
   return (
