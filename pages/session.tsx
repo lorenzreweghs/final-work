@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { FormEvent, FormEventHandler } from 'react';
+import { FormEvent, useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router'
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
@@ -18,6 +18,8 @@ const Session: NextPage = () => {
   const { existSession, updateSession, getUsersInSession } = useSession();
   const router = useRouter();
 
+  const [personalIcon, setPersonalIcon] = useState('beer');
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const session = generate({
@@ -25,7 +27,7 @@ const Session: NextPage = () => {
       numbers: true,
       lowercase: false,
     });
-    await updateSession(user?.sub!, [user?.sub!], user?.name!, session);
+    await updateSession(user?.sub!, [user?.sub!], user?.name!, personalIcon, session);
     router.push('/map/' + session);
   }
 
@@ -36,9 +38,9 @@ const Session: NextPage = () => {
       if (sessionExists) {
         const users = await getUsersInSession(session);
         const userArray = users.includes(user?.sub!) ? [...users] : [...users, user?.sub!] 
-        await updateSession(user?.sub!, userArray, user?.name!, session);
+        await updateSession(user?.sub!, userArray, user?.name!, personalIcon, session);
         router.push('/map/' + session);
-      }       
+      }
     }
   }
 
@@ -81,32 +83,32 @@ const Session: NextPage = () => {
           <p className={styles.iconTitle}>Kies je <span>persoonlijk</span> icoontje*</p>
 
           <div className={styles.icons}>
-            <input type="radio" id="beer" name="icon" value="beer" defaultChecked />
+            <input type="radio" id="beer" name="icon" value="beer" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked />
             <label htmlFor="beer">
               <SportsBar fontSize='large' />
             </label>
 
-            <input type="radio" id="basketball" name="icon" value="basketball" />
+            <input type="radio" id="basketball" name="icon" value="basketball" onChange={(e) => setPersonalIcon(e.target.value)} />
             <label htmlFor="basketball">
               <SportsBasketball fontSize='large' />
             </label>
 
-            <input type="radio" id="soccer" name="icon" value="soccer" />
+            <input type="radio" id="soccer" name="icon" value="soccer" onChange={(e) => setPersonalIcon(e.target.value)} />
             <label htmlFor="soccer">
               <SportsSoccer fontSize='large' />
             </label>
 
-            <input type="radio" id="gaming" name="icon" value="gaming" />
+            <input type="radio" id="gaming" name="icon" value="gaming" onChange={(e) => setPersonalIcon(e.target.value)} />
             <label htmlFor="gaming">
               <SportsEsports fontSize='large' />
             </label>
 
-            <input type="radio" id="piano" name="icon" value="piano" />
+            <input type="radio" id="piano" name="icon" value="piano" onChange={(e) => setPersonalIcon(e.target.value)} />
             <label htmlFor="piano">
               <Piano fontSize='large' />
             </label>
 
-            <input type="radio" id="tractor" name="icon" value="tractor" />
+            <input type="radio" id="tractor" name="icon" value="tractor" onChange={(e) => setPersonalIcon(e.target.value)} />
             <label htmlFor="tractor">
               <Agriculture fontSize='large' />
             </label>            

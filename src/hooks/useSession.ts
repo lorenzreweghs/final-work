@@ -49,7 +49,7 @@ export default function useSession() {
         return arr;
     }
 
-    async function updateSession(userId: string, idArray: string[], name: string, session: string) {
+    async function updateSession(userId: string, idArray: string[], name: string, icon: string, session: string) {
         try {
             await update(ref(db, 'sessions/' + session), {
                 ...idArray,
@@ -61,6 +61,7 @@ export default function useSession() {
         try {
             await update(ref(db, 'users/' + userId), {
                 name,
+                icon,
                 session,
             });
         } catch (e) {
