@@ -12,6 +12,7 @@
   --font-size-smallTitle: 14px;
   --font-size-text: 12px;
 
+  --font-family: 'Poppins', sans-serif;
   --font-family-highlight: 'Zilla Slab Highlight', cursive;
 
   --shadow: 1px 1px 3px gray;
@@ -23,7 +24,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-family);
   color: var(--color-secondary-heavy);
 }
 
