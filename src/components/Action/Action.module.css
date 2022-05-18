@@ -1,0 +1,12 @@
+.container {
+    --size: 60px;
+
+    width: var(--size);
+    height: var(--size);
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow);
+}

@@ -1,13 +1,12 @@
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, update } from "firebase/database";
 import { app } from "../../config/firebase";
 
 export default function useLocation() {
     const db = getDatabase(app);
 
-    async function updateLocation(id: string, name: string, lng: number, lat: number) {
+    async function updateLocation(id: string, lng: number, lat: number) {
         try {
-            await set(ref(db, 'users/' + id), {
-                name,
+            await update(ref(db, 'users/' + id), {
                 coords: { lng, lat },
             });
         } catch (e) {

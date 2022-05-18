@@ -29,7 +29,7 @@ const Login: NextPage = () => {
         <p className={styles.subTitle}>Leer <span>nieuwe mensen</span> kennen</p>
 
         <div className={styles.button}>
-          <Button href='/map' text='Verdergaan' />
+          <Button href='/session' text='Verdergaan' />
           <a href='/api/auth/logout'>Logout</a>
         </div>        
       </main>
