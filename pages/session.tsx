@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router'
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
@@ -20,6 +20,10 @@ const Session: NextPage = () => {
 
   const [personalIcon, setPersonalIcon] = useState('beer');
 
+  useEffect(() => {
+    setPersonalIcon(localStorage.getItem('icon') ?? 'beer');
+  }, []);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const session = generate({
@@ -27,6 +31,7 @@ const Session: NextPage = () => {
       numbers: true,
       lowercase: false,
     });
+    localStorage.setItem('icon', personalIcon);
     await updateSession(user?.sub!, [user?.sub!], user?.name!, personalIcon, session);
     router.push('/map/' + session);
   }
@@ -37,7 +42,8 @@ const Session: NextPage = () => {
       const sessionExists = await existSession(session);
       if (sessionExists) {
         const users = await getUsersInSession(session);
-        const userArray = users.includes(user?.sub!) ? [...users] : [...users, user?.sub!] 
+        const userArray = users.includes(user?.sub!) ? [...users] : [...users, user?.sub!];
+        localStorage.setItem('icon', personalIcon);
         await updateSession(user?.sub!, userArray, user?.name!, personalIcon, session);
         router.push('/map/' + session);
       }
@@ -83,35 +89,35 @@ const Session: NextPage = () => {
           <p className={styles.iconTitle}>Kies je <span>persoonlijk</span> icoontje*</p>
 
           <div className={styles.icons}>
-            <input type="radio" id="beer" name="icon" value="beer" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked />
+            <input type="radio" id="beer" name="icon" value="beer" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked={personalIcon === 'beer'} />
             <label htmlFor="beer">
               <SportsBar fontSize='large' />
             </label>
 
-            <input type="radio" id="basketball" name="icon" value="basketball" onChange={(e) => setPersonalIcon(e.target.value)} />
+            <input type="radio" id="basketball" name="icon" value="basketball" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked={personalIcon === 'basketball'} />
             <label htmlFor="basketball">
               <SportsBasketball fontSize='large' />
             </label>
 
-            <input type="radio" id="soccer" name="icon" value="soccer" onChange={(e) => setPersonalIcon(e.target.value)} />
+            <input type="radio" id="soccer" name="icon" value="soccer" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked={personalIcon === 'soccer'} />
             <label htmlFor="soccer">
               <SportsSoccer fontSize='large' />
             </label>
 
-            <input type="radio" id="gaming" name="icon" value="gaming" onChange={(e) => setPersonalIcon(e.target.value)} />
+            <input type="radio" id="gaming" name="icon" value="gaming" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked={personalIcon === 'gaming'} />
             <label htmlFor="gaming">
               <SportsEsports fontSize='large' />
             </label>
 
-            <input type="radio" id="piano" name="icon" value="piano" onChange={(e) => setPersonalIcon(e.target.value)} />
+            <input type="radio" id="piano" name="icon" value="piano" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked={personalIcon === 'piano'} />
             <label htmlFor="piano">
               <Piano fontSize='large' />
             </label>
 
-            <input type="radio" id="tractor" name="icon" value="tractor" onChange={(e) => setPersonalIcon(e.target.value)} />
+            <input type="radio" id="tractor" name="icon" value="tractor" onChange={(e) => setPersonalIcon(e.target.value)} defaultChecked={personalIcon === 'tractor'} />
             <label htmlFor="tractor">
               <Agriculture fontSize='large' />
-            </label>            
+            </label>
           </div>
 
           <div className={styles.codeDiv}>
