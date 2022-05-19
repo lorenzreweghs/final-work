@@ -23,11 +23,13 @@ const Map = () => {
     useEffect(() => {
         if (!router.isReady || isLoading) return;
         const { session } = router.query;
-        let users: string[];
+        // https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event
+        // https://developer.mozilla.org/en-US/docs/Web/API/Window/pagehide_event
 
+        let userList: string[];
         const checkSession = async () => {
-            users = await getUsersInSession(session);
-            if (!users.includes(user?.sub!)) router.push('/');
+            userList = await getUsersInSession(session);
+            if (!userList.includes(user?.sub!)) router.push('/');
         }
         checkSession();
 
@@ -50,7 +52,7 @@ const Map = () => {
         map.on('load', async () => {
             geolocate.trigger();
 
-            users.forEach(async (userId: string) => {
+            const addSource = async (userId: string) => {
                 const userName = await getUserName(userId);
                 await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
                     const {lat, lng} = snapshot.val();
@@ -80,6 +82,21 @@ const Map = () => {
                     const geojson = await getGeoJson(lat, lng);
                     (map.getSource(userName) as GeoJSONSource).setData(geojson);
                 });
+            }
+
+            let firstTrigger = true;
+            onValue(ref(db, 'sessions/' + session), async (snapshot) => {
+                if (firstTrigger) {
+                    firstTrigger = false;
+                    return;
+                }
+                const users = snapshot.val();
+                const lastUserId = users.pop();
+                addSource(lastUserId);
+            });
+
+            userList.forEach(async (userId: string) => {
+                addSource(userId);
             });
         });
 
