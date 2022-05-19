@@ -23,8 +23,6 @@ const Map = () => {
     useEffect(() => {
         if (!router.isReady || isLoading) return;
         const { session } = router.query;
-        // https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event
-        // https://developer.mozilla.org/en-US/docs/Web/API/Window/pagehide_event
 
         let userList: string[];
         const checkSession = async () => {
@@ -115,7 +113,20 @@ const Map = () => {
             });
         });
 
-        navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });            
+        navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
+        
+        document.addEventListener("visibilitychange", async () => {
+            if (document.visibilityState === 'visible') {
+                await updateUserStatus(user?.sub!, true);
+            } else if (document.visibilityState === 'hidden') {
+                await updateUserStatus(user?.sub!, false);
+            }
+        });
+
+        window.addEventListener("pagehide", async () => {
+            await updateUserStatus(user?.sub!, false);
+        }, false);
+
     }, [router.isReady, isLoading]);
 
     const getGeoJson = (lat: number, lng: number): any => {
