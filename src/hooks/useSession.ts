@@ -4,10 +4,10 @@ import { app } from "../../config/firebase";
 export default function useSession() {
     const db = getDatabase(app);
 
-    async function hasSession(id: string): Promise<boolean> {
+    async function hasSession(userId: string): Promise<boolean> {
         let bool = false;
         try {
-            await get(child(ref(db), `users/${id}/session`))
+            await get(child(ref(db), 'users/' + userId + '/session'))
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     bool = true;
@@ -49,6 +49,31 @@ export default function useSession() {
         return arr;
     }
 
+    async function updateUserStatus(userId: string, online: boolean) {
+        try {
+            await update(ref(db, 'users/' + userId), {
+                online,
+            });
+        } catch (e) {
+            console.error(e);
+        }       
+    }
+
+    async function getUserStatus(userId: string): Promise<boolean> {
+        let bool = false;
+        try {
+            await get(child(ref(db), 'users/' + userId + '/online'))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    bool = snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return bool;
+    }
+
     async function updateSession(userId: string, idArray: string[], name: string, icon: string, session: string) {
         try {
             await update(ref(db, 'sessions/' + session), {
@@ -73,6 +98,8 @@ export default function useSession() {
         hasSession,
         existSession,
         getUsersInSession,
+        updateUserStatus,
+        getUserStatus,
         updateSession,
     }
 }
