@@ -17,7 +17,7 @@ const Map = () => {
     const router = useRouter();
 
     const { updateLocation } = useLocation();
-    const { getUsersInSession } = useSession();
+    const { getUsersInSession, updateUserStatus } = useSession();
     const { getUserName } = useOtherUser();
 
     useEffect(() => {
@@ -32,6 +32,11 @@ const Map = () => {
             if (!userList.includes(user?.sub!)) router.push('/');
         }
         checkSession();
+
+        const setOnline = async () => {
+            await updateUserStatus(user?.sub!, true);
+        }
+        setOnline();
 
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
         const map = new mapboxgl.Map({
@@ -51,9 +56,19 @@ const Map = () => {
         map.addControl(geolocate);
         map.on('load', async () => {
             geolocate.trigger();
+            
+            const checkStatus = async (userId: string) => {
+                onValue(ref(db, 'users/' + userId + '/online'), async (snapshot) => {
+                    const userName = await getUserName(userId);
+                    if (snapshot.val()) addSource(userId, userName);
+                    else if (map.getSource(userName)) {
+                        map.removeLayer(userId);
+                        map.removeSource(userName);
+                    }
+                });
+            }
 
-            const addSource = async (userId: string) => {
-                const userName = await getUserName(userId);
+            const addSource = async (userId: string, userName: string) => {                
                 await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
                     const {lat, lng} = snapshot.val();
                     const geojson = await getGeoJson(lat, lng);
@@ -92,11 +107,11 @@ const Map = () => {
                 }
                 const users = snapshot.val();
                 const lastUserId = users.pop();
-                addSource(lastUserId);
+                checkStatus(lastUserId);
             });
 
             userList.forEach(async (userId: string) => {
-                addSource(userId);
+                checkStatus(userId);
             });
         });
 
