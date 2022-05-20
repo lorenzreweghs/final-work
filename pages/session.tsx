@@ -8,7 +8,7 @@ import Head from 'next/head';
 import { Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture } from '@mui/icons-material';
 
 import useSession from '../src/hooks/useSession';
-import logo from '../public/werchter-logo-black.png';
+import logo from '../public/werchter-logo-white.png';
 import { Action, ActionTypes } from '../src/components/Action';
 
 import styles from '../styles/Session.module.css';
@@ -80,10 +80,10 @@ const Session: NextPage = () => {
           </div>   
         </div>
 
-        <h1 className={styles.title}>Win <span>drankbonnen</span> voor de hele groep!</h1>
+        <h1 className={styles.title}>Win <span>prijzen</span> voor de hele groep!</h1>
         <p className={styles.subTitle}>Wanneer je samen met je groep bij een <span>activiteit</span> arriveert, kan je een ander team <span>uitdagen</span>.</p>
         <p className={styles.subTitle}><span>Win</span> de activiteit om het logo te verdienen!</p>
-        <p className={styles.subTitle}><span>Verzamel</span> logo&apos;s in ruil voor drankbonnen.</p>
+        <p className={styles.subTitle}>Verzamel logo&apos;s in ruil voor <span>prijzen</span>.</p>
 
         <form className={styles.iconForm} onSubmit={handleSubmit}>
           <p className={styles.iconTitle}>Kies je <span>persoonlijk</span> icoontje*</p>
