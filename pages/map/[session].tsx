@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { GeoJSONSource } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { ref, onValue, get } from "firebase/database";
 
-import useLocation from '../../src/hooks/useLocation';
+import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession from '../../src/hooks/useSession';
+import useOtherUser from '../../src/hooks/useOtherUser';
 
 import styles from '../../styles/Map.module.css';
 
@@ -15,44 +17,132 @@ const Map = () => {
     const router = useRouter();
 
     const { updateLocation } = useLocation();
-    const { getUsersInSession } = useSession();
+    const { getUsersInSession, updateUserStatus } = useSession();
+    const { getUserName } = useOtherUser();
 
     useEffect(() => {
-        if (!isLoading) {
-            mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
-            const map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/outdoors-v11',
-                center: [4.7, 50.88],
-                zoom: 13
-            });
-
-            const geolocate = new mapboxgl.GeolocateControl({
-                positionOptions: {
-                    enableHighAccuracy: true
-                },
-                trackUserLocation: true,
-                showUserHeading: true
-            });
-            map.addControl(geolocate);
-            map.on('load', () => {
-                geolocate.trigger();
-            });
-
-            navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });            
-        }
-    }, [isLoading]);
-
-    useEffect(() => {
-        if (!router.isReady || !user) return;
+        if (!router.isReady || isLoading) return;
         const { session } = router.query;
 
+        let userList: string[];
         const checkSession = async () => {
-            const users = await getUsersInSession(session);
-            if (!users.includes(user?.sub!)) router.push('/');
+            userList = await getUsersInSession(session);
+            if (!userList.includes(user?.sub!)) router.push('/');
         }
         checkSession();
-    }, [router.isReady, user]);
+
+        const setOnline = async () => {
+            await updateUserStatus(user?.sub!, true);
+        }
+        setOnline();
+
+        mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/outdoors-v11',
+            center: [4.7, 50.88],
+            zoom: 16,
+        });
+
+        const geolocate = new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true,
+            showUserHeading: true
+        });
+        map.addControl(geolocate);
+        map.on('load', async () => {
+            geolocate.trigger();
+            
+            const checkStatus = async (userId: string) => {
+                onValue(ref(db, 'users/' + userId + '/online'), async (snapshot) => {
+                    const userName = await getUserName(userId);
+                    if (snapshot.val()) addSource(userId, userName);
+                    else if (map.getSource(userName)) {
+                        map.removeLayer(userId);
+                        map.removeSource(userName);
+                    }
+                });
+            }
+
+            const addSource = async (userId: string, userName: string) => {                
+                await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
+                    const {lat, lng} = snapshot.val();
+                    const geojson = await getGeoJson(lat, lng);
+                    map.addSource(userName, {
+                        type: 'geojson',
+                        data: geojson
+                    });
+
+                    map.addLayer({
+                        'id': userId,
+                        'type': 'symbol',
+                        'source': userName,
+                        'layout': {
+                        // This icon is a part of the Mapbox Streets style.
+                        // To view all images available in a Mapbox style, open
+                        // the style in Mapbox Studio and click the "Images" tab.
+                        // To add a new image to the style at runtime see
+                        // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
+                        'icon-image': 'rocket-15'
+                        }
+                    });
+                });
+                
+                onValue(ref(db, 'users/' + userId + '/coords'), async (snapshot) => {
+                    const {lat, lng} = snapshot.val();
+                    const geojson = await getGeoJson(lat, lng);
+                    (map.getSource(userName) as GeoJSONSource).setData(geojson);
+                });
+            }
+
+            let firstTrigger = true;
+            onValue(ref(db, 'sessions/' + session), async (snapshot) => {
+                if (firstTrigger) {
+                    firstTrigger = false;
+                    return;
+                }
+                const users = snapshot.val();
+                const lastUserId = users.pop();
+                checkStatus(lastUserId);
+            });
+
+            userList.forEach(async (userId: string) => {
+                checkStatus(userId);
+            });
+        });
+
+        navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
+        
+        document.addEventListener("visibilitychange", async () => {
+            if (document.visibilityState === 'visible') {
+                await updateUserStatus(user?.sub!, true);
+            } else if (document.visibilityState === 'hidden') {
+                await updateUserStatus(user?.sub!, false);
+            }
+        });
+
+        window.addEventListener("pagehide", async () => {
+            await updateUserStatus(user?.sub!, false);
+        }, false);
+
+    }, [router.isReady, isLoading]);
+
+    const getGeoJson = (lat: number, lng: number): any => {
+        return {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [lng, lat],
+                    }
+                }
+            ]
+        };
+    }
 
     const handlePositionUpdate = (pos: any) => {
         if (user) updateLocation(user.sub!, pos.coords.longitude, pos.coords.latitude);
