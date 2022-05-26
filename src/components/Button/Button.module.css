@@ -2,7 +2,7 @@
     display: flex;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: var(--font-size-title);
+    font-size: var(--font-size-subTitle);
     color: var(--color-secondary-light);
     background-color: var(--color-primary);
     width: 300px;
