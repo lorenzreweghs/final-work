@@ -7,15 +7,15 @@
   --color-secondary-heavy: #272d2d;
   --color-secondary-light: #f6f8ff;
 
-  --font-size-title: 18px;
-  --font-size-subTitle: 16px;
+  --font-size-title: 24px;
+  --font-size-subTitle: 18px;
   --font-size-smallTitle: 14px;
   --font-size-text: 12px;
 
   --font-family: 'Poppins', sans-serif;
   --font-family-highlight: 'Zilla Slab Highlight', cursive;
 
-  --shadow: 1px 1px 3px gray;
+  --shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* GLOBAL CSS */

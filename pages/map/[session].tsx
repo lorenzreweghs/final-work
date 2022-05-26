@@ -39,9 +39,9 @@ const Map = () => {
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
         const map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/mapbox/outdoors-v11',
-            center: [4.7, 50.88],
-            zoom: 16,
+            style: 'mapbox://styles/lorenzreweghs/cl3k3d254001f14mnykkhv9ct',
+            center: [4.68111496672563, 50.9683219343008],
+            zoom: 15,
         });
 
         const geolocate = new mapboxgl.GeolocateControl({
