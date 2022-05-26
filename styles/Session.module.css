@@ -1,13 +1,3 @@
-.container {
-    position: relative;
-}
-
-.container main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .logoHeader {
     display: flex;
     justify-content: space-evenly;
