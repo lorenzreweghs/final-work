@@ -3,7 +3,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import logo from '../public/werchter-logo-white.png';
+import logo from '../public/rock-werchter-2022.png';
 import { Button } from '../src/components/Button';
 
 import styles from '../styles/Login.module.css';
@@ -17,16 +17,15 @@ const Login: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className={styles.imageHeader}>
-        <h1>Festicon</h1>
-        <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' />
-      </header>
+      <main className={styles.imageMain}>
+        <h1 className={styles.title}>Festicon</h1>
+        <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' />        
 
-      <main>
-        <h1 className={styles.title}><span>Festicon</span> is een uniek concept in <span>samenwerking</span> met jouw favoriete <span>festival</span>.</h1>
-        <p className={styles.subTitle}><span>Ontdek</span> het festivalterrein met vrienden</p>
-        <p className={styles.subTitle}>Mis niemand van je <span>favoriete artiesten</span></p>
-        <p className={styles.subTitle}>Leer <span>nieuwe mensen</span> kennen</p>
+        <div className={styles.subTitleDiv}>
+          <p className={styles.subTitle}><span>Connecteer</span> met je vrienden</p>
+          <p className={styles.subTitle}>Daag <span>festivalgangers</span> uit</p>
+          <p className={styles.subTitle}>Win leuke <span>prijzen</span></p>          
+        </div>
 
         <div className={styles.button}>
           <Button href='/session' text='Verdergaan' />

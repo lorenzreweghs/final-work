@@ -1,62 +1,56 @@
-.imageHeader {
+.imageMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-image: url('../public/login-image.jpg');
     background-size: cover;
     background-position: center;
-    height: 42.5vh;
+    height: 100vh;
+    overflow: hidden;
     position: relative;
 }
 
-.imageHeader h1 {
+.imageMain h1 {
     margin: 0;
     font-family: var(--font-family-highlight);
     color: var(--color-secondary-light);
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
 }
 
-.imageHeader .logo {
-    margin: 0;
-    width: 70px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
+.imageMain .logo {
+    width: 300px;
+    margin-top: 50px;
     -webkit-filter: drop-shadow(var(--shadow));
     filter: drop-shadow(var(--shadow));
 }
 
 .title {
-    font-size: 20px;
+    font-size: 32px;
     font-weight: 700;
     text-align: center;
-    margin: 40px 25px;
-    margin-top: 0;
-    padding-top: 40px;
+    padding-top: 15px;
 }
 
-.title span {
-    color: var(--color-primary);
+.subTitleDiv {
+    position: absolute;
+    bottom: 130px;
 }
 
 .subTitle {
     text-align: center;
-    font-size: var(--font-size-subTitle);
-    margin: 20px 25px;
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    color: var(--color-secondary-light);
+    margin: 10px 20px;
+    text-shadow: var(--shadow);
 }
 
 .subTitle span {
-    font-weight: 600;
-}
-
-.container main {
-    height: 55vh;
-    background-color: var(--color-secondary-light);
-    position: relative;
+    color: var(--color-primary);
 }
 
 .button {
     position: absolute;
-    bottom: 40px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
 }
