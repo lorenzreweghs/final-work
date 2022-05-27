@@ -9,17 +9,19 @@ import logo from '../public/rock-werchter-2022.png';
 import styles from '../styles/Session.module.css';
 import { Session } from '../src/components/Session';
 import { Flag } from '../src/components/Flag';
+import { Team } from '../src/components/Team';
+import { Share } from '../src/components/Share';
 
 export enum SessionSteps {
   Session,
   Flag,
   Team,
-  Code,
+  Share,
 }
 
 const SessionPage: NextPage = () => {
   const [activeStep, setActiveStep] = useState(SessionSteps.Session);
-  const [activeSession, setActiveSession] = useState("");
+  const [activeSession, setActiveSession] = useState("XXXXXX");
 
   return (
     <div className={styles.container}>
@@ -41,6 +43,16 @@ const SessionPage: NextPage = () => {
       {
         activeStep === SessionSteps.Flag &&
         <Flag setActiveStep={setActiveStep} activeSession={activeSession} />
+      }
+
+      {
+        activeStep === SessionSteps.Team &&
+        <Team setActiveStep={setActiveStep} activeSession={activeSession} />
+      }
+
+      {
+        activeStep === SessionSteps.Share &&
+        <Share activeSession={activeSession} />
       }
     </div>
   );
