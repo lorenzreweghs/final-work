@@ -13,9 +13,10 @@ import { SessionSteps } from '../../../pages/session';
 
 interface SessionProps {
     setActiveStep: React.Dispatch<React.SetStateAction<number>>,
+    setActiveSession: React.Dispatch<React.SetStateAction<string>>,
 }
 
-export const Session = ({ setActiveStep }: SessionProps) => {
+export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
     const { user } = useUser();
     const { existSession, updateSession, getUsersInSession } = useSession();
     const router = useRouter();
@@ -33,6 +34,7 @@ export const Session = ({ setActiveStep }: SessionProps) => {
         numbers: true,
         lowercase: false,
       });
+      setActiveSession(session);
       localStorage.setItem('icon', personalIcon);
       await updateSession(user?.sub!, [user?.sub!], user?.name!, personalIcon, session);
       setActiveStep(SessionSteps.Flag);
