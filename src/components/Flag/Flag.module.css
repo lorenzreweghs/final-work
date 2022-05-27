@@ -13,6 +13,7 @@
 .subTitle {
     font-size: var(--font-size-subTitle);
     margin: 5px 20px 0;
+    text-align: center;
 }
 
 .flagIcon {
