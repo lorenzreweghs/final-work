@@ -36,3 +36,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.swal2-actions button {
+  font-family: var(--font-family);
+}
