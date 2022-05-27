@@ -18,7 +18,8 @@ export enum SessionSteps {
 }
 
 const SessionPage: NextPage = () => {
-  const [activeStep, setActiveStep] = useState(SessionSteps.Flag);
+  const [activeStep, setActiveStep] = useState(SessionSteps.Session);
+  const [activeSession, setActiveSession] = useState("");
 
   return (
     <div className={styles.container}>
@@ -34,12 +35,12 @@ const SessionPage: NextPage = () => {
 
       {
         activeStep === SessionSteps.Session &&
-        <Session setActiveStep={setActiveStep} />
+        <Session setActiveStep={setActiveStep} setActiveSession={setActiveSession} />
       }
 
       {
         activeStep === SessionSteps.Flag &&
-        <Flag setActiveStep={setActiveStep} />
+        <Flag setActiveStep={setActiveStep} activeSession={activeSession} />
       }
     </div>
   );
