@@ -89,6 +89,16 @@ export default function useSession() {
         return bool;
     }
 
+    async function addTeamName(name: string, session: string) {
+        try {
+            await update(ref(db, 'sessions/' + session), {
+                team: name,
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     async function updateSession(userId: string, idArray: string[], name: string, icon: string, session: string) {
         try {
             await update(ref(db, 'sessions/' + session), {
@@ -116,6 +126,7 @@ export default function useSession() {
         getMarkersInSession,
         updateUserStatus,
         getUserStatus,
+        addTeamName,
         updateSession,
     }
 }
