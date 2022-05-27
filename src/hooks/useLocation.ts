@@ -14,7 +14,18 @@ export default function useLocation() {
         }
     }
 
+    async function addMarker(session: string, coordsArray: Array<{lng: number, lat: number}>) {
+        try {
+            await update(ref(db, 'sessions/' + session), {
+                markers: coordsArray,
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return {
         updateLocation,
+        addMarker,
     }
 }

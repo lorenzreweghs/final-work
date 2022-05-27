@@ -12,11 +12,17 @@
 
 .subTitle {
     font-size: var(--font-size-subTitle);
-    margin: 5px 20px;
+    margin: 5px 20px 0;
 }
 
 .flagIcon {
-    width: 50px;
+    width: 45px;
     height: auto;
     margin-bottom: 15px;
+}
+
+.map {
+    width: 95vw;
+    height: 70vh;
+    margin: 15px;
 }
