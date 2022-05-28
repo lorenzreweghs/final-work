@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: var(--font-size-subTitle);
+    font-weight: 700;
+    margin: 0 20px;
+}
+
+.subTitle {
+    font-size: var(--font-size-subTitle);
+    margin: 5px 20px 0;
+    text-align: center;
+}
+
+.flagIcon {
+    width: 45px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.map {
+    width: 95vw;
+    height: 70vh;
+    margin: 15px;
+}

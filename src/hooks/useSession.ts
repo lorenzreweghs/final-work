@@ -37,7 +37,22 @@ export default function useSession() {
     async function getUsersInSession(session: any): Promise<string[]> {
         let arr: string[] = [];
         try {
-            await get(child(ref(db), `sessions/` + session))
+            await get(child(ref(db), `sessions/` + session + '/users'))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    arr = snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return arr;
+    }
+
+    async function getMarkersInSession(session: any): Promise<Array<{lng: number, lat: number}>> {
+        let arr: Array<{lng: number, lat: number}> = [];
+        try {
+            await get(child(ref(db), `sessions/` + session + '/markers'))
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     arr = snapshot.val();
@@ -74,10 +89,20 @@ export default function useSession() {
         return bool;
     }
 
+    async function addTeamName(name: string, session: string) {
+        try {
+            await update(ref(db, 'sessions/' + session), {
+                team: name,
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     async function updateSession(userId: string, idArray: string[], name: string, icon: string, session: string) {
         try {
             await update(ref(db, 'sessions/' + session), {
-                ...idArray,
+                users: idArray,
             });
         } catch (e) {
             console.error(e);
@@ -98,8 +123,10 @@ export default function useSession() {
         hasSession,
         existSession,
         getUsersInSession,
+        getMarkersInSession,
         updateUserStatus,
         getUserStatus,
+        addTeamName,
         updateSession,
     }
 }
