@@ -9,6 +9,7 @@ import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
 import { Navigation } from '../../src/components/Navigation';
+import { Action, ActionTypes } from '../../src/components/Action';
 
 import styles from '../../styles/Map.module.css';
 
@@ -22,6 +23,7 @@ const Map = () => {
     const { getUserName } = useOtherUser();
 
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>("XXXXXX");
+    const [navIsOpen, setNavIsOpen] = useState(false);
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
@@ -158,8 +160,11 @@ const Map = () => {
 
     return (
         <div className={styles.container}>
-            <Navigation activeSession={activeSession} />
+            <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
             <div id='map' className={styles.map} />
+            <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
+                <Action type={ActionTypes.menu} />
+            </div>
         </div>
     );
 }
