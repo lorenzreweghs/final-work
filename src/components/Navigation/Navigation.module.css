@@ -1,0 +1,51 @@
+.container {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+}
+
+.user {
+    background-color: var(--color-secondary-light);
+    height: 10%;
+    display: flex;
+    align-items: center;
+}
+
+.profilePic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.progress {
+    background-color: #ffffff;
+    height: 15%;
+}
+
+.code {
+    background-color: var(--color-primary);
+    height: 5%;
+}
+
+.codeText {
+    margin: 0;
+}
+
+.navigation {
+    background-image: url('../../../public/background8.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 70%;
+}
+
+.logo {
+    width: 200px;
+}
+
+.map, .teams, .invite, .logout {
+    display: flex;
+    align-items: center;
+}
