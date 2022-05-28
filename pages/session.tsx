@@ -3,9 +3,9 @@ import { useState } from 'react';
 import type { NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Head from 'next/head';
+import classNames from 'classnames';
 
 import logo from '../public/rock-werchter-2022.png';
-
 import styles from '../styles/Session.module.css';
 import { Session } from '../src/components/Session';
 import { Flag } from '../src/components/Flag';
@@ -54,6 +54,13 @@ const SessionPage: NextPage = () => {
         activeStep === SessionSteps.Share &&
         <Share activeSession={activeSession} />
       }
+
+      <footer className={styles.pagination}>
+        <span className={classNames({ [styles.activePage]: activeStep === SessionSteps.Session })} />
+        <span className={classNames({ [styles.activePage]: activeStep === SessionSteps.Flag })} />
+        <span className={classNames({ [styles.activePage]: activeStep === SessionSteps.Team })} />
+        <span className={classNames({ [styles.activePage]: activeStep === SessionSteps.Share })} />
+      </footer>
     </div>
   );
 }

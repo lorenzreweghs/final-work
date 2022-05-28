@@ -15,3 +15,26 @@
     -webkit-filter: drop-shadow(var(--shadow));
     filter: drop-shadow(var(--shadow));
 }
+
+.pagination {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pagination span {
+    --size: 15px;
+
+    display: inline-block;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background-color: #CECECE;
+    box-shadow: var(--shadow);
+    margin: 5px;
+}
+
+.pagination .activePage {
+    background-color: var(--color-primary);
+}
