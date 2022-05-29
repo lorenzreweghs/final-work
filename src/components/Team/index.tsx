@@ -2,7 +2,7 @@
 import { FormEvent, useState } from 'react';
 
 import useSession from '../../hooks/useSession';
-import teamIcon from '../../../public/team_icon.png';
+import teamIcon from '../../../public/team_icon_color.png';
 import { SessionSteps } from '../../../pages/session';
 
 import styles from './Team.module.css';

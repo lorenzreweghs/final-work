@@ -41,7 +41,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-light);
     height: 5%;
 }
 
