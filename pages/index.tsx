@@ -29,8 +29,7 @@ const Login: NextPage = () => {
 
         <div className={styles.button}>
           <Button href='/session' text='Verdergaan' />
-          <a href='/api/auth/logout'>Logout</a>
-        </div>        
+        </div>
       </main>
     </div>
   );
