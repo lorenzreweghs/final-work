@@ -165,6 +165,17 @@ const Map = () => {
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
                 <Action type={ActionTypes.menu} />
             </div>
+            <div className={styles.actions}>
+                <div>
+                    <Action type={ActionTypes.gather} />
+                </div>
+                <div>
+                    <Action type={ActionTypes.tent} />
+                </div>
+                <div>
+                    <Action type={ActionTypes.pinpoint} />
+                </div>          
+            </div>
         </div>
     );
 }
