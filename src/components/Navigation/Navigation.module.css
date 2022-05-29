@@ -70,7 +70,7 @@
     transform: translateX(-50%);
 }
 
-.map, .teams, .invite, .logout {
+.map a, .teams a, .invite a, .logout a {
     display: flex;
     align-items: center;
     padding-top: 5px;

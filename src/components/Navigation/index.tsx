@@ -1,7 +1,9 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable @next/next/no-img-element */
 import { useUser } from '@auth0/nextjs-auth0';
 import { MapOutlined, GroupsOutlined, ShareOutlined, LogoutOutlined } from '@mui/icons-material';
 import classNames from 'classnames';
+import Link from 'next/link';
 
 import logo from '../../../public/rock-werchter-2022.png';
 
@@ -33,24 +35,34 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
             </div>
 
             <nav className={styles.navigation}>
-                <div className={styles.map}>
-                    <MapOutlined sx={{ fontSize: 44 }} />
-                    <p>KAART</p>
+                <div className={styles.map} onClick={() => setIsOpen(false)}>
+                    <Link href={`/map/${activeSession}`}>
+                        <a>
+                            <MapOutlined sx={{ fontSize: 44 }} />
+                            <p>KAART</p>
+                        </a>                        
+                    </Link>
                 </div>
-                <div className={styles.teams}>
-                    <GroupsOutlined sx={{ fontSize: 44 }} />
-                    <p>TEAMS</p>
+                <div className={styles.teams} onClick={() => setIsOpen(false)}>
+                    <a>
+                        <GroupsOutlined sx={{ fontSize: 44 }} />
+                        <p>TEAMS</p>
+                    </a>
                 </div>
-                <div className={styles.invite}>
-                    <ShareOutlined sx={{ fontSize: 44 }} />
-                    <p>UITNODIGEN</p>
+                <div className={styles.invite} onClick={() => setIsOpen(false)}>
+                    <a>
+                        <ShareOutlined sx={{ fontSize: 44 }} />
+                        <p>UITNODIGEN</p>
+                    </a>
                 </div>
 
                 <img className={styles.logo} src={logo.src} alt='rock werchter 2022 logo' width='100%' height='auto' />
 
                 <div className={styles.logout}>
-                    <LogoutOutlined sx={{ fontSize: 44 }} />
-                    <p>LOGOUT</p>
+                    <a href='/api/auth/logout'>
+                        <LogoutOutlined sx={{ fontSize: 44 }} />
+                        <p>LOGOUT</p>
+                    </a>
                 </div>
 
                 <div className={styles.close} onClick={() => setIsOpen(false)}>
