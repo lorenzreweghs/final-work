@@ -1,0 +1,109 @@
+.container {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -375px;
+    z-index: 99;
+    transition: left .4s ease-in-out;
+}
+
+.open {
+    left: 0;
+}
+
+.user {
+    background-color: var(--color-secondary-light);
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profilePic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+}
+
+.name {
+    margin-left: 25px;
+    font-weight: 600;
+}
+
+.progress {
+    background-color: #ffffff;
+    height: 15%;
+}
+
+.code {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-primary);
+    height: 5%;
+}
+
+.codeText {
+    margin: 0;
+}
+
+.codeText span {
+    font-weight: 700;
+    font-size: var(--font-size-subTitle);
+    margin-left: 5px;
+}
+
+.navigation {
+    background-image: url('../../../public/background8.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 70%;
+}
+
+.logo {
+    width: 200px;
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.map a, .teams a, .invite a, .logout a {
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+}
+
+.map {
+    padding-top: 15px;
+}
+
+.map p, .teams p, .invite p, .logout p {
+    margin-left: 25px;
+    font-weight: 700;
+    font-size: var(--font-size-subTitle);
+}
+
+.map svg, .teams svg, .invite svg, .logout svg {
+    margin-left: 35px;
+}
+
+.logout {
+    color: var(--color-secondary-light);
+    text-shadow: var(--shadow);
+    position: absolute;
+    bottom: 15px;
+}
+
+.logout svg {
+    -webkit-filter: drop-shadow(var(--shadow));
+    filter: drop-shadow(var(--shadow));
+}
+
+.close {
+    position: absolute;
+    left: 310px;
+    bottom: 30px;
+}

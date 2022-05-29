@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import mapboxgl, { GeoJSONSource } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -8,6 +8,8 @@ import { ref, onValue, get } from "firebase/database";
 import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
+import { Navigation } from '../../src/components/Navigation';
+import { Action, ActionTypes } from '../../src/components/Action';
 
 import styles from '../../styles/Map.module.css';
 
@@ -20,9 +22,13 @@ const Map = () => {
     const { getUsersInSession, updateUserStatus } = useSession();
     const { getUserName } = useOtherUser();
 
+    const [activeSession, setActiveSession] = useState<string | string[] | undefined>("XXXXXX");
+    const [navIsOpen, setNavIsOpen] = useState(false);
+
     useEffect(() => {
         if (!router.isReady || isLoading) return;
         const { session } = router.query;
+        setActiveSession(session);
 
         let userList: string[];
         const checkSession = async () => {
@@ -153,7 +159,13 @@ const Map = () => {
     }
 
     return (
-        <div id='map' className={styles.map} />
+        <div className={styles.container}>
+            <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
+            <div id='map' className={styles.map} />
+            <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
+                <Action type={ActionTypes.menu} />
+            </div>
+        </div>
     );
 }
 

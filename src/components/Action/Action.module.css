@@ -3,10 +3,13 @@
 
     width: var(--size);
     height: var(--size);
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--color-secondary-light);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: var(--shadow);
+    background-image: url('../../../public/sky.jpg');
+    background-size: cover;
+    background-position: center;
 }
