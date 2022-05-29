@@ -22,7 +22,7 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
     return (
         <div className={classNames(styles.container, { [styles.open]: isOpen })}>
             <div className={styles.user}>
-                <img className={styles.profilePic} src={user?.picture!} alt='profile picture' width='100%' height='auto' />
+                <img className={styles.profilePic} src={user?.picture!} alt='profile picture' width='100%' height='auto' referrerPolicy="no-referrer" />
                 <p className={styles.name}>{user?.name}</p>
             </div>
 
