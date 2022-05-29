@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Swal from 'sweetalert2';
 
 import useLocation from '../../hooks/useLocation';
-import flagIcon from '../../../public/flag_icon.png';
+import flagIcon from '../../../public/flag_icon_color.png';
 
 import styles from './Flag.module.css';
 import { SessionSteps } from '../../../pages/session';

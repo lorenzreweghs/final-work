@@ -5,7 +5,7 @@ import { generate } from 'generate-password';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture } from '@mui/icons-material';
 
-import connectionIcon from '../../../public/connection_icon.png';
+import connectionIcon from '../../../public/connection_icon_color.png';
 import useSession from '../../hooks/useSession';
 
 import styles from './Session.module.css';
