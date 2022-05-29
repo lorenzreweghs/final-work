@@ -32,7 +32,7 @@
 .teamInput {
     width: 300px;
     height: 40px;
-    border: 1px solid var(--color-secondary-heavy);
+    border: 2px solid var(--color-secondary-heavy);
     border-radius: 12px;
     padding: 10px;
     font-family: var(--font-family);
