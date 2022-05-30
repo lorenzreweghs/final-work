@@ -41,7 +41,7 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
 
         const marker = new mapboxgl.Marker();
 
-        map.on('click', async (event) => {
+        map.on('click', (event) => {
             updateMarker(event);
         });
 
@@ -55,13 +55,13 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
                     text: "Zeker dat je hier je eerste verzamelpunt wilt plaatsen?",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: 'var(--color-primary)',
+                    confirmButtonColor: 'var(--color-primary-light)',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Vlag plaatsen',
                     cancelButtonText: 'Annuleren'
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        await addMarker(activeSession, [{lng: coords.lng, lat: coords.lat}]);
+                        await addMarker(activeSession, [{lng: coords.lng, lat: coords.lat}], true);
                         setActiveStep(SessionSteps.Team);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         marker.remove();
