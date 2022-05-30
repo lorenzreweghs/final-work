@@ -13,3 +13,8 @@
     background-size: cover;
     background-position: center;
 }
+
+.active {
+    background-image: none;
+    background-color: var(--color-secondary-light);
+}
