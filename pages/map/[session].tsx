@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import mapboxgl, { GeoJSONSource } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -17,6 +17,7 @@ import tentIcon from '../../public/campground_icon.png';
 
 import styles from '../../styles/Map.module.css';
 
+
 const Map = () => {
     const { user, isLoading } = useUser();
 
@@ -31,15 +32,16 @@ const Map = () => {
 
     const [activeAction, setActiveAction] = useState('');
 
+    const userList = useRef<string[]>([]);
+
     useEffect(() => {
         if (!router.isReady || isLoading) return;
         const { session } = router.query;
         setActiveSession(session);
-
-        let userList: string[];
+        
         const checkSession = async () => {
-            userList = await getUsersInSession(session);
-            if (!userList.includes(user?.sub!)) router.push('/');
+            userList.current = await getUsersInSession(session);
+            if (!userList.current.includes(user?.sub!)) router.push('/');
         }
         checkSession();
 
@@ -47,7 +49,9 @@ const Map = () => {
             await updateUserStatus(user?.sub!, true);
         }
         setOnline();
+    }, [router.isReady, isLoading]);
 
+    useEffect(() => {
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
         const map = new mapboxgl.Map({
             container: 'map',
@@ -70,7 +74,7 @@ const Map = () => {
             const checkStatus = async (userId: string) => {
                 onValue(ref(db, 'users/' + userId + '/online'), async (snapshot) => {
                     const userName = await getUserName(userId);
-                    if (snapshot.val()) addSource(userId, userName);
+                    if (snapshot.val()) addUserSource(userId, userName);
                     else if (map.getSource(userName)) {
                         map.removeLayer(userId);
                         map.removeSource(userName);
@@ -78,7 +82,7 @@ const Map = () => {
                 });
             }
 
-            const addSource = async (userId: string, userName: string) => {                
+            const addUserSource = async (userId: string, userName: string) => {                
                 await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
                     const {lat, lng} = snapshot.val();
                     const geojson = await getGeoJson(lat, lng);
@@ -92,12 +96,13 @@ const Map = () => {
                         'type': 'symbol',
                         'source': userName,
                         'layout': {
-                        // This icon is a part of the Mapbox Streets style.
-                        // To view all images available in a Mapbox style, open
-                        // the style in Mapbox Studio and click the "Images" tab.
-                        // To add a new image to the style at runtime see
-                        // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
-                        'icon-image': 'rocket-15'
+                            // This icon is a part of the Mapbox Streets style.
+                            // To view all images available in a Mapbox style, open
+                            // the style in Mapbox Studio and click the "Images" tab.
+                            // To add a new image to the style at runtime see
+                            // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
+                            'icon-image': 'rocket',
+                            'icon-size': 1.5,
                         }
                     });
                 });
@@ -110,7 +115,7 @@ const Map = () => {
             }
 
             let firstTrigger = true;
-            onValue(ref(db, 'sessions/' + session), async (snapshot) => {
+            onValue(ref(db, 'sessions/' + activeSession + '/users'), async (snapshot) => {
                 if (firstTrigger) {
                     firstTrigger = false;
                     return;
@@ -120,9 +125,75 @@ const Map = () => {
                 checkStatus(lastUserId);
             });
 
-            userList.forEach(async (userId: string) => {
+            userList.current.forEach(async (userId: string) => {
                 checkStatus(userId);
             });
+
+            const setCurrentFlag = async () => {
+                const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
+                if (coords) {
+                    map.loadImage(flagIcon.src, async (error, image) => {
+                        if (error) throw error;
+        
+                        map.addImage('flag', image!);
+    
+                        const geojson = await getGeoJson(coords.lat, coords.lng);
+                        map.addSource('flag', {
+                            type: 'geojson',
+                            data: geojson
+                        });
+            
+                        map.addLayer({
+                            'id': 'gather',
+                            'type': 'symbol',
+                            'source': 'flag',
+                            'layout': {
+                                'icon-image': 'flag',
+                                'icon-size': 0.25,
+                            }
+                        });
+                    });
+                }
+            }
+            setCurrentFlag();
+
+            const setCurrentTent = async () => {
+                const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
+                if (coords) {
+                    map.loadImage(tentIcon.src, async (error, image) => {
+                        if (error) throw error;
+     
+                        map.addImage('campground', image!);
+    
+                        const geojson = await getGeoJson(coords.lat, coords.lng);
+                        map.addSource('campground', {
+                            type: 'geojson',
+                            data: geojson
+                        });
+        
+                        map.addLayer({
+                            'id': 'tent',
+                            'type': 'symbol',
+                            'source': 'campground',
+                            'layout': {
+                                'icon-image': 'campground',
+                            }
+                        });
+                    });
+                }
+            }
+            setCurrentTent();
+
+            const setCurrentMarkers = async () => {
+                const coordsArray = await getMarkersInSession(activeSession);
+                if (coordsArray.length) {
+                    coordsArray.forEach((coords) => {
+                        const marker = new mapboxgl.Marker();
+                        marker.setLngLat(coords).addTo(map);
+                    })
+                }
+            }
+            setCurrentMarkers();
         });
 
         map.on('click', (event) => {
@@ -138,34 +209,6 @@ const Map = () => {
                     break;
             }
         });
-
-        const setCurrentFlag = async () => {
-            const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
-            if (coords) {
-                map.loadImage(flagIcon.src, async (error, image) => {
-                    if (error) throw error;
-    
-                    map.addImage('flag', image!);
-
-                    const geojson = await getGeoJson(coords.lat, coords.lng);
-                    map.addSource('flag', {
-                        type: 'geojson',
-                        data: geojson
-                    });
-        
-                    map.addLayer({
-                        'id': 'gather',
-                        'type': 'symbol',
-                        'source': 'flag',
-                        'layout': {
-                            'icon-image': 'flag',
-                            'icon-size': 0.25,
-                        }
-                    });
-                });
-            }
-        }
-        setCurrentFlag();
 
         const handleGather = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
@@ -194,33 +237,6 @@ const Map = () => {
                 });
             }, 1000);
         }
-
-        const setCurrentTent = async () => {
-            const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
-            if (coords) {
-                map.loadImage(tentIcon.src, async (error, image) => {
-                    if (error) throw error;
- 
-                    map.addImage('campground', image!);
-
-                    const geojson = await getGeoJson(coords.lat, coords.lng);
-                    map.addSource('campground', {
-                        type: 'geojson',
-                        data: geojson
-                    });
-    
-                    map.addLayer({
-                        'id': 'tent',
-                        'type': 'symbol',
-                        'source': 'campground',
-                        'layout': {
-                            'icon-image': 'campground',
-                        }
-                    });
-                });
-            }
-        }
-        setCurrentTent();
 
         const handleTent = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
@@ -277,17 +293,6 @@ const Map = () => {
             }, 1000);
         }
 
-        const setCurrentMarkers = async () => {
-            const coordsArray = await getMarkersInSession(activeSession);
-            if (coordsArray.length) {
-                coordsArray.forEach((coords) => {
-                    const marker = new mapboxgl.Marker();
-                    marker.setLngLat(coords).addTo(map);
-                })
-            }
-        }
-        setCurrentMarkers();
-
         const handlePinpoint = async (event: mapboxgl.MapMouseEvent) => {
             const markerArray = await getMarkersInSession(activeSession);
 
@@ -317,7 +322,10 @@ const Map = () => {
         }
 
         navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
-        
+    }, [activeAction, activeSession]);
+
+    useEffect(() => {
+        if (isLoading) return;
         document.addEventListener("visibilitychange", async () => {
             if (document.visibilityState === 'visible') {
                 await updateUserStatus(user?.sub!, true);
@@ -329,8 +337,7 @@ const Map = () => {
         window.addEventListener("pagehide", async () => {
             await updateUserStatus(user?.sub!, false);
         }, false);
-
-    }, [router.isReady, isLoading, getMarkersInSession]);
+    }, [isLoading]);
 
     const getGeoJson = (lat: number, lng: number): any => {
         return {
