@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
+import classNames from 'classnames';
+
 import gatherIcon from '../../../public/assembly_icon.png';
 import tentIcon from '../../../public/campground_icon.png';
 import pinIcon from '../../../public/pin_icon.png';
@@ -22,9 +24,10 @@ export enum ActionTypes {
 
 interface ActionProps {
     type: ActionTypes,
+    isActive?: boolean,
 }
 
-export const Action = ({ type }: ActionProps) => {
+export const Action = ({ type, isActive = false }: ActionProps) => {
     const [icon, setIcon] = useState(<span />);
 
     useEffect(() => {
@@ -54,7 +57,7 @@ export const Action = ({ type }: ActionProps) => {
     }, [type]);
 
     return (
-        <div className={styles.container}>
+        <div className={classNames(styles.container, { [styles.active]: isActive })}>
             {icon}
         </div>
     );

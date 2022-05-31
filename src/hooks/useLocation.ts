@@ -14,13 +14,31 @@ export default function useLocation() {
         }
     }
 
-    async function addMarker(session: string, coordsArray: Array<{lng: number, lat: number}>) {
-        try {
-            await update(ref(db, 'sessions/' + session), {
-                markers: coordsArray,
-            });
-        } catch (e) {
-            console.error(e);
+    async function addMarker(session: string | string[] | undefined, coordsArray: Array<{lng: number, lat: number}>, isFlag: boolean = false, isTent: boolean = false) {
+        if (isFlag) {
+            try {
+                await update(ref(db, 'sessions/' + session), {
+                    flag: coordsArray,
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        } else if (isTent) {
+            try {
+                await update(ref(db, 'sessions/' + session), {
+                    tent: coordsArray,
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        } else {
+            try {
+                await update(ref(db, 'sessions/' + session), {
+                    markers: coordsArray,
+                });
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
 

@@ -1,6 +1,12 @@
 import { getDatabase, ref, update, get, child } from "firebase/database";
 import { app } from "../../config/firebase";
 
+export enum MarkerTypes {
+    markers = 'markers',
+    flag = 'flag',
+    tent = 'tent',
+}
+
 export default function useSession() {
     const db = getDatabase(app);
 
@@ -34,7 +40,7 @@ export default function useSession() {
         return bool;
     }
 
-    async function getUsersInSession(session: any): Promise<string[]> {
+    async function getUsersInSession(session: string | string[] | undefined): Promise<string[]> {
         let arr: string[] = [];
         try {
             await get(child(ref(db), `sessions/` + session + '/users'))
@@ -49,10 +55,10 @@ export default function useSession() {
         return arr;
     }
 
-    async function getMarkersInSession(session: any): Promise<Array<{lng: number, lat: number}>> {
+    async function getMarkersInSession(session: string | string[] | undefined, type: string = MarkerTypes.markers): Promise<Array<{lng: number, lat: number}>> {
         let arr: Array<{lng: number, lat: number}> = [];
         try {
-            await get(child(ref(db), `sessions/` + session + '/markers'))
+            await get(child(ref(db), `sessions/` + session + '/' + type))
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     arr = snapshot.val();
