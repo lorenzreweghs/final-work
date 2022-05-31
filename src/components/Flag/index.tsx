@@ -39,15 +39,44 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
             geolocate.trigger();
         });
 
-        const marker = new mapboxgl.Marker();
-
         map.on('click', (event) => {
-            updateMarker(event);
+            updateFlag(event);
         });
 
-        const updateMarker = (event: mapboxgl.MapMouseEvent) => {
+        const updateFlag = (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
-            marker.setLngLat(coords).addTo(map);
+            map.loadImage(flagIcon.src, async (error, image) => {
+                if (error) throw error;
+
+                map.addImage('flag', image!);
+
+                map.addSource('flag', {
+                    type: 'geojson',
+                    data: {
+                        'type': 'FeatureCollection',
+                        'features': [
+                            {
+                                'type': 'Feature',
+                                "properties": {},
+                                'geometry': {
+                                    'type': 'Point',
+                                    'coordinates': [coords.lng, coords.lat],
+                                }
+                            }
+                        ]
+                    }
+                });
+    
+                map.addLayer({
+                    'id': 'gather',
+                    'type': 'symbol',
+                    'source': 'flag',
+                    'layout': {
+                        'icon-image': 'flag',
+                        'icon-size': 0.25,
+                    }
+                });
+            });
 
             setTimeout(() => {
                 Swal.fire({
@@ -64,7 +93,8 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
                         await addMarker(activeSession, [{lng: coords.lng, lat: coords.lat}], true);
                         setActiveStep(SessionSteps.Team);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        marker.remove();
+                        map.removeLayer('gather');
+                        map.removeSource('flag');
                     }
                 });
             }, 1000);
