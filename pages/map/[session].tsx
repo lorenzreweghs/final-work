@@ -37,7 +37,7 @@ const SessionMap = () => {
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
 
-    const [activeAction, setActiveAction] = useState('');
+    const [activeAction, setActiveAction] = useState<string | null>(null);
 
     const userList = useRef<string[]>([]);
 
@@ -218,10 +218,11 @@ const SessionMap = () => {
     }, [activeSession]);
 
     useEffect(() => {
-        if (!activeSession || !activeAction || !map.current) return;
+        if (!activeSession || !map.current) return;
 
         let action = activeAction;
-        map.current!.on('click', (event) => {
+
+        const handleClick = (event: mapboxgl.MapMouseEvent) => {
             switch (action) {
                 case "gather":
                     handleGather(event);
@@ -236,7 +237,9 @@ const SessionMap = () => {
                     action = '';
                     break;
             }
-        });
+        }
+    
+        map.current!.on('click', handleClick);
 
         const handleGather = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
@@ -261,7 +264,7 @@ const SessionMap = () => {
                         const geojson = await getGeoJson(coords.lat, coords.lng);
                         (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
                     }
-                    setActiveAction("");
+                    setActiveAction(null);
                 });
             }, 1000);
         }
@@ -316,7 +319,7 @@ const SessionMap = () => {
                             map.current!.removeSource('campground');
                         }
                     }
-                    setActiveAction("");
+                    setActiveAction(null);
                 });
             }, 1000);
         }
@@ -344,9 +347,13 @@ const SessionMap = () => {
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         marker.remove();
                     }
-                    setActiveAction("");
+                    setActiveAction(null);
                 });
             }, 1000);
+        }
+
+        return () => {
+            map.current!.off('click', handleClick);
         }
     }, [activeAction, activeSession]);
 
@@ -419,19 +426,19 @@ const SessionMap = () => {
             {activeAction && <Notification />}
             <div className={styles.actions}>
                 <div onClick={() => {
-                    if (activeAction === 'gather') setActiveAction('');
+                    if (activeAction === 'gather') setActiveAction(null);
                     else setActiveAction('gather');
                 }}>
                     <Action type={ActionTypes.gather} isActive={activeAction === 'gather'} />
                 </div>
                 <div onClick={() => {
-                    if (activeAction === 'tent') setActiveAction('');
+                    if (activeAction === 'tent') setActiveAction(null);
                     else setActiveAction('tent');
                 }}>
                     <Action type={ActionTypes.tent} isActive={activeAction === 'tent'} />
                 </div>
                 <div onClick={() => {
-                    if (activeAction === 'pinpoint') setActiveAction('');
+                    if (activeAction === 'pinpoint') setActiveAction(null);
                     else setActiveAction('pinpoint');
                 }}>
                     <Action type={ActionTypes.pinpoint} isActive={activeAction === 'pinpoint'} />
