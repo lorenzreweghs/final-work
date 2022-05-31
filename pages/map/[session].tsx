@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import mapboxgl, { GeoJSONSource } from 'mapbox-gl';
+import mapboxgl, { GeoJSONSource, Map } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { ref, onValue, get } from "firebase/database";
@@ -19,7 +19,7 @@ import tentIcon from '../../public/campground_icon.png';
 import styles from '../../styles/Map.module.css';
 
 
-const Map = () => {
+const SessionMap = () => {
     const { user, isLoading } = useUser();
 
     const router = useRouter();
@@ -28,7 +28,13 @@ const Map = () => {
     const { getUsersInSession, getMarkersInSession, updateUserStatus } = useSession();
     const { getUserName } = useOtherUser();
 
-    const [activeSession, setActiveSession] = useState<string | string[] | undefined>('XXXXXX');
+    const mapContainer = useRef(null);
+    const map = useRef<Map | null>(null);
+    const [lng, setLng] = useState(4.68111496672563);
+    const [lat, setLat] = useState(50.9683219343008);
+    const [zoom, setZoom] = useState(15);
+
+    const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
 
     const [activeAction, setActiveAction] = useState('');
@@ -53,12 +59,13 @@ const Map = () => {
     }, [router.isReady, isLoading]);
 
     useEffect(() => {
+        if (map.current) return;
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
-        const map = new mapboxgl.Map({
-            container: 'map',
+        map.current = new mapboxgl.Map({
+            container: mapContainer.current!,
             style: 'mapbox://styles/lorenzreweghs/cl3k3d254001f14mnykkhv9ct',
-            center: [4.68111496672563, 50.9683219343008],
-            zoom: 15,
+            center: [lng, lat],
+            zoom: zoom
         });
 
         const geolocate = new mapboxgl.GeolocateControl({
@@ -68,17 +75,32 @@ const Map = () => {
             trackUserLocation: true,
             showUserHeading: true
         });
-        map.addControl(geolocate);
-        map.on('load', async () => {
+        map.current!.addControl(geolocate);
+        map.current!.on('load', () => {
             geolocate.trigger();
-            
+        });
+    });
+
+    useEffect(() => {
+        if (!map.current) return;
+        map.current.on('move', () => {
+            setLng(map.current!.getCenter().lng);
+            setLat(map.current!.getCenter().lat);
+            setZoom(map.current!.getZoom());
+        });
+    });
+
+    useEffect(() => {
+        if (!activeSession || !map.current) return;
+
+        map.current!.on('load', async () => {
             const checkStatus = async (userId: string) => {
                 onValue(ref(db, 'users/' + userId + '/online'), async (snapshot) => {
                     const userName = await getUserName(userId);
                     if (snapshot.val()) addUserSource(userId, userName);
-                    else if (map.getSource(userName)) {
-                        map.removeLayer(userId);
-                        map.removeSource(userName);
+                    else if (map.current!.getSource(userName)) {
+                        map.current!.removeLayer(userId);
+                        map.current!.removeSource(userName);
                     }
                 });
             }
@@ -87,21 +109,16 @@ const Map = () => {
                 await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
                     const {lat, lng} = snapshot.val();
                     const geojson = await getGeoJson(lat, lng);
-                    map.addSource(userName, {
+                    map.current!.addSource(userName, {
                         type: 'geojson',
                         data: geojson
                     });
 
-                    map.addLayer({
+                    map.current!.addLayer({
                         'id': userId,
                         'type': 'symbol',
                         'source': userName,
                         'layout': {
-                            // This icon is a part of the Mapbox Streets style.
-                            // To view all images available in a Mapbox style, open
-                            // the style in Mapbox Studio and click the "Images" tab.
-                            // To add a new image to the style at runtime see
-                            // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
                             'icon-image': 'rocket',
                             'icon-size': 1.5,
                         }
@@ -111,7 +128,7 @@ const Map = () => {
                 onValue(ref(db, 'users/' + userId + '/coords'), async (snapshot) => {
                     const {lat, lng} = snapshot.val();
                     const geojson = await getGeoJson(lat, lng);
-                    (map.getSource(userName) as GeoJSONSource).setData(geojson);
+                    (map.current!.getSource(userName) as GeoJSONSource).setData(geojson);
                 });
             }
 
@@ -133,18 +150,18 @@ const Map = () => {
             const setCurrentFlag = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
                 if (coords) {
-                    map.loadImage(flagIcon.src, async (error, image) => {
+                    map.current!.loadImage(flagIcon.src, async (error, image) => {
                         if (error) throw error;
         
-                        map.addImage('flag', image!);
+                        map.current!.addImage('flag', image!);
     
                         const geojson = await getGeoJson(coords.lat, coords.lng);
-                        map.addSource('flag', {
+                        map.current!.addSource('flag', {
                             type: 'geojson',
                             data: geojson
                         });
             
-                        map.addLayer({
+                        map.current!.addLayer({
                             'id': 'gather',
                             'type': 'symbol',
                             'source': 'flag',
@@ -161,18 +178,18 @@ const Map = () => {
             const setCurrentTent = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
                 if (coords) {
-                    map.loadImage(tentIcon.src, async (error, image) => {
+                    map.current!.loadImage(tentIcon.src, async (error, image) => {
                         if (error) throw error;
      
-                        map.addImage('campground', image!);
+                        map.current!.addImage('campground', image!);
     
                         const geojson = await getGeoJson(coords.lat, coords.lng);
-                        map.addSource('campground', {
+                        map.current!.addSource('campground', {
                             type: 'geojson',
                             data: geojson
                         });
         
-                        map.addLayer({
+                        map.current!.addLayer({
                             'id': 'tent',
                             'type': 'symbol',
                             'source': 'campground',
@@ -190,14 +207,21 @@ const Map = () => {
                 if (coordsArray.length) {
                     coordsArray.forEach((coords) => {
                         const marker = new mapboxgl.Marker();
-                        marker.setLngLat(coords).addTo(map);
+                        marker.setLngLat(coords).addTo(map.current!);
                     })
                 }
             }
             setCurrentMarkers();
         });
 
-        map.on('click', (event) => {
+        navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
+    }, [activeSession]);
+
+    useEffect(() => {
+        if (!activeSession || !activeAction || !map.current) return;
+
+        map.current!.on('click', (event) => {
+            console.log(activeAction);
             switch (activeAction) {
                 case "gather":
                     handleGather(event);
@@ -212,9 +236,10 @@ const Map = () => {
         });
 
         const handleGather = async (event: mapboxgl.MapMouseEvent) => {
+            console.log('handleGather');
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
-            (map.getSource('flag') as GeoJSONSource).setData(geojson);
+            (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
 
             setTimeout(() => {
                 Swal.fire({
@@ -232,7 +257,7 @@ const Map = () => {
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
                         const geojson = await getGeoJson(coords.lat, coords.lng);
-                        (map.getSource('flag') as GeoJSONSource).setData(geojson);
+                        (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
                     }
                     setActiveAction("");
                 });
@@ -240,22 +265,23 @@ const Map = () => {
         }
 
         const handleTent = async (event: mapboxgl.MapMouseEvent) => {
+            console.log('handleTent');
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
-            if (map.getSource('campground')) {
-                (map.getSource('campground') as GeoJSONSource).setData(geojson);
+            if (map.current!.getSource('campground')) {
+                (map.current!.getSource('campground') as GeoJSONSource).setData(geojson);
             } else {
-                map.loadImage(tentIcon.src, async (error, image) => {
+                map.current!.loadImage(tentIcon.src, async (error, image) => {
                     if (error) throw error;
  
-                    map.addImage('campground', image!);
+                    map.current!.addImage('campground', image!);
 
-                    map.addSource('campground', {
+                    map.current!.addSource('campground', {
                         type: 'geojson',
                         data: geojson
                     });
     
-                    map.addLayer({
+                    map.current!.addLayer({
                         'id': 'tent',
                         'type': 'symbol',
                         'source': 'campground',
@@ -283,10 +309,10 @@ const Map = () => {
                         const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
                         if (coords) {
                             const geojson = await getGeoJson(coords.lat, coords.lng);
-                            (map.getSource('campground') as GeoJSONSource).setData(geojson);                            
+                            (map.current!.getSource('campground') as GeoJSONSource).setData(geojson);                            
                         } else {
-                            map.removeLayer('tent');
-                            map.removeSource('campground');
+                            map.current!.removeLayer('tent');
+                            map.current!.removeSource('campground');
                         }
                     }
                     setActiveAction("");
@@ -295,11 +321,12 @@ const Map = () => {
         }
 
         const handlePinpoint = async (event: mapboxgl.MapMouseEvent) => {
+            console.log('handlePinpoint');
             const markerArray = await getMarkersInSession(activeSession);
 
             const marker = new mapboxgl.Marker();
             const coords = event.lngLat;
-            marker.setLngLat(coords).addTo(map);
+            marker.setLngLat(coords).addTo(map.current!);
 
             setTimeout(() => {
                 Swal.fire({
@@ -321,8 +348,6 @@ const Map = () => {
                 });
             }, 1000);
         }
-
-        navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
     }, [activeAction, activeSession]);
 
     useEffect(() => {
@@ -387,7 +412,7 @@ const Map = () => {
     return (
         <div className={styles.container}>
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
-            <div id='map' className={styles.map} />
+            <div ref={mapContainer} className={styles.map} />
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
                 <Action type={ActionTypes.menu} />
             </div>
@@ -418,4 +443,4 @@ const Map = () => {
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default Map;
+export default SessionMap;
