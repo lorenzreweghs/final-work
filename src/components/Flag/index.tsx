@@ -48,8 +48,10 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
             map.loadImage(flagIcon.src, async (error, image) => {
                 if (error) throw error;
 
-                map.addImage('flag', image!);
-
+                if (!map.hasImage('flag')) {
+                    map.addImage('flag', image!);
+                }
+                
                 map.addSource('flag', {
                     type: 'geojson',
                     data: {
