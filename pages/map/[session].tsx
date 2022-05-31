@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import mapboxgl, { GeoJSONSource } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { ref, onValue, get } from "firebase/database";
 import Swal from 'sweetalert2';
+import { Error } from '@mui/icons-material';
 
 import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession, { MarkerTypes } from '../../src/hooks/useSession';
@@ -362,6 +363,27 @@ const Map = () => {
         console.warn('ERROR(' + err.code + '): ' + err.message);
     }
 
+    const Notification = () => {
+        let htmlString: ReactElement = <p></p>;
+        switch (activeAction) {
+            case 'gather':
+                htmlString = <p>Klik op de kaart om het <span>verzamelpunt</span> te bepalen</p>;
+                break;
+            case 'tent':
+                htmlString = <p>Klik op de kaart om de <span>locatie van je tent</span> aan te geven</p>;
+                break;
+            case 'pinpoint':
+                htmlString = <p>Klik op de kaart om een <span>pinpoint</span> te plaatsen</p>;
+                break;
+        }
+        return (
+            <div className={styles.notification}>
+                <Error />
+                {htmlString}
+            </div>
+        );
+    }
+
     return (
         <div className={styles.container}>
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
@@ -369,6 +391,7 @@ const Map = () => {
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
                 <Action type={ActionTypes.menu} />
             </div>
+            {activeAction && <Notification />}
             <div className={styles.actions}>
                 <div onClick={() => {
                     if (activeAction === 'gather') setActiveAction('');
