@@ -220,23 +220,25 @@ const SessionMap = () => {
     useEffect(() => {
         if (!activeSession || !activeAction || !map.current) return;
 
+        let action = activeAction;
         map.current!.on('click', (event) => {
-            console.log(activeAction);
-            switch (activeAction) {
+            switch (action) {
                 case "gather":
                     handleGather(event);
+                    action = '';
                     break;
                 case "tent":
                     handleTent(event);
+                    action = '';
                     break;
                 case "pinpoint":
                     handlePinpoint(event);
+                    action = '';
                     break;
             }
         });
 
         const handleGather = async (event: mapboxgl.MapMouseEvent) => {
-            console.log('handleGather');
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
             (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
@@ -265,7 +267,6 @@ const SessionMap = () => {
         }
 
         const handleTent = async (event: mapboxgl.MapMouseEvent) => {
-            console.log('handleTent');
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
             if (map.current!.getSource('campground')) {
@@ -321,7 +322,6 @@ const SessionMap = () => {
         }
 
         const handlePinpoint = async (event: mapboxgl.MapMouseEvent) => {
-            console.log('handlePinpoint');
             const markerArray = await getMarkersInSession(activeSession);
 
             const marker = new mapboxgl.Marker();
