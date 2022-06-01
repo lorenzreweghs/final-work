@@ -6,18 +6,19 @@ import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { ref, onValue, get } from "firebase/database";
 import Swal from 'sweetalert2';
 import { Error } from '@mui/icons-material';
+import { StaticImageData } from 'next/image';
 
 import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession, { MarkerTypes } from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
+import { sponsorMarkers } from '../../config/sponsors';
 
 import flagIcon from '../../public/flag_icon_color.png';
 import tentIcon from '../../public/campground_icon.png';
 
 import styles from '../../styles/Map.module.css';
-
 
 const SessionMap = () => {
     const { user, isLoading } = useUser();
@@ -82,15 +83,6 @@ const SessionMap = () => {
     });
 
     useEffect(() => {
-        if (!map.current) return;
-        map.current.on('move', () => {
-            setLng(map.current!.getCenter().lng);
-            setLat(map.current!.getCenter().lat);
-            setZoom(map.current!.getZoom());
-        });
-    });
-
-    useEffect(() => {
         if (!activeSession || !map.current) return;
 
         map.current!.on('load', async () => {
@@ -150,27 +142,7 @@ const SessionMap = () => {
             const setCurrentFlag = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
                 if (coords) {
-                    map.current!.loadImage(flagIcon.src, async (error, image) => {
-                        if (error) throw error;
-        
-                        map.current!.addImage('flag', image!);
-    
-                        const geojson = await getGeoJson(coords.lat, coords.lng);
-                        map.current!.addSource('flag', {
-                            type: 'geojson',
-                            data: geojson
-                        });
-            
-                        map.current!.addLayer({
-                            'id': 'gather',
-                            'type': 'symbol',
-                            'source': 'flag',
-                            'layout': {
-                                'icon-image': 'flag',
-                                'icon-size': 0.25,
-                            }
-                        });
-                    });
+                    addSourceWithImage(flagIcon, 'flag', {lng: coords.lng, lat: coords.lat}, 0.25, 0);
                 }
             }
             setCurrentFlag();
@@ -178,26 +150,7 @@ const SessionMap = () => {
             const setCurrentTent = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
                 if (coords) {
-                    map.current!.loadImage(tentIcon.src, async (error, image) => {
-                        if (error) throw error;
-     
-                        map.current!.addImage('campground', image!);
-    
-                        const geojson = await getGeoJson(coords.lat, coords.lng);
-                        map.current!.addSource('campground', {
-                            type: 'geojson',
-                            data: geojson
-                        });
-        
-                        map.current!.addLayer({
-                            'id': 'tent',
-                            'type': 'symbol',
-                            'source': 'campground',
-                            'layout': {
-                                'icon-image': 'campground',
-                            }
-                        });
-                    });
+                    addSourceWithImage(tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
                 }
             }
             setCurrentTent();
@@ -212,6 +165,10 @@ const SessionMap = () => {
                 }
             }
             setCurrentMarkers();
+    
+            sponsorMarkers.forEach((sponsor) => {
+                addSourceWithImage(sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, sponsor.size ?? 0.25);
+            });
         });
 
         navigator.geolocation.watchPosition(handlePositionUpdate, handlePositionError, { enableHighAccuracy: true });
@@ -244,7 +201,7 @@ const SessionMap = () => {
         const handleGather = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
-            (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
+            (map.current!.getSource('flag-source') as GeoJSONSource).setData(geojson);
 
             setTimeout(() => {
                 Swal.fire({
@@ -262,7 +219,7 @@ const SessionMap = () => {
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
                         const geojson = await getGeoJson(coords.lat, coords.lng);
-                        (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
+                        (map.current!.getSource('flag-source') as GeoJSONSource).setData(geojson);
                     }
                     setActiveAction(null);
                 });
@@ -272,28 +229,10 @@ const SessionMap = () => {
         const handleTent = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
-            if (map.current!.getSource('campground')) {
-                (map.current!.getSource('campground') as GeoJSONSource).setData(geojson);
+            if (map.current!.getSource('tent-source')) {
+                (map.current!.getSource('tent-source') as GeoJSONSource).setData(geojson);
             } else {
-                map.current!.loadImage(tentIcon.src, async (error, image) => {
-                    if (error) throw error;
- 
-                    map.current!.addImage('campground', image!);
-
-                    map.current!.addSource('campground', {
-                        type: 'geojson',
-                        data: geojson
-                    });
-    
-                    map.current!.addLayer({
-                        'id': 'tent',
-                        'type': 'symbol',
-                        'source': 'campground',
-                        'layout': {
-                            'icon-image': 'campground',
-                        }
-                    });
-                });
+                addSourceWithImage(tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
             }
 
             setTimeout(() => {
@@ -313,10 +252,10 @@ const SessionMap = () => {
                         const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
                         if (coords) {
                             const geojson = await getGeoJson(coords.lat, coords.lng);
-                            (map.current!.getSource('campground') as GeoJSONSource).setData(geojson);                            
+                            (map.current!.getSource('tent-source') as GeoJSONSource).setData(geojson);                            
                         } else {
-                            map.current!.removeLayer('tent');
-                            map.current!.removeSource('campground');
+                            map.current!.removeLayer('tent-layer');
+                            map.current!.removeSource('tent-source');
                         }
                     }
                     setActiveAction(null);
@@ -371,6 +310,33 @@ const SessionMap = () => {
             await updateUserStatus(user?.sub!, false);
         }, false);
     }, [isLoading]);
+
+    const addSourceWithImage = (icon: StaticImageData, id: string, coords: {lng: number, lat: number}, size: number = 1, minzoom: number = 14) => {
+        map.current!.loadImage(icon.src, async (error, image) => {
+            if (error) throw error;
+
+            map.current!.addImage(`${id}-image`, image!);
+
+            const geojson = await getGeoJson(coords.lat, coords.lng);
+            map.current!.addSource(`${id}-source`, {
+                type: 'geojson',
+                data: geojson
+            });
+
+            map.current!.addLayer({
+                'id': `${id}-layer`,
+                'type': 'symbol',
+                'source': `${id}-source`,
+                'layout': {
+                    'icon-image': `${id}-image`,
+                    'icon-size': size,
+                    'icon-allow-overlap': true,
+                },
+                'minzoom': minzoom,
+                'maxzoom': 24,
+            });
+        });
+    }
 
     const getGeoJson = (lat: number, lng: number): any => {
         return {

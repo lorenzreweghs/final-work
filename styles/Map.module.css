@@ -27,6 +27,7 @@
     justify-content: space-evenly;
     align-items: center;
     position: absolute;
+    z-index: 10;
     top: 95px;
     width: 94vw;
     height: 45px;
