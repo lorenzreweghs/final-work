@@ -6,7 +6,6 @@ import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { ref, onValue, get } from "firebase/database";
 import Swal from 'sweetalert2';
 import { Error } from '@mui/icons-material';
-import { StaticImageData } from 'next/image';
 
 import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession, { MarkerTypes } from '../../src/hooks/useSession';
@@ -14,6 +13,7 @@ import useOtherUser from '../../src/hooks/useOtherUser';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
 import { sponsorMarkers } from '../../config/sponsors';
+import { addSourceWithImage, getGeoJson } from '../../src/helpers/helpers';
 
 import flagIcon from '../../public/flag_icon_color.png';
 import tentIcon from '../../public/campground_icon.png';
@@ -142,7 +142,7 @@ const SessionMap = () => {
             const setCurrentFlag = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
                 if (coords) {
-                    addSourceWithImage(flagIcon, 'flag', {lng: coords.lng, lat: coords.lat}, 0.25, 0);
+                    addSourceWithImage(map, flagIcon, 'flag', {lng: coords.lng, lat: coords.lat}, 0.25, 0);
                 }
             }
             setCurrentFlag();
@@ -150,7 +150,7 @@ const SessionMap = () => {
             const setCurrentTent = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
                 if (coords) {
-                    addSourceWithImage(tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
+                    addSourceWithImage(map, tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
                 }
             }
             setCurrentTent();
@@ -167,7 +167,7 @@ const SessionMap = () => {
             setCurrentMarkers();
     
             sponsorMarkers.forEach((sponsor) => {
-                addSourceWithImage(sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, sponsor.size ?? 0.25);
+                addSourceWithImage(map, sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, sponsor.size ?? 0.25);
             });
         });
 
@@ -232,7 +232,7 @@ const SessionMap = () => {
             if (map.current!.getSource('tent-source')) {
                 (map.current!.getSource('tent-source') as GeoJSONSource).setData(geojson);
             } else {
-                addSourceWithImage(tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
+                addSourceWithImage(map, tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
             }
 
             setTimeout(() => {
@@ -310,48 +310,6 @@ const SessionMap = () => {
             await updateUserStatus(user?.sub!, false);
         }, false);
     }, [isLoading]);
-
-    const addSourceWithImage = (icon: StaticImageData, id: string, coords: {lng: number, lat: number}, size: number = 1, minzoom: number = 14) => {
-        map.current!.loadImage(icon.src, async (error, image) => {
-            if (error) throw error;
-
-            map.current!.addImage(`${id}-image`, image!);
-
-            const geojson = await getGeoJson(coords.lat, coords.lng);
-            map.current!.addSource(`${id}-source`, {
-                type: 'geojson',
-                data: geojson
-            });
-
-            map.current!.addLayer({
-                'id': `${id}-layer`,
-                'type': 'symbol',
-                'source': `${id}-source`,
-                'layout': {
-                    'icon-image': `${id}-image`,
-                    'icon-size': size,
-                    'icon-allow-overlap': true,
-                },
-                'minzoom': minzoom,
-                'maxzoom': 24,
-            });
-        });
-    }
-
-    const getGeoJson = (lat: number, lng: number): any => {
-        return {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': [lng, lat],
-                    }
-                }
-            ]
-        };
-    }
 
     const handlePositionUpdate = (pos: any) => {
         if (user) updateLocation(user.sub!, pos.coords.longitude, pos.coords.latitude);
