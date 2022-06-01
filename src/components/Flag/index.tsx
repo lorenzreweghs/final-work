@@ -48,11 +48,11 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
             map.loadImage(flagIcon.src, async (error, image) => {
                 if (error) throw error;
 
-                if (!map.hasImage('flag')) {
-                    map.addImage('flag', image!);
+                if (!map.hasImage('flag-image')) {
+                    map.addImage('flag-image', image!);
                 }
                 
-                map.addSource('flag', {
+                map.addSource('flag-source', {
                     type: 'geojson',
                     data: {
                         'type': 'FeatureCollection',
@@ -70,11 +70,11 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
                 });
     
                 map.addLayer({
-                    'id': 'gather',
+                    'id': 'flag-layer',
                     'type': 'symbol',
-                    'source': 'flag',
+                    'source': 'flag-source',
                     'layout': {
-                        'icon-image': 'flag',
+                        'icon-image': 'flag-image',
                         'icon-size': 0.25,
                     }
                 });
@@ -95,8 +95,8 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
                         await addMarker(activeSession, [{lng: coords.lng, lat: coords.lat}], true);
                         setActiveStep(SessionSteps.Team);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        map.removeLayer('gather');
-                        map.removeSource('flag');
+                        map.removeLayer('flag-layer');
+                        map.removeSource('flag-source');
                     }
                 });
             }, 1000);
