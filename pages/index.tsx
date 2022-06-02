@@ -14,6 +14,8 @@ const Login: NextPage = () => {
   const { user, isLoading } = useUser();
   const [loggedIn, setLoggedIn] = useState(false);
 
+  const [loadingSpinner, setLoadingSpinner] = useState(false);
+
   useEffect(() => {
     if (isLoading) return;
 
@@ -42,7 +44,9 @@ const Login: NextPage = () => {
           {
             !isLoading ? 
               loggedIn ? 
-                <Button href='/session' text='Verdergaan' /> : 
+                <div onClick={() => setLoadingSpinner(true)}>
+                  <Button href='/session' text='Verdergaan' loadingSpinner={loadingSpinner} loadingText='Sessie voorbereiden' />
+                </div> : 
                 <a href='/api/auth/login?returnTo=%2Fsession' className={styles.login}>Inloggen</a> : 
               null
           }

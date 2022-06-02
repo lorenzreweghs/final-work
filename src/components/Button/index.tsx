@@ -1,16 +1,21 @@
-import Link from 'next/link';
+import Swal from 'sweetalert2';
 
 import styles from './Button.module.css';
 
 interface ButtonProps {
     href: string,
     text: string,
+    loadingSpinner?: boolean,
+    loadingText?: string,
 }
 
-export const Button = ({href, text}: ButtonProps) => {
+export const Button = ({href, text, loadingSpinner, loadingText}: ButtonProps) => {
+    if (loadingSpinner) {
+        Swal.fire(loadingText);
+        Swal.showLoading();
+    }
+
     return (
-        <Link href={href}>
-            <a className={styles.button}>{text}</a>
-        </Link>
+        <a href={href} className={styles.button}>{text}</a>
     );
 }
