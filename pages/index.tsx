@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-html-link-for-pages */
+import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useUser } from '@auth0/nextjs-auth0';
 
 import logo from '../public/rock-werchter-2022.png';
 import { Button } from '../src/components/Button';
@@ -9,6 +11,15 @@ import { Button } from '../src/components/Button';
 import styles from '../styles/Login.module.css';
 
 const Login: NextPage = () => {
+  const { user, isLoading } = useUser();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (user) setLoggedIn(true);
+  }, [isLoading]);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -28,7 +39,13 @@ const Login: NextPage = () => {
         </div>
 
         <div className={styles.button}>
-          <Button href='/session' text='Verdergaan' />
+          {
+            !isLoading ? 
+              loggedIn ? 
+                <Button href='/session' text='Verdergaan' /> : 
+                <a href='/api/auth/login?returnTo=%2Fsession' className={styles.login}>Inloggen</a> : 
+              null
+          }
         </div>
       </main>
     </div>
