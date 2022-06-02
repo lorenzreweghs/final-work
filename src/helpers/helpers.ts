@@ -20,7 +20,17 @@ export const addSourceWithImage = (map: React.MutableRefObject<mapboxgl.Map | nu
     map.current!.loadImage(icon.src, async (error, image) => {
         if (error) throw error;
 
-        map.current!.addImage(`${id}-image`, image!);
+        if (!map.current!.hasImage(`${id}-image`)) {
+            map.current!.addImage(`${id}-image`, image!);
+        }
+
+        if (map.current!.getLayer(`${id}-layer`)) {
+            map.current!.removeLayer(`${id}-layer`);
+        }
+
+        if (map.current!.getSource(`${id}-source`)) {
+            map.current!.removeSource(`${id}-source`);
+        }
 
         const geojson = await getGeoJson(coords.lat, coords.lng);
         map.current!.addSource(`${id}-source`, {
