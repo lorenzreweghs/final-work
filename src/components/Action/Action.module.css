@@ -3,7 +3,6 @@
 
     width: var(--size);
     height: var(--size);
-    border: 2px solid var(--color-secondary-light);
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -16,5 +15,5 @@
 
 .active {
     background-image: none;
-    background-color: var(--color-secondary-light);
+    background-color: #ffffff;
 }
