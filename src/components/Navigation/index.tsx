@@ -44,10 +44,12 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                     </Link>
                 </div>
                 <div className={styles.teams} onClick={() => setIsOpen(false)}>
-                    <a>
-                        <GroupsOutlined sx={{ fontSize: 44 }} />
-                        <p>TEAMS</p>
-                    </a>
+                    <Link href={`/teams/${activeSession}`}>
+                        <a>
+                            <GroupsOutlined sx={{ fontSize: 44 }} />
+                            <p>TEAMS</p>
+                        </a>
+                    </Link>
                 </div>
                 <div className={styles.invite} onClick={() => setIsOpen(false)}>
                     <a>
