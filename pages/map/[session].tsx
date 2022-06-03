@@ -78,6 +78,8 @@ const SessionMap = () => {
         });
         map.current!.addControl(geolocate);
         map.current!.on('load', () => {
+            Swal.close();
+
             geolocate.trigger();
         });
     });
