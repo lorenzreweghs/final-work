@@ -36,7 +36,7 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
       });
       setActiveSession(session);
       localStorage.setItem('icon', personalIcon);
-      await updateSession(user?.sub!, [user?.sub!], user?.name!, personalIcon, session);
+      await updateSession(user?.sub!, [{id: user?.sub!, name: user?.name!}], user?.name!, personalIcon, session);
       setActiveStep(SessionSteps.Flag);
     }
   
@@ -46,8 +46,18 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
         const sessionExists = await existSession(session);
         if (sessionExists) {
           const users = await getUsersInSession(session);
-          const userArray = users.includes(user?.sub!) ? [...users] : [...users, user?.sub!];
+
+          let containsUser = false;
+          users.forEach((element) => {
+            if (element.id.includes(user?.sub!)) containsUser = true;
+          });
+
+          let userArray = [];
+          if (containsUser) userArray = [...users];
+          else userArray = [...users, {id: user?.sub!, name: user?.sub!}];
+
           localStorage.setItem('icon', personalIcon);
+
           await updateSession(user?.sub!, userArray, user?.name!, personalIcon, session);
           router.push('/map/' + session);
         }
