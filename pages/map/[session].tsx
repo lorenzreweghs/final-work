@@ -40,7 +40,7 @@ const SessionMap = () => {
 
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
-    const userList = useRef<string[]>([]);
+    const userList = useRef<Array<{id: string, name: string}>>([]);
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
@@ -49,7 +49,11 @@ const SessionMap = () => {
         
         const checkSession = async () => {
             userList.current = await getUsersInSession(session);
-            if (!userList.current.includes(user?.sub!)) router.push('/');
+            let containsUser = false;
+            userList.current.forEach((element) => {
+                if (element.id === user?.sub!) containsUser = true;
+            });
+            if (!containsUser) router.push('/');
         }
         checkSession();
 
@@ -137,8 +141,8 @@ const SessionMap = () => {
                 checkStatus(lastUserId);
             });
 
-            userList.current.forEach(async (userId: string) => {
-                checkStatus(userId);
+            userList.current.forEach(async (user) => {
+                checkStatus(user.id);
             });
 
             const setCurrentFlag = async () => {
