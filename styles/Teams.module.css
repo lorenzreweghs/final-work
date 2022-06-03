@@ -3,3 +3,95 @@
     left: 10px;
     bottom: 30px;
 }
+
+.topNav {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 15px;
+    font-size: var(--font-size-smallTitle);
+    font-weight: 600;
+}
+
+.topNav p {
+    width: 110px;
+    text-align: center;
+}
+
+.topNav .activeTeams {
+    background-color: var(--color-primary-light);
+    border-radius: 12px;
+}
+
+.topNav .activeChallenged {
+    background-color: var(--color-primary);
+    border-radius: 12px;
+    color: #ffffff;
+}
+
+.search {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.ownTeam, .otherTeams {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ownTeam h1, .otherTeams h1 {
+    font-size: var(--font-size-subTitle);
+    text-transform: uppercase;
+}
+
+.ownTeam h1 span, .otherTeams h1 span {
+    color: var(--color-primary);
+}
+
+.titleDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.titleDiv p {
+    margin: 0;
+    font-size: var(--font-size-text);
+    margin-bottom: 20px;
+}
+
+.titleDiv h1 {
+    margin-bottom: 0;
+    margin-top: 25px;
+}
+
+.ownTeamList {
+    padding-left: 0;
+    margin: 0;
+}
+
+.ownTeamList li {
+    list-style-type: none;
+    font-size: var(--font-size-smallTitle);
+    font-weight: 600;
+    width: 100vw;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.ownTeamList li:nth-child(odd) {
+    background-color: var(--color-secondary-light);
+}
+
+.ownTeamList .empty {
+    opacity: 0.5;
+    font-style: italic;
+}
+
+.otherTeams h1 {
+    margin-top: 30px;
+}
