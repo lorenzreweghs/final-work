@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { useUser } from '@auth0/nextjs-auth0';
 
 import logo from '../public/rock-werchter-2022.png';
-import { Button } from '../src/components/Button';
+import { Button, ButtonTypes } from '../src/components/Button';
 
 import styles from '../styles/Login.module.css';
 
@@ -45,7 +45,7 @@ const Login: NextPage = () => {
             !isLoading ? 
               loggedIn ? 
                 <div onClick={() => setLoadingSpinner(true)}>
-                  <Button href='/session' text='Verdergaan' loadingSpinner={loadingSpinner} loadingText='Sessie voorbereiden' />
+                  <Button href='/session' text='Verdergaan' type={ButtonTypes.anchor} loadingSpinner={loadingSpinner} loadingText='Sessie voorbereiden' />
                 </div> : 
                 <a href='/api/auth/login?returnTo=%2Fsession' className={styles.login}>Inloggen</a> : 
               null
