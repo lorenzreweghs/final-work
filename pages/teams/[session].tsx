@@ -70,28 +70,38 @@ const Teams = () => {
     return (
         <div className={styles.container}>
             <nav className={styles.topNav}>
-                <p className={classNames({ [styles.active]: !switchPage })} onClick={() => setSwitchPage(false)}>Teams</p>
-                <p className={classNames({ [styles.active]: switchPage })} onClick={() => setSwitchPage(true)}>Uitgedaagd</p>
+                <p className={classNames({ [styles.activeTeams]: !switchPage })} onClick={() => setSwitchPage(false)}>Teams</p>
+                <p className={classNames({ [styles.activeChallenged]: switchPage })} onClick={() => setSwitchPage(true)}>Uitgedaagd</p>
             </nav>
 
-            <Search handleChange={handleChange} />
-
-            <div className={styles.ownTeam}>
-                <h1>Eigen <span>teamleden</span></h1>
-                <p>(maximaal 5 personen)</p>
-                <ul className={styles.ownTeamList}>
-                    {userArray.map((user) => 
-                        <li key={user.id} className={classNames({ [styles.empty]: user.name === 'Resterende plek' })}>{user.name}</li>
-                    )}
-                </ul>
+            <div className={styles.search}>
+              <Search handleChange={handleChange} />
             </div>
+            
+            {
+                switchPage ? 
+                    null :
+                    <div>
+                        <div className={styles.ownTeam}>
+                            <div className={styles.titleDiv}>
+                                <h1>Eigen <span>teamleden</span></h1>
+                                <p><i>(maximaal 5 personen)</i></p>
+                            </div>
+                            <ul className={styles.ownTeamList}>
+                                {userArray.map((user) => 
+                                    <li key={user.id} className={classNames({ [styles.empty]: user.name === 'Resterende plek' })}>{user.name}</li>
+                                )}
+                            </ul>
+                        </div>
 
-            <div className={styles.otherTeams}>
-                <h1>Andere <span>teams</span></h1>
-                <ul className={styles.otherTeamsList}>
-                    
-                </ul>
-            </div>
+                        <div className={styles.otherTeams}>
+                            <h1>Andere <span>teams</span></h1>
+                            <ul className={styles.otherTeamsList}>
+                                
+                            </ul>
+                        </div>
+                    </div>
+            }
 
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
