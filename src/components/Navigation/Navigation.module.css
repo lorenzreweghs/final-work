@@ -3,9 +3,9 @@
     height: 100vh;
     position: fixed;
     top: 0;
-    left: -375px;
+    left: -425px;
     z-index: 99;
-    transition: left .4s ease-in-out;
+    transition: left .3s ease-in-out;
 }
 
 .open {
@@ -102,8 +102,18 @@
     filter: drop-shadow(var(--shadow));
 }
 
-.close {
+.backdrop {
     position: absolute;
-    left: 310px;
-    bottom: 30px;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: var(--color-secondary-heavy);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity .3s ease-in;
+}
+
+.backdropOpen {
+    opacity: 0.5;
 }

@@ -65,9 +65,7 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                     </a>
                 </div>
 
-                <div className={styles.close} onClick={() => setIsOpen(false)}>
-                    <Action type={ActionTypes.close} />
-                </div>
+                <div className={classNames(styles.backdrop, { [styles.backdropOpen]: isOpen })} onClick={() => setIsOpen(false)} />
             </nav>
         </div>
     );
