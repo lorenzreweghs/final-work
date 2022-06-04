@@ -52,10 +52,12 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                     </Link>
                 </div>
                 <div className={styles.invite} onClick={() => setIsOpen(false)}>
-                    <a>
-                        <ShareOutlined sx={{ fontSize: 44 }} />
-                        <p>UITNODIGEN</p>
-                    </a>
+                    <Link href={`/invite/${activeSession}`}>
+                        <a>
+                            <ShareOutlined sx={{ fontSize: 44 }} />
+                            <p>UITNODIGEN</p>
+                        </a>
+                    </Link>
                 </div>
 
                 <img className={styles.logo} src={logo.src} alt='rock werchter 2022 logo' width='100%' height='auto' />
