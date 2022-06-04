@@ -1,0 +1,33 @@
+.menu {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.logoDiv {
+    display: flex;
+    justify-content: center;
+}
+
+.logo {
+    width: 100px;
+    height: auto;
+    margin-top: 26px;
+}
+
+.title {
+    text-align: right;
+    font-weight: 600;
+    margin: 50px 35px 0 0;
+}
+
+.title span {
+    color: var(--color-primary);
+}
+
+.subTitle {
+    margin: 0;
+    font-size: var(--font-size-smallTitle);
+    text-align: right;
+    margin-right: 35px;
+}
