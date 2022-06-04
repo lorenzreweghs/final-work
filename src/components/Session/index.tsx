@@ -41,6 +41,7 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
         length: 6,
         numbers: true,
         lowercase: false,
+        excludeSimilarCharacters: true,
       });
       setActiveSession(session);
       localStorage.setItem('icon', personalIcon);
