@@ -40,6 +40,21 @@ export default function useSession() {
         return bool;
     }
 
+    async function getSession(userId: string): Promise<string> {
+        let session = '';
+        try {
+            await get(child(ref(db), 'users/' + userId + '/session'))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    session = snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return session;
+    }
+
     async function getUsersInSession(session: string | string[] | undefined): Promise<Array<{id: string, name: string}>> {
         let arr: Array<{id: string, name: string}> = [];
         try {
@@ -144,6 +159,7 @@ export default function useSession() {
     return {
         hasSession,
         existSession,
+        getSession,
         getUsersInSession,
         getMarkersInSession,
         updateUserStatus,
