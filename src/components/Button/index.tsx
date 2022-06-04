@@ -22,7 +22,10 @@ export const Button = ({href, text, type = ButtonTypes.link, loadingSpinner, loa
 
     useEffect(() => {
         if (loadingSpinner) {
-            Swal.fire(loadingText);
+            Swal.fire({
+                title: loadingText,
+                allowOutsideClick: false,
+            });
             Swal.showLoading();
         }
 

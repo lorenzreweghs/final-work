@@ -7,9 +7,10 @@ import { Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agricu
 
 import connectionIcon from '../../../public/connection_icon_color.png';
 import useSession from '../../hooks/useSession';
+import useOtherUser from '../../hooks/useOtherUser';
+import { SessionSteps } from '../../../pages/session';
 
 import styles from './Session.module.css';
-import { SessionSteps } from '../../../pages/session';
 
 interface SessionProps {
     setActiveStep: React.Dispatch<React.SetStateAction<number>>,
@@ -19,12 +20,19 @@ interface SessionProps {
 export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
     const { user } = useUser();
     const { existSession, updateSession, getUsersInSession } = useSession();
+    const { getTeams } = useOtherUser();
     const router = useRouter();
 
     const [personalIcon, setPersonalIcon] = useState('beer');
+    const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
 
     useEffect(() => {
       setPersonalIcon(localStorage.getItem('icon') ?? 'beer');
+      const getTeamsArray = async () => {
+        const teamsArray = await getTeams();
+        setTeams(teamsArray);
+      }
+      getTeamsArray();
     }, []);
   
     const handleSubmit = async (e: FormEvent) => {
@@ -33,10 +41,11 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
         length: 6,
         numbers: true,
         lowercase: false,
+        excludeSimilarCharacters: true,
       });
       setActiveSession(session);
       localStorage.setItem('icon', personalIcon);
-      await updateSession(user?.sub!, [user?.sub!], user?.name!, personalIcon, session);
+      await updateSession(user?.sub!, [{id: user?.sub!, name: user?.name!}], teams, user?.name!, personalIcon, session);
       setActiveStep(SessionSteps.Flag);
     }
   
@@ -46,9 +55,24 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
         const sessionExists = await existSession(session);
         if (sessionExists) {
           const users = await getUsersInSession(session);
-          const userArray = users.includes(user?.sub!) ? [...users] : [...users, user?.sub!];
+
+          let containsUser = false;
+          users.forEach((element) => {
+            if (element.id.includes(user?.sub!)) containsUser = true;
+          });
+
+          let userArray = [];
+          if (containsUser) userArray = [...users];
+          else userArray = [...users, {id: user?.sub!, name: user?.name!}];
+
           localStorage.setItem('icon', personalIcon);
-          await updateSession(user?.sub!, userArray, user?.name!, personalIcon, session);
+
+          let teamArray = teams;
+          teamArray.forEach((team) => {
+            if (team.session === session && !containsUser) team.people++;
+          });
+
+          await updateSession(user?.sub!, userArray, teamArray, user?.name!, personalIcon, session);
           router.push('/map/' + session);
         }
       }

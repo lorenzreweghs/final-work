@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 import useSession from '../../hooks/useSession';
+import useOtherUser from '../../hooks/useOtherUser';
 import teamIcon from '../../../public/team_icon_color.png';
 import { SessionSteps } from '../../../pages/session';
 
@@ -14,12 +16,37 @@ interface TeamProps {
 
 export const Team = ({ setActiveStep, activeSession }: TeamProps) => {
     const { addTeamName } = useSession();
+    const { getTeams } = useOtherUser();
     const [teamName, setTeamName] = useState("");
+    const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
+
+    useEffect(() => {
+        const getTeamsArray = async () => {
+            const teamsArray = await getTeams();
+            setTeams(teamsArray);
+        }
+        getTeamsArray();
+    }, []);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        await addTeamName(teamName, activeSession);
-        setActiveStep(SessionSteps.Share);
+        let teamNameExists = false;
+        teams.forEach((team) => {
+            if (team.name.toLowerCase() === teamName.toLowerCase()) teamNameExists = true;
+        });
+
+        if (!teamNameExists) {
+            await addTeamName(teamName, activeSession, [...teams, { name: teamName, session: activeSession, people: 1 }]);
+            setActiveStep(SessionSteps.Share);
+            return;
+        }
+
+        Swal.fire({
+            title: 'Teamnaam bestaat al',
+            icon: 'warning',
+            timer: 2500,
+            timerProgressBar: true,
+        })
     }
 
     return (

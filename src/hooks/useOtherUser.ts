@@ -19,7 +19,23 @@ export default function useOtherUser() {
         return name;
     }
 
+    async function getTeams(): Promise<Array<{name: string, session: string, people: number}>> {
+        let arr: Array<{name: string, session: string, people: number}> = [];
+        try {
+            await get(child(ref(db), 'teams/'))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    arr = snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return arr;
+    }
+
     return {
         getUserName,
+        getTeams,
     }
 }

@@ -40,8 +40,8 @@ export default function useSession() {
         return bool;
     }
 
-    async function getUsersInSession(session: string | string[] | undefined): Promise<string[]> {
-        let arr: string[] = [];
+    async function getUsersInSession(session: string | string[] | undefined): Promise<Array<{id: string, name: string}>> {
+        let arr: Array<{id: string, name: string}> = [];
         try {
             await get(child(ref(db), `sessions/` + session + '/users'))
             .then((snapshot) => {
@@ -95,7 +95,7 @@ export default function useSession() {
         return bool;
     }
 
-    async function addTeamName(name: string, session: string) {
+    async function addTeamName(name: string, session: string, teamArray: Array<{name: string, session: string, people: number}>) {
         try {
             await update(ref(db, 'sessions/' + session), {
                 team: name,
@@ -103,12 +103,20 @@ export default function useSession() {
         } catch (e) {
             console.error(e);
         }
+
+        try {
+            await update(ref(db, 'teams/'), {
+                ...teamArray
+            });
+        } catch (e) {
+            console.error(e);
+        }
     }
 
-    async function updateSession(userId: string, idArray: string[], name: string, icon: string, session: string) {
+    async function updateSession(userId: string, userArray: Array<{id: string, name: string}>, teamArray: Array<{name: string, session: string, people: number}>, name: string, icon: string, session: string) {
         try {
             await update(ref(db, 'sessions/' + session), {
-                users: idArray,
+                users: userArray,
             });
         } catch (e) {
             console.error(e);
@@ -119,6 +127,14 @@ export default function useSession() {
                 name,
                 icon,
                 session,
+            });
+        } catch (e) {
+            console.error(e);
+        }
+
+        try {
+            await update(ref(db, 'teams/'), {
+                ...teamArray
             });
         } catch (e) {
             console.error(e);
