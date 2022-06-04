@@ -25,7 +25,7 @@ export default function useSession() {
         return bool;
     }
 
-    async function existSession(session: string): Promise<boolean> {
+    async function existSession(session: string | string[] | undefined): Promise<boolean> {
         let bool = false;
         try {
             await get(child(ref(db), `sessions/` + session))
@@ -128,7 +128,7 @@ export default function useSession() {
         }
     }
 
-    async function updateSession(userId: string, userArray: Array<{id: string, name: string}>, teamArray: Array<{name: string, session: string, people: number}>, name: string, icon: string, session: string) {
+    async function updateSession(userId: string, userArray: Array<{id: string, name: string}>, teamArray: Array<{name: string, session: string, people: number}>, name: string, icon: string, session: string | string[] | undefined) {
         try {
             await update(ref(db, 'sessions/' + session), {
                 users: userArray,
