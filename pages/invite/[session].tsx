@@ -47,14 +47,14 @@ const Invite = () => {
     const handleInvite = () => {
         FB.ui({
             method: 'share',
-            href: 'https://rock-werchter.festicon.eu/',
+            href: `https://rock-werchter.festicon.eu/session/${activeSession}`,
             hashtag: `#${activeSession}`,
         }, () => {});
     }
 
     const handleCopy = async () => {
         if (navigator.clipboard) {
-            await navigator.clipboard.writeText('https://rock-werchter.festicon.eu/');
+            await navigator.clipboard.writeText(`https://rock-werchter.festicon.eu/session/${activeSession}`);
             Swal.fire({
                 title: 'Link gekopiëerd',
                 icon: 'success',
