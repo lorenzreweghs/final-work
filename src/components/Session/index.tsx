@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { generate } from 'generate-password';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture } from '@mui/icons-material';
@@ -18,22 +19,33 @@ interface SessionProps {
 }
 
 export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
-    const { user } = useUser();
-    const { existSession, updateSession, getUsersInSession } = useSession();
+    const { user, isLoading } = useUser();
+    const { hasSession, getSession, existSession, updateSession, getUsersInSession } = useSession();
     const { getTeams } = useOtherUser();
     const router = useRouter();
 
     const [personalIcon, setPersonalIcon] = useState('beer');
     const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
+    const [lastSession, setLastSession] = useState('');
 
     useEffect(() => {
+      if (isLoading) return;
+
       setPersonalIcon(localStorage.getItem('icon') ?? 'beer');
+
       const getTeamsArray = async () => {
         const teamsArray = await getTeams();
         setTeams(teamsArray);
       }
       getTeamsArray();
-    }, []);
+
+      const getSessionStatus = async () => {
+        if (await hasSession(user?.sub!)) {
+          setLastSession(await getSession(user?.sub!));
+        }
+      }
+      getSessionStatus();
+    }, [isLoading]);
   
     const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
@@ -126,6 +138,12 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
               <p className={styles.or}>of</p>
               <input type='submit' className={styles.newSession} value='Start nieuwe sessie' />
           </form>
+          {
+            lastSession &&
+              <Link href={`/map/${lastSession}`}>
+                <a className={styles.lastSession}>Ga naar je laatste actieve sessie</a>                        
+              </Link>
+          }
         </div>
     );
 }
