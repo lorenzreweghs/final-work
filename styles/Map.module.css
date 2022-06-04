@@ -7,7 +7,7 @@
 .menu {
     position: absolute;
     left: 10px;
-    bottom: 30px;
+    top: 10px;
 }
 
 .actions {
@@ -28,7 +28,7 @@
     align-items: center;
     position: absolute;
     z-index: 10;
-    top: 95px;
+    top: 80px;
     width: 94vw;
     height: 45px;
     left: 50%;
@@ -54,11 +54,11 @@
 
 @keyframes animateIn {
     from {
-        top: 105px;
+        top: 90px;
         opacity: 0;
     }
     to {
-        top: 95px;
+        top: 80px;
         opacity: 1;
     }
 }
