@@ -1,7 +1,7 @@
 import { getDatabase, ref, update, get, child } from "firebase/database";
-import { Timestamp } from "firebase/firestore";
 import { app } from "../../config/firebase";
 import { sponsors, SponsorType } from "../../config/sponsors";
+import { ActivityType } from "./useProgress";
 
 export enum MarkerTypes {
     markers = 'markers',
@@ -131,12 +131,12 @@ export default function useSession() {
     }
 
     const getSponsors = () => {
-        let sponsorArray: Array<{sponsor: string, isCompleted: boolean, completedAt: Timestamp | null}> = [];
+        let sponsorArray: Array<ActivityType> = [];
         sponsors.forEach((sponsor: SponsorType) => {
             sponsorArray.push({
                 sponsor: sponsor.id,
                 isCompleted: false,
-                completedAt: null,
+                price: sponsor.price,
             })
         });
         return sponsorArray;

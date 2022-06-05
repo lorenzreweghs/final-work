@@ -4,7 +4,7 @@ import { Timestamp } from "firebase/firestore";
 import { StaticImageData } from 'next/image';
 import classNames from 'classnames';
 
-import useProgress from '../../hooks/useProgress';
+import useProgress, { ActivityType } from '../../hooks/useProgress';
 import { sponsors, SponsorType } from '../../../config/sponsors';
 import winnerIcon from '../../../public/badges/winner_icon.png';
 
@@ -17,7 +17,7 @@ interface ActivityProps {
 export const ActivityProgress = ({ activeSession }: ActivityProps) => {
     const { getProgress } = useProgress();
 
-    const [activities, setActivities] = useState<Array<{sponsor: string, isCompleted: boolean, completedAt: Timestamp | null}>>([]);
+    const [activities, setActivities] = useState<Array<ActivityType>>([]);
     const [images, setImages] = useState<Array<StaticImageData> | null>(null);
     const [allCompleted, setAllCompleted] = useState(true);
 
@@ -32,11 +32,7 @@ export const ActivityProgress = ({ activeSession }: ActivityProps) => {
 
     useEffect(() => {
         let imageArray: Array<StaticImageData> = [];
-        activities.forEach((activity: {
-            sponsor: string;
-            isCompleted: boolean;
-            completedAt: Timestamp | null;
-        }) => {
+        activities.forEach((activity: ActivityType) => {
             sponsors.forEach((sponsor: SponsorType) => {
                 if (sponsor.id === activity.sponsor) {
                     imageArray.push(sponsor.logo);
