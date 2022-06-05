@@ -1,3 +1,5 @@
+import { StaticImageData } from 'next/image';
+
 import colaLogo from '../public/sponsors/cola-logo.png';
 import jupilerLogo from '../public/sponsors/jupiler-logo.png';
 import kbcLogo from '../public/sponsors/kbc-logo.png';
@@ -6,7 +8,15 @@ import stubruLogo from '../public/sponsors/studiobrussel-logo.png';
 import twitchLogo from '../public/sponsors/twitch-logo.png';
 import winforlifeLogo from '../public/sponsors/winforlife-logo.png';
 
-export const sponsorMarkers = [
+export interface SponsorType {
+    lng: number,
+    lat: number,
+    logo: StaticImageData,
+    id: string,
+    size?: number,
+}
+
+export const sponsors: Array<SponsorType> = [
     {
         lng: 4.681973,
         lat: 50.968945,
