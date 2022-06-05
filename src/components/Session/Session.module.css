@@ -126,3 +126,21 @@
     font-size: var(--font-size-smallTitle);
     text-decoration: underline;
 }
+
+.logoHeader {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 30px;
+    background-image: url('../../../public/sky.jpg');
+    background-size: cover;
+    width: 100vw;
+    height: 70px;
+}
+
+.logo {
+    width: 160px;
+    height: auto;
+    -webkit-filter: drop-shadow(var(--shadow));
+    filter: drop-shadow(var(--shadow));
+}

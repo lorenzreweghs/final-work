@@ -1,16 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import type { NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Head from 'next/head';
 import classNames from 'classnames';
 
-import logo from '../public/rock-werchter-2022.png';
-import styles from '../styles/Session.module.css';
-import { Session } from '../src/components/Session';
-import { Flag } from '../src/components/Flag';
-import { Team } from '../src/components/Team';
-import { Share } from '../src/components/Share';
+import logo from '../../public/rock-werchter-2022.png';
+import styles from '../../styles/Session.module.css';
+import { Session } from '../../src/components/Session';
+import { Flag } from '../../src/components/Flag';
+import { Team } from '../../src/components/Team';
+import { Share } from '../../src/components/Share';
 
 export enum SessionSteps {
   Session,
@@ -20,6 +21,8 @@ export enum SessionSteps {
 }
 
 const SessionPage: NextPage = () => {
+  const router = useRouter();
+
   const [activeStep, setActiveStep] = useState(SessionSteps.Session);
   const [activeSession, setActiveSession] = useState("XXXXXX");
 
@@ -31,7 +34,7 @@ const SessionPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className={styles.logoHeader}>
+      <header className={styles.logoHeader} onClick={() => router.push('/')}>
         <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' />
       </header>
 
