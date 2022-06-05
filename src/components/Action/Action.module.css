@@ -1,5 +1,5 @@
 .container {
-    --size: 60px;
+    --size: 55px;
 
     width: var(--size);
     height: var(--size);
