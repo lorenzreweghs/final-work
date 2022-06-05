@@ -33,10 +33,10 @@ export const Action = ({ type, isActive = false }: ActionProps) => {
     useEffect(() => {
         switch (type) {
             case ActionTypes.gather:
-                setIcon(<img src={gatherIcon.src} alt='meeting point icon' width='36px' height='auto' />);
+                setIcon(<img src={gatherIcon.src} alt='meeting point icon' width='34px' height='auto' />);
                 break;
             case ActionTypes.tent:
-                setIcon(<img src={tentIcon.src} alt='tent campground icon' width='38px' height='auto' />);
+                setIcon(<img src={tentIcon.src} alt='tent campground icon' width='36px' height='auto' />);
                 break;
             case ActionTypes.pinpoint:
                 setIcon(<img src={pinIcon.src} alt='map pinpoint icon' width='22.5px' height='auto' />);
