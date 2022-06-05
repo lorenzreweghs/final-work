@@ -1,5 +1,7 @@
 import { getDatabase, ref, update, get, child } from "firebase/database";
+import { Timestamp } from "firebase/firestore";
 import { app } from "../../config/firebase";
+import { sponsors, SponsorType } from "../../config/sponsors";
 
 export enum MarkerTypes {
     markers = 'markers',
@@ -128,10 +130,31 @@ export default function useSession() {
         }
     }
 
+    const getSponsors = () => {
+        let sponsorArray: Array<{sponsor: string, isCompleted: boolean, completedAt: Timestamp | null}> = [];
+        sponsors.forEach((sponsor: SponsorType) => {
+            sponsorArray.push({
+                sponsor: sponsor.id,
+                isCompleted: false,
+                completedAt: null,
+            })
+        });
+        return sponsorArray;
+    }
+
     async function updateSession(userId: string, userArray: Array<{id: string, name: string}>, teamArray: Array<{name: string, session: string, people: number}>, name: string, icon: string, session: string | string[] | undefined) {
         try {
             await update(ref(db, 'sessions/' + session), {
                 users: userArray,
+            });
+        } catch (e) {
+            console.error(e);
+        }
+
+        const sponsorArray = getSponsors();
+        try {
+            await update(ref(db, 'activities/' + session), {
+                ...sponsorArray
             });
         } catch (e) {
             console.error(e);
