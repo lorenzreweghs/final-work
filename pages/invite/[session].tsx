@@ -25,6 +25,7 @@ const Invite = () => {
     }, [router.isReady]);
 
     useEffect(() => {
+        ////////////////
         // BRON: https://stackoverflow.com/questions/68857535/how-can-i-use-facebook-sdk-in-react
         // Auteur 'andyrandy', geplaatst op 20/08/2021 en geraadpleegd op 04/06/2022
         (window as any).fbAsyncInit = () => {
@@ -42,6 +43,7 @@ const Invite = () => {
             js.src = "https://connect.facebook.net/en_US/sdk.js";
             fjs.parentNode!.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
+        ////////////////
     }, []);
 
     const handleInvite = () => {
@@ -91,6 +93,8 @@ const Invite = () => {
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
                 <Action type={ActionTypes.menu} />
             </div>
+
+            <footer className={styles.imageFooter} />
         </div>
     );
 }

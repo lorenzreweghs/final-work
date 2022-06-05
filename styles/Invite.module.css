@@ -18,7 +18,7 @@
 .title {
     text-align: right;
     font-weight: 600;
-    margin: 50px 35px 0 0;
+    margin: 50px 50px 0 0;
 }
 
 .title span {
@@ -29,13 +29,13 @@
     margin: 0;
     font-size: var(--font-size-smallTitle);
     text-align: right;
-    margin-right: 35px;
+    margin-right: 50px;
 }
 
 .facebookDiv, .copyDiv {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 75px;
 }
 
 .copyDiv {
@@ -70,4 +70,13 @@
 
 .facebook p, .copy p {
     width: 70%;
+}
+
+.imageFooter {
+    position: absolute;
+    bottom: 0;
+    background-image: url('../public/invite-image.jpg');
+    height: 27.5%;
+    width: 100vw;
+    background-size: cover;
 }
