@@ -37,6 +37,17 @@
     height: 15%;
 }
 
+.activityDiv {
+    padding: 15px;
+    padding-left: 0;
+    width: 152.5%;
+}
+
+.scrollDiv {
+    margin: 0 15px;
+    overflow-x: scroll;
+}
+
 .code {
     display: flex;
     justify-content: center;
