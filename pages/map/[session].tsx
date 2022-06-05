@@ -20,6 +20,7 @@ import flagIcon from '../../public/flag_icon_color.png';
 import tentIcon from '../../public/campground_icon.png';
 
 import styles from '../../styles/Map.module.css';
+import { ProgressInfo } from '../../src/components/ProgressInfo';
 
 const SessionMap = () => {
     const { user, isLoading } = useUser();
@@ -38,6 +39,7 @@ const SessionMap = () => {
 
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
+    const [progressIsOpen, setProgressIsOpen] = useState(false);
 
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
@@ -381,10 +383,11 @@ const SessionMap = () => {
                 <Action type={ActionTypes.info} />
             </div>
 
-            <div className={styles.progressDiv}>
+            <div className={styles.progressDiv} onClick={() => setProgressIsOpen(true)}>
                 <p className={styles.progressTitle}>Activiteiten</p>
                 <ActivityProgress activeSession={activeSession} />
             </div>
+            <ProgressInfo activeSession={activeSession} setIsOpen={setProgressIsOpen} isOpen={progressIsOpen} />
         </div>
     );
 }
