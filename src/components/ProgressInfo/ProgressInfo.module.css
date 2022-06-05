@@ -15,26 +15,33 @@
 }
 
 .close {
-    position: absolute;
-    top: 10px;
+    position: fixed;
+    top: 100vh;
     left: 10px;
+    transition: top .3s ease-in-out;
 }
 
-.logoDiv {
+.showClose {
+    top: 10px;
+}
+
+.banner {
+    position: fixed;
+    background-image: url('../../../public/rock-werchter-banner.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 75px;
     display: flex;
     justify-content: center;
-}
-
-.logo {
-    width: 100px;
-    height: auto;
-    margin-top: 26px;
+    align-items: center;
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 .title {
     text-align: right;
     font-weight: 600;
-    margin: 35px 40px 0 0;
+    margin: 105px 40px 0 0;
 }
 
 .title span {
@@ -46,6 +53,7 @@
     font-size: var(--font-size-smallTitle);
     text-align: right;
     margin-right: 40px;
+    margin-bottom: 30px;
 }
 
 .sponsorDiv {
@@ -67,6 +75,10 @@
     margin: 0 30px 0 0;
 }
 
+.sponsorInfo {
+    flex: 1;
+}
+
 .sponsorInfo p {
     margin: 0;
     font-size: var(--font-size-smallTitle);
@@ -82,14 +94,24 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-left: 40px;
-    margin-bottom: 20px;
+    padding: 5px 30px 20px;
 }
 
 .voucher p {
     margin: 0;
     font-size: var(--font-size-smallTitle);
+    color: var(--color-secondary-heavy);
     font-weight: 600;
+    flex: 1;
+}
+
+.voucher p span {
+    color: var(--color-primary);
+}
+
+.badge {
+    width: 15%;
+    justify-self: flex-end;
 }
 
 .notCompleted {

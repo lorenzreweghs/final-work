@@ -82,9 +82,7 @@ const Teams = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.logoDiv}>
-               <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' /> 
-            </div>
+            <div className={styles.banner} />
             <nav className={styles.topNav}>
                 <p className={classNames({ [styles.activeTeams]: !switchPage })} onClick={() => setSwitchPage(false)}>Teams</p>
                 <p className={classNames({ [styles.activeChallenged]: switchPage })} onClick={() => setSwitchPage(true)}>Uitgedaagd</p>
@@ -129,7 +127,7 @@ const Teams = () => {
 
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
-                <Action type={ActionTypes.menu} />
+                <Action type={ActionTypes.menu} isActive />
             </div>
         </div>
     );

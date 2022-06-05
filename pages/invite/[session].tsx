@@ -6,7 +6,6 @@ import Swal from 'sweetalert2';
 
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
-import logo from '../../public/rock-werchter-2022_black.png';
 
 import styles from '../../styles/Invite.module.css';
 
@@ -68,9 +67,7 @@ const Invite = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.logoDiv}>
-               <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' /> 
-            </div>
+            <div className={styles.banner} />
 
             <h1 className={styles.title}>Nodig je<br /><span>vrienden</span><br /> uit</h1>
             <p className={styles.subTitle}>en geniet samen van je favoriete festival</p>
@@ -91,7 +88,7 @@ const Invite = () => {
 
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
-                <Action type={ActionTypes.menu} />
+                <Action type={ActionTypes.menu} isActive />
             </div>
 
             <footer className={styles.imageFooter} />
