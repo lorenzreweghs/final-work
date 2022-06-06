@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100vh;
 }
 
 .title {
@@ -19,11 +20,12 @@
 .flagIcon {
     width: 45px;
     height: auto;
+    margin-top: 105px;
     margin-bottom: 15px;
 }
 
 .map {
     width: 95vw;
-    height: 70vh;
+    height: 70%;
     margin: 15px;
 }
