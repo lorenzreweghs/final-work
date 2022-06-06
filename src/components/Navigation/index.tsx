@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import logo from '../../../public/rock-werchter-2022.png';
 import { ActivityProgress } from '../ActivityProgress';
+import { ProgressBar } from '../ProgressBar';
 
 import styles from './Navigation.module.css';
 
@@ -32,6 +33,7 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                         <ActivityProgress activeSession={activeSession} />
                     </div>                    
                 </div>
+                <ProgressBar activeSession={activeSession} totalAmount={7} />
             </div>
 
             <div className={styles.code}>
