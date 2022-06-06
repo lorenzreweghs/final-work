@@ -52,6 +52,39 @@
     font-weight: 700;
 }
 
+.progressDiv {
+    padding: 0 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+    height: 80px;
+    background-color: #ffffff;
+    z-index: 10;
+    box-shadow: -1px -2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.progressHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progressTitle {
+    margin: 7px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: var(--font-size-smallTitle);
+    font-weight: 600;
+    flex: 1;
+    margin-left: 25px;
+}
+
+.info {
+    position: absolute;
+    right: 10px;
+    bottom: 95px;
+}
+
 @keyframes animateIn {
     from {
         top: 90px;

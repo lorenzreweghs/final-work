@@ -6,8 +6,9 @@ import classNames from 'classnames';
 import Link from 'next/link';
 
 import logo from '../../../public/rock-werchter-2022.png';
+import { ActivityProgress } from '../ActivityProgress';
+import { ProgressBar } from '../ProgressBar';
 
-import { Action, ActionTypes } from '../Action';
 import styles from './Navigation.module.css';
 
 interface NavigationProps {
@@ -27,7 +28,12 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
             </div>
 
             <div className={styles.progress}>
-                
+                <div className={styles.scrollDiv}>
+                    <div className={styles.activityDiv}>
+                        <ActivityProgress activeSession={activeSession} />
+                    </div>                    
+                </div>
+                <ProgressBar activeSession={activeSession} totalAmount={7} />
             </div>
 
             <div className={styles.code}>

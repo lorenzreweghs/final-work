@@ -33,8 +33,22 @@
 }
 
 .progress {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     background-color: #ffffff;
-    height: 15%;
+    height: 20%;
+}
+
+.activityDiv {
+    padding: 15px;
+    padding-left: 0;
+    width: 152.5%;
+}
+
+.scrollDiv {
+    margin: 0 15px;
+    overflow-x: scroll;
 }
 
 .code {
@@ -59,7 +73,7 @@
     background-image: url('../../../public/background8.jpg');
     background-size: cover;
     background-position: center;
-    height: 70%;
+    height: 65%;
 }
 
 .logo {
@@ -77,7 +91,7 @@
 }
 
 .map {
-    padding-top: 15px;
+    padding-top: 10px;
 }
 
 .map p, .teams p, .invite p, .logout p {

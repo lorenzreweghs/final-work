@@ -21,6 +21,7 @@
     width: 85%;
     margin-left: 5px;
     font-family: var(--font-family);
+    background-color: var(--color-secondary-light);
 }
 
 .searchInput:focus {

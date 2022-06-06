@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.logo {
+    width: 8%;
+    height: auto;
+}
+
+.winnerIcon {
+    width: 10%;
+    padding-left: 10px;
+    border-left: 1px dashed var(--color-secondary-heavy);
+}
+
+.winforlife {
+    width: 12%;
+}
+
+.redbull {
+    width: 10%;
+}
+
+.notCompleted {
+    opacity: 0.5;
+}

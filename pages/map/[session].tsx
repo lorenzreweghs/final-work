@@ -5,20 +5,22 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { ref, onValue, get } from "firebase/database";
 import Swal from 'sweetalert2';
-import { Error } from '@mui/icons-material';
+import { Error, OpenInNew } from '@mui/icons-material';
 
 import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession, { MarkerTypes } from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
-import { sponsorMarkers } from '../../config/sponsors';
+import { sponsors, SponsorType } from '../../config/sponsors';
 import { addSourceWithImage, getGeoJson } from '../../src/helpers/helpers';
+import { ActivityProgress } from '../../src/components/ActivityProgress';
 
 import flagIcon from '../../public/flag_icon_color.png';
 import tentIcon from '../../public/campground_icon.png';
 
 import styles from '../../styles/Map.module.css';
+import { ProgressInfo } from '../../src/components/ProgressInfo';
 
 const SessionMap = () => {
     const { user, isLoading } = useUser();
@@ -37,6 +39,7 @@ const SessionMap = () => {
 
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
+    const [progressIsOpen, setProgressIsOpen] = useState(false);
 
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
@@ -70,7 +73,8 @@ const SessionMap = () => {
             container: mapContainer.current!,
             style: 'mapbox://styles/lorenzreweghs/cl3k3d254001f14mnykkhv9ct',
             center: [lng, lat],
-            zoom: zoom
+            zoom: zoom,
+            logoPosition: 'top-right',
         });
 
         const geolocate = new mapboxgl.GeolocateControl({
@@ -172,7 +176,7 @@ const SessionMap = () => {
             }
             setCurrentMarkers();
     
-            sponsorMarkers.forEach((sponsor) => {
+            sponsors.forEach((sponsor: SponsorType) => {
                 addSourceWithImage(map, sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, sponsor.size ?? 0.25);
             });
         });
@@ -374,6 +378,19 @@ const SessionMap = () => {
                     <Action type={ActionTypes.pinpoint} isActive={activeAction === 'pinpoint'} />
                 </div>
             </div>
+
+            <div className={styles.info}>
+                <Action type={ActionTypes.info} />
+            </div>
+
+            <div className={styles.progressDiv} onClick={() => setProgressIsOpen(true)}>
+                <div className={styles.progressHeader}>
+                    <p className={styles.progressTitle}>Activiteiten</p>
+                    <OpenInNew fontSize='small' />
+                </div>
+                <ActivityProgress activeSession={activeSession} />
+            </div>
+            <ProgressInfo activeSession={activeSession} setIsOpen={setProgressIsOpen} isOpen={progressIsOpen} />
         </div>
     );
 }

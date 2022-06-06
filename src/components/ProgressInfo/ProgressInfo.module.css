@@ -1,0 +1,119 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    bottom: -100vh;
+    left: 0;
+    z-index: 99;
+    background-color: #ffffff;
+    overflow-y: auto;
+    transition: bottom .3s ease-in-out;
+}
+
+.open {
+    bottom: 0;
+}
+
+.close {
+    position: fixed;
+    top: 100vh;
+    left: 10px;
+    transition: top .3s ease-in-out;
+}
+
+.showClose {
+    top: 10px;
+}
+
+.banner {
+    position: fixed;
+    background-image: url('../../../public/rock-werchter-banner.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    text-align: right;
+    font-weight: 600;
+    margin: 105px 40px 0 0;
+}
+
+.title span {
+    color: var(--color-primary);
+}
+
+.subTitle {
+    margin: 0;
+    font-size: var(--font-size-smallTitle);
+    text-align: right;
+    margin-right: 40px;
+    margin-bottom: 30px;
+}
+
+.sponsorDiv {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 30px;
+    padding-left: 40px;
+    margin: 20px 0;
+}
+
+.sponsorDiv:nth-child(even) {
+    background-color: var(--color-secondary-light);
+}
+
+.sponsorLogo {
+    width: 12.5%;
+    height: auto;
+    margin: 0 30px 0 0;
+}
+
+.sponsorInfo {
+    flex: 1;
+}
+
+.sponsorInfo p {
+    margin: 0;
+    font-size: var(--font-size-smallTitle);
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.price {
+    font-weight: 400;
+}
+
+.voucher {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 30px 20px;
+}
+
+.voucher p {
+    margin: 0;
+    font-size: var(--font-size-smallTitle);
+    color: var(--color-secondary-heavy);
+    font-weight: 600;
+    flex: 1;
+}
+
+.voucher p span {
+    color: var(--color-primary);
+}
+
+.badge {
+    width: 15%;
+    justify-self: flex-end;
+}
+
+.notCompleted {
+    opacity: 0.5;
+}

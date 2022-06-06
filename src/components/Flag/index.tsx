@@ -9,7 +9,7 @@ import flagIcon from '../../../public/flag_icon_color.png';
 
 import styles from './Flag.module.css';
 import { SessionSteps } from '../../../pages/session';
-import { sponsorMarkers } from '../../../config/sponsors';
+import { sponsors, SponsorType } from '../../../config/sponsors';
 import { addSourceWithImage } from '../../helpers/helpers';
 
 interface FlagProps {
@@ -47,7 +47,7 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
         map.current!.on('load', () => {
             geolocate.trigger();
 
-            sponsorMarkers.forEach((sponsor) => {
+            sponsors.forEach((sponsor: SponsorType) => {
                 addSourceWithImage(map, sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, sponsor.size ?? 0.25);
             });
         });

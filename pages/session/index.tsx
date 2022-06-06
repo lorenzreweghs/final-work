@@ -34,9 +34,7 @@ const SessionPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className={styles.logoHeader} onClick={() => router.push('/')}>
-        <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' />
-      </header>
+      <header className={styles.banner} onClick={() => router.push('/')} />
 
       {
         activeStep === SessionSteps.Session &&

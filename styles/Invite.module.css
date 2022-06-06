@@ -1,24 +1,27 @@
 .menu {
-    position: absolute;
+    position: fixed;
     left: 10px;
     top: 10px;
 }
 
-.logoDiv {
+.banner {
+    position: fixed;
+    top: 0;
+    background-image: url('../public/rock-werchter-banner.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 75px;
     display: flex;
     justify-content: center;
-}
-
-.logo {
-    width: 100px;
-    height: auto;
-    margin-top: 26px;
+    align-items: center;
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 .title {
     text-align: right;
     font-weight: 600;
-    margin: 50px 50px 0 0;
+    margin: 105px 50px 0 0;
 }
 
 .title span {
