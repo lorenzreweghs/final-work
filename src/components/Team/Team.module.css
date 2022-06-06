@@ -21,6 +21,7 @@
 .teamIcon {
     width: 120px;
     height: auto;
+    margin-top: 105px;
     margin-bottom: 30px;
 }
 
@@ -56,5 +57,5 @@
     border-radius: 12px;
     font-family: var(--font-family);
     position: absolute;
-    bottom: 100px;
+    bottom: 75px;
 }

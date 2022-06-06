@@ -90,9 +90,7 @@ const JoinSession = () => {
 
     return (
         <div className={styles.container}>
-            <header className={styles.logoHeader} onClick={() => router.push('/')}>
-                <img className={styles.logo} src={logo.src} alt='rock werchter logo' width='100%' height='auto' />
-            </header>
+          <header className={styles.banner} onClick={() => router.push('/')} />
 
           <img className={styles.connectionIcon} src={connectionIcon.src} alt='connection icon' width='100%' height='auto' />
           <h1 className={styles.title}>Uitnodiging</h1>

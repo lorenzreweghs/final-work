@@ -1,19 +1,15 @@
-.logoHeader {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-bottom: 30px;
-    background-image: url('../public/sky.jpg');
+.banner {
+    position: fixed;
+    top: 0;
+    background-image: url('../public/rock-werchter-banner.jpg');
     background-size: cover;
+    background-position: center;
     width: 100vw;
-    height: 70px;
-}
-
-.logo {
-    width: 160px;
-    height: auto;
-    -webkit-filter: drop-shadow(var(--shadow));
-    filter: drop-shadow(var(--shadow));
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 .pagination {
