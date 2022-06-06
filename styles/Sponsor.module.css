@@ -29,3 +29,29 @@
     text-align: center;
     padding-top: 15px;
 }
+
+.subTitle {
+    text-align: center;
+    margin: 15px 40px;
+    color: var(--color-secondary-light);
+    font-size: var(--font-size-subTitle);
+    font-weight: 600;
+    text-shadow: var(--shadow);
+}
+
+.subTitle span {
+    color: var(--color-primary-light);
+}
+
+.form {
+    position: absolute;
+    bottom: 175px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sponsorLogo {
+    width: 120px;
+    position: absolute;
+    bottom: 30px;
+}
