@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { ref, onValue, get } from "firebase/database";
 import Swal from 'sweetalert2';
-import { Error } from '@mui/icons-material';
+import { Error, OpenInNew } from '@mui/icons-material';
 
 import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession, { MarkerTypes } from '../../src/hooks/useSession';
@@ -384,7 +384,10 @@ const SessionMap = () => {
             </div>
 
             <div className={styles.progressDiv} onClick={() => setProgressIsOpen(true)}>
-                <p className={styles.progressTitle}>Activiteiten</p>
+                <div className={styles.progressHeader}>
+                    <p className={styles.progressTitle}>Activiteiten</p>
+                    <OpenInNew fontSize='small' />
+                </div>
                 <ActivityProgress activeSession={activeSession} />
             </div>
             <ProgressInfo activeSession={activeSession} setIsOpen={setProgressIsOpen} isOpen={progressIsOpen} />
