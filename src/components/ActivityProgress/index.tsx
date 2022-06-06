@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
-import { Timestamp } from "firebase/firestore";
 import { StaticImageData } from 'next/image';
 import classNames from 'classnames';
 
