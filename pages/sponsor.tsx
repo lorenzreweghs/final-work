@@ -1,8 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { FormEvent, useEffect, useState } from 'react';
+import { Timestamp } from 'firebase/firestore';
 import Head from 'next/head';
 import Swal from 'sweetalert2';
 
+import useProgress from '../src/hooks/useProgress';
+import useOtherUser from '../src/hooks/useOtherUser';
 import logo from '../public/rock-werchter-2022.png';
 import kbcLogo from '../public/sponsors/kbc-logo.png';
 
@@ -15,6 +18,9 @@ enum SponsorSteps {
 }
 
 const Sponsor = () => {
+    const { getTeams } = useOtherUser();
+    const { getProgress, updateProgress } = useProgress();
+
     const [activeStep, setActiveStep] = useState(SponsorSteps.Identity);
 
     const [codeValue, setCodeValue] = useState('');
@@ -34,8 +40,36 @@ const Sponsor = () => {
         });
     }
 
-    const handleTeamSubmit = (e: FormEvent) => {
+    const handleTeamSubmit = async (e: FormEvent) => {
         e.preventDefault();
+
+        let hasMatch = false;
+        const teams = await getTeams();
+        teams.forEach(async (team, index) => {
+            if (teamValue.toLowerCase() === team.name.toLowerCase()) {
+                hasMatch = true;
+                const currentProgress = await getProgress(team.session);
+                currentProgress.shift();
+                await updateProgress(
+                    team.session, 
+                    [{    
+                        sponsor: 'kbc',
+                        isCompleted: true,
+                        price: 'frisbee',
+                        completedAt: Timestamp.now(),
+                    }, ...currentProgress]);
+                setActiveStep(SponsorSteps.Confirmation);
+                console.log('SET TO TRUE')
+            }
+            if (!hasMatch && index + 1 === teams.length) {
+                Swal.fire({
+                    title: 'Team niet gevonden',
+                    icon: 'error',
+                    timer: 2500,
+                    timerProgressBar: true,
+                });
+            }
+        });
     }
 
     return (
@@ -54,7 +88,7 @@ const Sponsor = () => {
                     activeStep === SponsorSteps.Identity &&
                     <form className={styles.form} onSubmit={handleCodeSubmit}>
                         <p className={styles.subTitle}>Geef hier uw persoonlijke <span>code</span> in</p>
-                        <input type='number' className={styles.codeInput} onChange={(e) => setCodeValue(e.target.value)} />
+                        <input type='number' className={styles.codeInput} onChange={(e) => setCodeValue(e.target.value)} minLength={4} maxLength={4} autoFocus />
                         <input type='submit' className={styles.submitButton} />
                     </form>
                 }
@@ -63,7 +97,7 @@ const Sponsor = () => {
                     activeStep === SponsorSteps.Team &&
                     <form className={styles.form} onSubmit={handleTeamSubmit}>
                         <p className={styles.subTitle}>Welk <span>team</span> heeft zonet uw activiteit <span>gewonnen</span>?</p>
-                        <input type='number' className={styles.teamInput} onChange={(e) => setTeamValue(e.target.value)} />
+                        <input type='text' className={styles.teamInput} onChange={(e) => setTeamValue(e.target.value)} autoFocus />
                         <input type='submit' className={styles.submitButton} />
                     </form>
                 }
