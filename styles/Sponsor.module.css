@@ -1,0 +1,31 @@
+.imageMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('../public/login-image.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.imageMain h1 {
+    margin: 0;
+    font-family: var(--font-family-highlight);
+    color: var(--color-secondary-light);
+}
+
+.imageMain .logo {
+    width: 300px;
+    margin-top: 50px;
+    -webkit-filter: drop-shadow(var(--shadow));
+    filter: drop-shadow(var(--shadow));
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    padding-top: 15px;
+}
