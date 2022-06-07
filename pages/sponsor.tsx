@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import Head from 'next/head';
 import Swal from 'sweetalert2';
+import classNames from 'classnames';
 
 import useProgress from '../src/hooks/useProgress';
 import useOtherUser from '../src/hooks/useOtherUser';
@@ -59,7 +60,6 @@ const Sponsor = () => {
                         completedAt: Timestamp.now(),
                     }, ...currentProgress]);
                 setActiveStep(SponsorSteps.Confirmation);
-                console.log('SET TO TRUE')
             }
             if (!hasMatch && index + 1 === teams.length) {
                 Swal.fire({
@@ -88,8 +88,8 @@ const Sponsor = () => {
                     activeStep === SponsorSteps.Identity &&
                     <form className={styles.form} onSubmit={handleCodeSubmit}>
                         <p className={styles.subTitle}>Geef hier uw persoonlijke <span>code</span> in</p>
-                        <input type='number' className={styles.codeInput} onChange={(e) => setCodeValue(e.target.value)} minLength={4} maxLength={4} autoFocus />
-                        <input type='submit' className={styles.submitButton} />
+                        <input type='number' className={styles.codeInput} onChange={(e) => setCodeValue(e.target.value)} minLength={4} maxLength={4} placeholder='____' autoFocus />
+                        <input type='submit' className={styles.submitButton} value='Bevestigen' />
                     </form>
                 }
 
@@ -98,13 +98,15 @@ const Sponsor = () => {
                     <form className={styles.form} onSubmit={handleTeamSubmit}>
                         <p className={styles.subTitle}>Welk <span>team</span> heeft zonet uw activiteit <span>gewonnen</span>?</p>
                         <input type='text' className={styles.teamInput} onChange={(e) => setTeamValue(e.target.value)} autoFocus />
-                        <input type='submit' className={styles.submitButton} />
+                        <input type='submit' className={styles.submitButton} value='Bevestigen' />
                     </form>
                 }
 
                 {
                     activeStep === SponsorSteps.Confirmation &&
-                    <p className={styles.subTitle}></p>
+                    <p className={classNames(styles.subTitle, styles.confirmation)}>
+                        Bedankt! De overwinning van &apos;<span>{teamValue}</span>&apos; is succesvol <span>geregistreerd</span>.
+                    </p>
                 }
 
                 {

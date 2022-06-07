@@ -32,11 +32,11 @@
 
 .subTitle {
     text-align: center;
-    margin: 15px 40px;
+    margin: 15px 30px;
     color: var(--color-secondary-light);
     font-size: var(--font-size-subTitle);
     font-weight: 600;
-    text-shadow: var(--shadow);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .subTitle span {
@@ -54,4 +54,56 @@
     width: 120px;
     position: absolute;
     bottom: 30px;
+}
+
+.codeInput, .teamInput {
+    width: 136px;
+    height: 40px;
+    margin: auto;
+    border: 1px solid var(--color-secondary-heavy);
+    border-radius: 12px;
+    padding: 0 38px;
+    font-family: var(--font-family);
+    font-size: var(--font-size-subTitle);
+    font-weight: 700;
+    text-align: center;
+    color: var(--color-secondary-heavy);
+}
+
+.teamInput {
+    width: 300px;
+    font-weight: 400;
+    padding: 0 20px;
+}
+
+.codeInput::placeholder {
+    color: var(--color-secondary-heavy);
+}
+
+.codeInput:focus, .teamInput:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.confirmation {
+    position: absolute;
+    bottom: 200px;
+}
+
+.submitButton {
+    display: flex;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: var(--font-size-subTitle);
+    color: var(--color-secondary-heavy);
+    background-color: var(--color-primary-light);
+    width: 300px;
+    height: 50px;
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    font-family: var(--font-family);
+    margin: auto;
+    margin-top: 20px;
 }
