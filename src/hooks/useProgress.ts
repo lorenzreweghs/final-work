@@ -14,8 +14,8 @@ export default function useProgress() {
 
     const sortActivities = (a: ActivityType, b: ActivityType) => {
         if (!a.completedAt && !b.completedAt) return 0;
-        if (!a.completedAt && b.completedAt) return -1;
-        if (a.completedAt && !b.completedAt) return 1;
+        if (!a.completedAt && b.completedAt) return 1;
+        if (a.completedAt && !b.completedAt) return -1;
         if (
             new Timestamp(a.completedAt!.seconds, a.completedAt!.nanoseconds)
               .toDate()
@@ -24,7 +24,7 @@ export default function useProgress() {
               .toDate()
               .getTime()
           ) {
-            return -1;
+            return 1;
           }
           if (
             new Timestamp(a.completedAt!.seconds, a.completedAt!.nanoseconds)
@@ -34,7 +34,7 @@ export default function useProgress() {
               .toDate()
               .getTime()
           ) {
-            return 1;
+            return -1;
           }
         return 0;
     }

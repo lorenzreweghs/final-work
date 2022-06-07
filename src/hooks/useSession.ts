@@ -1,7 +1,7 @@
 import { getDatabase, ref, update, get, child } from "firebase/database";
 import { app } from "../../config/firebase";
 import { sponsors, SponsorType } from "../../config/sponsors";
-import { ActivityType } from "./useProgress";
+import useProgress, { ActivityType } from "./useProgress";
 
 export enum MarkerTypes {
     markers = 'markers',
@@ -11,6 +11,7 @@ export enum MarkerTypes {
 
 export default function useSession() {
     const db = getDatabase(app);
+    const { getProgress } = useProgress();
 
     async function hasSession(userId: string): Promise<boolean> {
         let bool = false;
@@ -130,8 +131,13 @@ export default function useSession() {
         }
     }
 
-    const getSponsors = () => {
+    const getSponsors = async (session: string | string[] | undefined) => {
         let sponsorArray: Array<ActivityType> = [];
+        const currentProgress = await getProgress(session);
+        if (currentProgress) {
+            sponsorArray = currentProgress;
+            return sponsorArray;
+        }
         sponsors.forEach((sponsor: SponsorType) => {
             sponsorArray.push({
                 sponsor: sponsor.id,
@@ -151,7 +157,7 @@ export default function useSession() {
             console.error(e);
         }
 
-        const sponsorArray = getSponsors();
+        const sponsorArray = getSponsors(session);
         try {
             await update(ref(db, 'activities/' + session), {
                 ...sponsorArray
