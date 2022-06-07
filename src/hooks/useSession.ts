@@ -134,7 +134,7 @@ export default function useSession() {
     const getSponsors = async (session: string | string[] | undefined) => {
         let sponsorArray: Array<ActivityType> = [];
         const currentProgress = await getProgress(session);
-        if (currentProgress) {
+        if (currentProgress.length) {
             sponsorArray = currentProgress;
             return sponsorArray;
         }
@@ -157,7 +157,7 @@ export default function useSession() {
             console.error(e);
         }
 
-        const sponsorArray = getSponsors(session);
+        const sponsorArray = await getSponsors(session);
         try {
             await update(ref(db, 'activities/' + session), {
                 ...sponsorArray
