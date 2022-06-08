@@ -10,29 +10,24 @@
     position: relative;
 }
 
-.imageMain h1 {
-    margin: 0;
-    font-family: var(--font-family-highlight);
-    color: var(--color-secondary-light);
-}
-
 .imageMain .logo {
-    width: 300px;
-    margin-top: 50px;
-    -webkit-filter: drop-shadow(var(--shadow));
-    filter: drop-shadow(var(--shadow));
+    width: 275px;
+    margin-top: 40px;
 }
 
 .title {
+    margin: 0;
+    font-family: var(--font-family-highlight);
     font-size: 32px;
     font-weight: 700;
     text-align: center;
     padding-top: 15px;
+    color: var(--color-secondary-heavy);
 }
 
 .subTitleDiv {
     position: absolute;
-    bottom: 130px;
+    bottom: 120px;
 }
 
 .subTitle {
