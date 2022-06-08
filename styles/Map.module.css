@@ -12,7 +12,7 @@
 
 .actions {
     position: absolute;
-    z-index: 10;
+    z-index: 5;
     right: 0;
     top: 50%;
     transform: translateY(-50%);

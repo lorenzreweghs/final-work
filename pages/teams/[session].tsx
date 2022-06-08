@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import classNames from 'classnames';
@@ -11,7 +12,6 @@ import useOtherUser from '../../src/hooks/useOtherUser';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
 import { Search } from '../../src/components/Search';
-import logo from '../../public/rock-werchter-2022_black.png';
 
 import styles from '../../styles/Teams.module.css';
 
@@ -82,6 +82,12 @@ const Teams = () => {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Teams - {activeSession}</title>
+                <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
             <div className={styles.banner} />
             <nav className={styles.topNav}>
                 <p className={classNames({ [styles.activeTeams]: !switchPage })} onClick={() => setSwitchPage(false)}>Teams</p>

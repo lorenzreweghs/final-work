@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Facebook, Link } from '@mui/icons-material';
 import Swal from 'sweetalert2';
@@ -67,6 +68,12 @@ const Invite = () => {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Uitnodigen - {activeSession}</title>
+                <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
             <div className={styles.banner} />
 
             <h1 className={styles.title}>Nodig je<br /><span>vrienden</span><br /> uit</h1>
