@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { FormEvent, useEffect, useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 
-import logo from '../../public/rock-werchter-2022.png';
 import connectionIcon from '../../public/connection_icon_color.png';
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
@@ -90,6 +90,12 @@ const JoinSession = () => {
 
     return (
         <div className={styles.container}>
+          <Head>
+            <title>Festicon - {currentSession}</title>
+            <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+
           <header className={styles.banner} onClick={() => router.push('/')} />
 
           <img className={styles.connectionIcon} src={connectionIcon.src} alt='connection icon' width='100%' height='auto' />

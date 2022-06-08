@@ -75,7 +75,7 @@ const Sponsor = () => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>Festicon</title>
+                <title>Festicon - Sponsors</title>
                 <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
