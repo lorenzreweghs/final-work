@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: url('../public/login-image.jpg');
+    background-image: url('../public/sponsor-image.jpg');
     background-size: cover;
     background-position: center;
     height: 100vh;
