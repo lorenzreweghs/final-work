@@ -356,7 +356,7 @@ const SessionMap = () => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>{activeSession} - Map</title>
+                <title>Map - {activeSession}</title>
                 <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>

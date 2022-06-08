@@ -69,7 +69,7 @@ const Invite = () => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>{activeSession} - Uitnodigen</title>
+                <title>Uitnodigen - {activeSession}</title>
                 <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>

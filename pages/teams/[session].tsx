@@ -83,7 +83,7 @@ const Teams = () => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>{activeSession} - Teams</title>
+                <title>Teams - {activeSession}</title>
                 <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
