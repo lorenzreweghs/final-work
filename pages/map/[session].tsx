@@ -1,4 +1,5 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import mapboxgl, { GeoJSONSource, Map } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -15,12 +16,13 @@ import { Action, ActionTypes } from '../../src/components/Action';
 import { sponsors, SponsorType } from '../../config/sponsors';
 import { addSourceWithImage, getGeoJson } from '../../src/helpers/helpers';
 import { ActivityProgress } from '../../src/components/ActivityProgress';
+import { ProgressInfo } from '../../src/components/ProgressInfo';
+import { Information } from '../../src/components/Information';
 
 import flagIcon from '../../public/flag_icon_color.png';
 import tentIcon from '../../public/campground_icon.png';
 
 import styles from '../../styles/Map.module.css';
-import { ProgressInfo } from '../../src/components/ProgressInfo';
 
 const SessionMap = () => {
     const { user, isLoading } = useUser();
@@ -36,11 +38,12 @@ const SessionMap = () => {
     const [lng, setLng] = useState(4.68111496672563);
     const [lat, setLat] = useState(50.9683219343008);
     const [zoom, setZoom] = useState(15);
-
-    const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
+    
     const [navIsOpen, setNavIsOpen] = useState(false);
     const [progressIsOpen, setProgressIsOpen] = useState(false);
+    const [infoIsOpen, setInfoIsOpen] = useState(false);
 
+    const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
     const userList = useRef<Array<{id: string, name: string}>>([]);
@@ -352,6 +355,12 @@ const SessionMap = () => {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>{activeSession} - Map</title>
+                <meta name="description" content="Een festivalbeleving zoals nooit tevoren" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
             <div ref={mapContainer} className={styles.map} />
             <div className={styles.menu} onClick={() => setNavIsOpen(true)}>
@@ -379,7 +388,7 @@ const SessionMap = () => {
                 </div>
             </div>
 
-            <div className={styles.info}>
+            <div className={styles.info} onClick={() => setInfoIsOpen(true)}>
                 <Action type={ActionTypes.info} />
             </div>
 
@@ -391,6 +400,7 @@ const SessionMap = () => {
                 <ActivityProgress activeSession={activeSession} />
             </div>
             <ProgressInfo activeSession={activeSession} setIsOpen={setProgressIsOpen} isOpen={progressIsOpen} />
+            <Information setIsOpen={setInfoIsOpen} isOpen={infoIsOpen} />
         </div>
     );
 }
