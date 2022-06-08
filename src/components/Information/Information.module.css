@@ -37,3 +37,57 @@
     align-items: center;
     box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.3);
 }
+
+.title {
+    margin-top: 105px;
+    margin-bottom: 25px;
+    font-size: var(--font-size-subTitle);
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.title span {
+    color: var(--color-primary);
+}
+
+.gatherAction, .tentAction, .pinAction, .gather, .tent, .pin {
+    display: flex;
+    align-items: center;
+    margin-left: 45px;
+    margin-bottom: 20px;
+}
+
+.pinAction {
+    margin-bottom: 40px;
+}
+
+.iconDiv {
+    width: 55px;
+    display: flex;
+    justify-content: center;
+}
+
+.iconText {
+    margin-left: 25px;
+    font-size: var(--font-size-smallTitle);
+    font-weight: 600;
+}
+
+.iconText span {
+    color: var(--color-primary);
+}
+
+.icons {
+    margin: 40px 35px 0; 
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.iconsSubTitle {
+    font-size: var(--font-size-smallTitle);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 85px;
+}
