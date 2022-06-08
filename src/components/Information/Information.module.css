@@ -1,0 +1,39 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    bottom: -100vh;
+    left: 0;
+    z-index: 9;
+    background-color: #ffffff;
+    overflow-y: auto;
+    transition: bottom .3s ease-in-out;
+}
+
+.open {
+    bottom: 0;
+}
+
+.close {
+    position: fixed;
+    top: 100vh;
+    left: 10px;
+    transition: top .3s ease-in-out;
+}
+
+.showClose {
+    top: 10px;
+}
+
+.banner {
+    position: fixed;
+    background-image: url('../../../public/rock-werchter-banner.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.3);
+}
