@@ -5,7 +5,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useUser } from '@auth0/nextjs-auth0';
 
-import logo from '../public/rock-werchter-2022.png';
+import logo from '../public/rock-werchter-2022_black.png';
 import { Button, ButtonTypes } from '../src/components/Button';
 
 import styles from '../styles/Login.module.css';
