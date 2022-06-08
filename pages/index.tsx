@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useUser } from '@auth0/nextjs-auth0';
+import { useRouter } from 'next/router';
 
 import logo from '../public/rock-werchter-2022_black.png';
 import { Button, ButtonTypes } from '../src/components/Button';
@@ -12,15 +13,20 @@ import styles from '../styles/Login.module.css';
 
 const Login: NextPage = () => {
   const { user, isLoading } = useUser();
-  const [loggedIn, setLoggedIn] = useState(false);
+  const router = useRouter();
 
+  const [loggedIn, setLoggedIn] = useState(false);
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
   useEffect(() => {
+    if (!router.isReady) return;
+
+    if (window && window.innerWidth > 600) router.push('/desktop');
+
     if (isLoading) return;
 
     if (user) setLoggedIn(true);
-  }, [isLoading]);
+  }, [router.isReady, isLoading]);
 
   return (
     <div className={styles.container}>
