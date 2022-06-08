@@ -26,6 +26,8 @@ const JoinSession = () => {
 
     useEffect(() => {
         if (!router.isReady) return;
+        if (window && window.innerWidth > 600) router.push('/desktop');
+        
         const { session } = router.query;
         setCurrentSession(session);
     }, [router.isReady]);

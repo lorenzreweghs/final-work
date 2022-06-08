@@ -34,6 +34,8 @@ const Teams = () => {
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
+        if (window && window.innerWidth > 600) router.push('/desktop');
+
         const { session } = router.query;
         setActiveSession(session);
 

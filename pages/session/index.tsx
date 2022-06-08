@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import type { NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
@@ -25,6 +25,12 @@ const SessionPage: NextPage = () => {
 
   const [activeStep, setActiveStep] = useState(SessionSteps.Session);
   const [activeSession, setActiveSession] = useState("XXXXXX");
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    if (window && window.innerWidth > 600) router.push('/desktop');
+  }, [router.isReady]);
 
   return (
     <div className={styles.container}>

@@ -4,6 +4,7 @@ import { Timestamp } from 'firebase/firestore';
 import Head from 'next/head';
 import Swal from 'sweetalert2';
 import classNames from 'classnames';
+import { useRouter } from 'next/router';
 
 import useProgress from '../src/hooks/useProgress';
 import useOtherUser from '../src/hooks/useOtherUser';
@@ -21,11 +22,18 @@ enum SponsorSteps {
 const Sponsor = () => {
     const { getTeams } = useOtherUser();
     const { getProgress, updateProgress } = useProgress();
+    const router = useRouter();
 
     const [activeStep, setActiveStep] = useState(SponsorSteps.Identity);
 
     const [codeValue, setCodeValue] = useState('');
     const [teamValue, setTeamValue] = useState('');
+
+    useEffect(() => {
+        if (!router.isReady) return;
+
+        if (window && window.innerWidth > 600) router.push('/desktop');
+      }, [router.isReady]);
 
     const handleCodeSubmit = (e: FormEvent) => {
         e.preventDefault();
