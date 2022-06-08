@@ -75,7 +75,7 @@ export const Information = ({ setIsOpen, isOpen }: InformationProps) => {
             <p className={styles.iconsSubTitle}>Festivalgangers</p>
 
             <div className={classNames(styles.close, { [styles.showClose]: isOpen })} onClick={() => setIsOpen(false)}>
-                <Action type={ActionTypes.close} isActive />
+                <Action type={ActionTypes.map} isActive />
             </div>
         </div>
     );
