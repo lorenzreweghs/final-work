@@ -16,7 +16,7 @@ export const getGeoJson = (lat: number, lng: number): any => {
     };
 }
 
-export const addSourceWithImage = (map: React.MutableRefObject<mapboxgl.Map | null>, icon: StaticImageData, id: string, coords: {lng: number, lat: number}, size: number = 1, minzoom: number = 14) => {
+export const addSourceWithImage = (map: React.MutableRefObject<mapboxgl.Map | null>, icon: StaticImageData, id: string, coords: {lng: number, lat: number}, layerArray: string[], size: number = 1, minzoom: number = 14) => {
     map.current!.loadImage(icon.src, async (error, image) => {
         if (error) throw error;
 
@@ -28,12 +28,12 @@ export const addSourceWithImage = (map: React.MutableRefObject<mapboxgl.Map | nu
             map.current!.removeLayer(`${id}-layer`);
         }
 
-        if (map.current!.getSource(`${id}-source`)) {
-            map.current!.removeSource(`${id}-source`);
+        if (map.current!.getSource(`${id}`)) {
+            map.current!.removeSource(`${id}`);
         }
 
         const geojson = await getGeoJson(coords.lat, coords.lng);
-        map.current!.addSource(`${id}-source`, {
+        map.current!.addSource(`${id}`, {
             type: 'geojson',
             data: geojson
         });
@@ -41,7 +41,7 @@ export const addSourceWithImage = (map: React.MutableRefObject<mapboxgl.Map | nu
         map.current!.addLayer({
             'id': `${id}-layer`,
             'type': 'symbol',
-            'source': `${id}-source`,
+            'source': `${id}`,
             'layout': {
                 'icon-image': `${id}-image`,
                 'icon-size': size,
@@ -50,5 +50,6 @@ export const addSourceWithImage = (map: React.MutableRefObject<mapboxgl.Map | nu
             'minzoom': minzoom,
             'maxzoom': 24,
         });
+        layerArray.push(`${id}-layer`);
     });
 }

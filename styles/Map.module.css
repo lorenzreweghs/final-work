@@ -85,6 +85,15 @@
     bottom: 95px;
 }
 
+.popup {
+    font-family: var(--font-family);
+    text-transform: capitalize;
+}
+
+.popup h3 {
+    margin: 0;
+}
+
 @keyframes animateIn {
     from {
         top: 90px;
