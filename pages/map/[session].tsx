@@ -312,6 +312,21 @@ const SessionMap = () => {
     }, [activeAction, activeSession]);
 
     useEffect(() => {
+        if (!map.current) return;
+
+        const handlePopup = (e: any) => {
+            const features = map.current?.queryRenderedFeatures(e.point);
+            console.log(features);
+        }
+
+        map.current.on('click', handlePopup);
+
+        return () => {
+            map.current!.off('click', handlePopup);
+        }
+    }, []);
+
+    useEffect(() => {
         if (isLoading) return;
         document.addEventListener("visibilitychange", async () => {
             if (document.visibilityState === 'visible') {
