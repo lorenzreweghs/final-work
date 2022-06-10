@@ -320,7 +320,6 @@ const SessionMap = () => {
             const features = map.current?.queryRenderedFeatures(e.point, {
                 layers: [...layerArray.current],
             });
-            console.log(features);
             if (!features?.length) {
                 return;
             }
@@ -334,13 +333,13 @@ const SessionMap = () => {
                         <p>KBC</p>
                     `;
                     break;
-                case 'winforlife':
+                case 'win for life':
                     htmlString = `
                         <h3>Uitbeelden</h3>
                         <p>Win for Life</p>
                     `;
                     break;
-                case 'cola':
+                case 'coca cola':
                     htmlString = `
                         <h3>Selfie</h3>
                         <p>Coca Cola</p>
@@ -358,13 +357,13 @@ const SessionMap = () => {
                         <p>Jupiler</p>
                     `;
                     break;
-                case 'stubru':
+                case 'studio brussel':
                     htmlString = `
                         <h3>Quiz</h3>
                         <p>Studio Brussel</p>
                     `;
                     break;
-                case 'redbull':
+                case 'red bull':
                     htmlString = `
                         <h3>Behendigheid</h3>
                         <p>Red Bull</p>
