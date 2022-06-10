@@ -48,7 +48,7 @@ export const Flag = ({ setActiveStep, activeSession }: FlagProps) => {
             geolocate.trigger();
 
             sponsors.forEach((sponsor: SponsorType) => {
-                addSourceWithImage(map, sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, sponsor.size ?? 0.25);
+                addSourceWithImage(map, sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, [], sponsor.size ?? 0.25);
             });
         });
     });

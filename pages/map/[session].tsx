@@ -47,6 +47,7 @@ const SessionMap = () => {
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
     const userList = useRef<Array<{id: string, name: string}>>([]);
+    const layerArray = useRef<string[]>([]);
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
@@ -130,6 +131,7 @@ const SessionMap = () => {
                             'icon-size': 1.5,
                         }
                     });
+                    layerArray.current.push(userId);
                 });
                 
                 onValue(ref(db, 'users/' + userId + '/coords'), async (snapshot) => {
@@ -157,7 +159,7 @@ const SessionMap = () => {
             const setCurrentFlag = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
                 if (coords) {
-                    addSourceWithImage(map, flagIcon, 'flag', {lng: coords.lng, lat: coords.lat}, 0.25, 0);
+                    addSourceWithImage(map, flagIcon, 'flag', {lng: coords.lng, lat: coords.lat}, layerArray.current, 0.25, 0);
                 }
             }
             setCurrentFlag();
@@ -165,7 +167,7 @@ const SessionMap = () => {
             const setCurrentTent = async () => {
                 const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
                 if (coords) {
-                    addSourceWithImage(map, tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
+                    addSourceWithImage(map, tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, layerArray.current, 0.9, 0);
                 }
             }
             setCurrentTent();
@@ -182,7 +184,7 @@ const SessionMap = () => {
             setCurrentMarkers();
     
             sponsors.forEach((sponsor: SponsorType) => {
-                addSourceWithImage(map, sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, sponsor.size ?? 0.25);
+                addSourceWithImage(map, sponsor.logo, sponsor.id, {lng: sponsor.lng, lat: sponsor.lat}, layerArray.current, sponsor.size ?? 0.25);
             });
         });
 
@@ -216,7 +218,7 @@ const SessionMap = () => {
         const handleGather = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
-            (map.current!.getSource('flag-source') as GeoJSONSource).setData(geojson);
+            (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
 
             setTimeout(() => {
                 Swal.fire({
@@ -234,7 +236,7 @@ const SessionMap = () => {
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
                         const geojson = await getGeoJson(coords.lat, coords.lng);
-                        (map.current!.getSource('flag-source') as GeoJSONSource).setData(geojson);
+                        (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
                     }
                     setActiveAction(null);
                 });
@@ -244,10 +246,10 @@ const SessionMap = () => {
         const handleTent = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
-            if (map.current!.getSource('tent-source')) {
-                (map.current!.getSource('tent-source') as GeoJSONSource).setData(geojson);
+            if (map.current!.getSource('tent')) {
+                (map.current!.getSource('tent') as GeoJSONSource).setData(geojson);
             } else {
-                addSourceWithImage(map, tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, 0.9, 0);
+                addSourceWithImage(map, tentIcon, 'tent', {lng: coords.lng, lat: coords.lat}, layerArray.current, 0.9, 0);
             }
 
             setTimeout(() => {
@@ -267,10 +269,10 @@ const SessionMap = () => {
                         const [coords] = await getMarkersInSession(activeSession, MarkerTypes.tent);
                         if (coords) {
                             const geojson = await getGeoJson(coords.lat, coords.lng);
-                            (map.current!.getSource('tent-source') as GeoJSONSource).setData(geojson);                            
+                            (map.current!.getSource('tent') as GeoJSONSource).setData(geojson);                            
                         } else {
                             map.current!.removeLayer('tent-layer');
-                            map.current!.removeSource('tent-source');
+                            map.current!.removeSource('tent');
                         }
                     }
                     setActiveAction(null);
@@ -310,6 +312,95 @@ const SessionMap = () => {
             map.current!.off('click', handleClick);
         }
     }, [activeAction, activeSession]);
+
+    useEffect(() => {
+        if (!map.current) return;
+
+        const handlePopup = (e: any) => {
+            const features = map.current?.queryRenderedFeatures(e.point, {
+                layers: [...layerArray.current],
+            });
+            if (!features?.length) {
+                return;
+            }
+            const feature = features[0];
+
+            let htmlString = '';
+            switch (feature.source) {
+                case 'kbc':
+                    htmlString = `
+                        <h3>Raden</h3>
+                        <p>KBC</p>
+                    `;
+                    break;
+                case 'win for life':
+                    htmlString = `
+                        <h3>Uitbeelden</h3>
+                        <p>Win for Life</p>
+                    `;
+                    break;
+                case 'coca cola':
+                    htmlString = `
+                        <h3>Selfie</h3>
+                        <p>Coca Cola</p>
+                    `;
+                    break;
+                case 'twitch':
+                    htmlString = `
+                        <h3>Muziekgenres</h3>
+                        <p>Twitch</p>
+                    `;
+                    break;
+                case 'jupiler':
+                    htmlString = `
+                        <h3>Snelheid</h3>
+                        <p>Jupiler</p>
+                    `;
+                    break;
+                case 'studio brussel':
+                    htmlString = `
+                        <h3>Quiz</h3>
+                        <p>Studio Brussel</p>
+                    `;
+                    break;
+                case 'red bull':
+                    htmlString = `
+                        <h3>Behendigheid</h3>
+                        <p>Red Bull</p>
+                    `;
+                    break;
+                case 'flag':
+                    htmlString = `
+                        <h3>Verzamelpunt</h3>
+                    `;
+                    break;
+                case 'tent':
+                    htmlString = `
+                        <h3>Tentlocatie</h3>
+                    `;
+                    break;
+                default:
+                    htmlString = `<h3>${feature.source}</h3>`;
+            }
+
+            const popup = new mapboxgl.Popup({ 
+                className: styles.popup,
+                offset: [0, -22],
+                closeButton: false,
+                closeOnClick: true,
+                closeOnMove: true,
+            })
+                .setLngLat((feature.geometry as any).coordinates)
+                .setHTML(htmlString)
+                .addTo(map.current!);
+        }
+
+        map.current.on('click', handlePopup);
+
+        return () => {
+            map.current!.off('click', handlePopup);
+        }
+    }, []);
 
     useEffect(() => {
         if (isLoading) return;

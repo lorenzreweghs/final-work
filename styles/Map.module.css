@@ -85,6 +85,22 @@
     bottom: 95px;
 }
 
+.popup {
+    font-family: var(--font-family);
+}
+
+.popup h3 {
+    margin: 0;
+    text-align: center;
+}
+
+.popup p {
+    margin: 0;
+    margin-top: 2px;
+    text-align: center;
+    font-size: var(--font-size-smallTitle);
+}
+
 @keyframes animateIn {
     from {
         top: 90px;
