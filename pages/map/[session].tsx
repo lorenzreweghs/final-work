@@ -326,6 +326,64 @@ const SessionMap = () => {
             }
             const feature = features[0];
 
+            let htmlString = '';
+            switch (feature.source) {
+                case 'kbc':
+                    htmlString = `
+                        <h3>Raden</h3>
+                        <p>KBC</p>
+                    `;
+                    break;
+                case 'winforlife':
+                    htmlString = `
+                        <h3>Uitbeelden</h3>
+                        <p>Win for Life</p>
+                    `;
+                    break;
+                case 'cola':
+                    htmlString = `
+                        <h3>Selfie</h3>
+                        <p>Coca Cola</p>
+                    `;
+                    break;
+                case 'twitch':
+                    htmlString = `
+                        <h3>Muziekgenres</h3>
+                        <p>Twitch</p>
+                    `;
+                    break;
+                case 'jupiler':
+                    htmlString = `
+                        <h3>Snelheid</h3>
+                        <p>Jupiler</p>
+                    `;
+                    break;
+                case 'stubru':
+                    htmlString = `
+                        <h3>Quiz</h3>
+                        <p>Studio Brussel</p>
+                    `;
+                    break;
+                case 'redbull':
+                    htmlString = `
+                        <h3>Behendigheid</h3>
+                        <p>Red Bull</p>
+                    `;
+                    break;
+                case 'flag':
+                    htmlString = `
+                        <h3>Verzamelpunt</h3>
+                    `;
+                    break;
+                case 'tent':
+                    htmlString = `
+                        <h3>Tentlocatie</h3>
+                    `;
+                    break;
+                default:
+                    htmlString = `<h3>${feature.source}</h3>`;
+            }
+
             const popup = new mapboxgl.Popup({ 
                 className: styles.popup,
                 offset: [0, -22],
@@ -334,9 +392,7 @@ const SessionMap = () => {
                 closeOnMove: true,
             })
                 .setLngLat((feature.geometry as any).coordinates)
-                .setHTML(
-                    `<h3>${feature.source}</h3>`
-                )
+                .setHTML(htmlString)
                 .addTo(map.current!);
         }
 
