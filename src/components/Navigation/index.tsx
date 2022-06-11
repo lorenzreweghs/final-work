@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable @next/next/no-img-element */
+import { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
 import { MapOutlined, GroupsOutlined, ShareOutlined, LogoutOutlined } from '@mui/icons-material';
 import classNames from 'classnames';
@@ -10,6 +11,7 @@ import { ActivityProgress } from '../ActivityProgress';
 import { ProgressBar } from '../ProgressBar';
 
 import styles from './Navigation.module.css';
+import { ProgressInfo } from '../ProgressInfo';
 
 interface NavigationProps {
     activeSession: string | string[] | undefined,
@@ -20,6 +22,8 @@ interface NavigationProps {
 export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps) => {
     const { user } = useUser();
 
+    const [progressIsOpen, setProgressIsOpen] = useState(false);
+
     return (
         <div className={classNames(styles.container, { [styles.open]: isOpen })}>
             <div className={styles.user}>
@@ -27,7 +31,7 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                 <p className={styles.name}>{user?.name}</p>
             </div>
 
-            <div className={styles.progress}>
+            <div className={styles.progress} onClick={() => setProgressIsOpen(true)}>
                 <div className={styles.scrollDiv}>
                     <div className={styles.activityDiv}>
                         <ActivityProgress activeSession={activeSession} />
@@ -35,9 +39,14 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                 </div>
                 <ProgressBar activeSession={activeSession} totalAmount={7} />
             </div>
+            <ProgressInfo activeSession={activeSession} setIsOpen={setProgressIsOpen} isOpen={progressIsOpen} />
 
             <div className={styles.code}>
-                <p className={styles.codeText}>Deel deze code: <span>{activeSession}</span></p>
+                <Link href={`/invite/${activeSession}`}>
+                    <a>
+                        <p className={styles.codeText}>Deel deze code: <span>{activeSession}</span></p>
+                    </a>
+                </Link>
             </div>
 
             <nav className={styles.navigation}>
