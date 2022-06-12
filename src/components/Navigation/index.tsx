@@ -2,13 +2,16 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
-import { MapOutlined, GroupsOutlined, ShareOutlined, LogoutOutlined } from '@mui/icons-material';
+import { useRouter } from 'next/router';
+import { MapOutlined, GroupsOutlined, ShareOutlined, ExitToApp, LogoutOutlined } from '@mui/icons-material';
 import classNames from 'classnames';
 import Link from 'next/link';
 
 import logo from '../../../public/rock-werchter-2022.png';
 import { ActivityProgress } from '../ActivityProgress';
 import { ProgressBar } from '../ProgressBar';
+import useSession from '../../hooks/useSession';
+import useOtherUser from '../../hooks/useOtherUser';
 
 import styles from './Navigation.module.css';
 import { ProgressInfo } from '../ProgressInfo';
@@ -21,8 +24,29 @@ interface NavigationProps {
 
 export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps) => {
     const { user } = useUser();
+    const router = useRouter();
+    const { getUsersInSession, updateSession } = useSession();
+    const { getTeams } = useOtherUser();
 
     const [progressIsOpen, setProgressIsOpen] = useState(false);
+
+    const handleLeave = async () => {
+        const users = await getUsersInSession(activeSession);
+
+        users.forEach((element, index) => {
+            if (element.id.includes(user?.sub!)) {
+                users.splice(index, 1);
+            }
+        });
+
+        let teams = await getTeams();
+        teams.forEach((team) => {
+          if (team.session === activeSession) team.people--;
+        });
+
+        await updateSession(user?.sub!, users, teams, user?.name!, localStorage.getItem('icon') ?? '', activeSession);
+        router.push('/session');
+    }
 
     return (
         <div className={classNames(styles.container, { [styles.open]: isOpen })}>
@@ -76,6 +100,11 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                 </div>
 
                 <img className={styles.logo} src={logo.src} alt='rock werchter 2022 logo' width='100%' height='auto' />
+
+                <div className={styles.leave} onClick={handleLeave}>
+                    <ExitToApp sx={{ fontSize: 44 }} />
+                    <p>SESSIE VERLATEN</p>
+                </div>
 
                 <div className={styles.logout}>
                     <a href='/api/auth/logout'>

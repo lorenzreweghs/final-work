@@ -87,20 +87,19 @@
 .map a, .teams a, .invite a, .logout a {
     display: flex;
     align-items: center;
-    padding-top: 5px;
 }
 
 .map {
     padding-top: 10px;
 }
 
-.map p, .teams p, .invite p, .logout p {
+.map p, .teams p, .invite p, .logout p, .leave p {
     margin-left: 25px;
     font-weight: 700;
     font-size: var(--font-size-subTitle);
 }
 
-.map svg, .teams svg, .invite svg, .logout svg {
+.map svg, .teams svg, .invite svg, .logout svg, .leave svg {
     margin-left: 35px;
 }
 
@@ -109,6 +108,11 @@
     text-shadow: var(--shadow);
     position: absolute;
     bottom: 15px;
+}
+
+.leave {
+    display: flex;
+    align-items: center;
 }
 
 .logout svg {
