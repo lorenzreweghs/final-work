@@ -117,6 +117,15 @@ const SessionMap = () => {
                 await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
                     const {lat, lng} = snapshot.val();
                     const geojson = await getGeoJson(lat, lng);
+
+                    if (map.current!.getLayer(userId)) {
+                        map.current!.removeLayer(userId);
+                    }
+            
+                    if (map.current!.getSource(userName)) {
+                        map.current!.removeSource(userName);
+                    }
+
                     map.current!.addSource(userName, {
                         type: 'geojson',
                         data: geojson
@@ -148,8 +157,10 @@ const SessionMap = () => {
                     return;
                 }
                 const users = snapshot.val();
-                const lastUserId = users.pop();
-                checkStatus(lastUserId);
+                if (users && users.length) {
+                    const lastUser = users.pop();
+                    checkStatus(lastUser.id);
+                }
             });
 
             userList.current.forEach(async (user) => {
