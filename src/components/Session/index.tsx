@@ -59,7 +59,9 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
       setActiveSession(session);
       
       localStorage.setItem('icon', personalIcon);
-      const iconColor = randomColor();
+      const iconColor = randomColor({
+        luminosity: 'dark',
+      });
 
       await updateSession(user?.sub!, [{id: user?.sub!, name: user?.name!}], teams, user?.name!, personalIcon, iconColor, session);
       setActiveStep(SessionSteps.Flag);
@@ -82,7 +84,9 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
           else userArray = [...users, {id: user?.sub!, name: user?.name!}];
 
           localStorage.setItem('icon', personalIcon);
-          const iconColor = randomColor();
+          const iconColor = randomColor({
+            luminosity: 'dark',
+          });
 
           let teamArray = teams;
           teamArray.forEach((team) => {

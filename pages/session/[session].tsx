@@ -68,7 +68,9 @@ const JoinSession = () => {
             else userArray = [...users, {id: user?.sub!, name: user?.name!}];
     
             localStorage.setItem('icon', personalIcon);
-            const iconColor = randomColor();
+            const iconColor = randomColor({
+              luminosity: 'dark',
+            });
     
             let teamArray = teams;
             teamArray.forEach((team) => {
