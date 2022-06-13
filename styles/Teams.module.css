@@ -98,7 +98,12 @@
     height: 40px;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+}
+
+.ownTeamList li svg {
+    width: 35px;
+    margin-right: 25px;
 }
 
 .ownTeamList li:nth-child(odd) {

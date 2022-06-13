@@ -148,7 +148,7 @@ export default function useSession() {
         return sponsorArray;
     }
 
-    async function updateSession(userId: string, userArray: Array<{id: string, name: string}>, teamArray: Array<{name: string, session: string, people: number}>, name: string, icon: string, session: string | string[] | undefined) {
+    async function updateSession(userId: string, userArray: Array<{id: string, name: string}>, teamArray: Array<{name: string, session: string, people: number}>, name: string, icon: string, color: string, session: string | string[] | undefined) {
         try {
             await update(ref(db, 'sessions/' + session), {
                 users: userArray,
@@ -170,6 +170,7 @@ export default function useSession() {
             await update(ref(db, 'users/' + userId), {
                 name,
                 icon,
+                color,
                 session,
             });
         } catch (e) {

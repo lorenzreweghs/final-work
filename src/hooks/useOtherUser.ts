@@ -19,6 +19,36 @@ export default function useOtherUser() {
         return name;
     }
 
+    async function getIcon(id: string): Promise<string> {
+        let icon: string = '';
+        try {
+            await get(child(ref(db), `users/` + id + '/icon'))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    icon = snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return icon;
+    }
+
+    async function getColor(id: string): Promise<string> {
+        let color: string = '';
+        try {
+            await get(child(ref(db), `users/` + id + '/color'))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    color = snapshot.val();
+                }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+        return color;
+    }
+
     async function getTeams(): Promise<Array<{name: string, session: string, people: number}>> {
         let arr: Array<{name: string, session: string, people: number}> = [];
         try {
@@ -36,6 +66,8 @@ export default function useOtherUser() {
 
     return {
         getUserName,
+        getIcon,
+        getColor,
         getTeams,
     }
 }

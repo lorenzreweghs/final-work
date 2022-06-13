@@ -1,4 +1,5 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom/client';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import mapboxgl, { GeoJSONSource, Map } from 'mapbox-gl';
@@ -6,7 +7,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { ref, onValue, get } from "firebase/database";
 import Swal from 'sweetalert2';
-import { Error, OpenInNew } from '@mui/icons-material';
+import { Error, OpenInNew, Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture } from '@mui/icons-material';
 
 import useLocation, { db } from '../../src/hooks/useLocation';
 import useSession, { MarkerTypes } from '../../src/hooks/useSession';
@@ -31,7 +32,7 @@ const SessionMap = () => {
 
     const { updateLocation, addMarker } = useLocation();
     const { getUsersInSession, getMarkersInSession, updateUserStatus } = useSession();
-    const { getUserName } = useOtherUser();
+    const { getUserName, getIcon, getColor } = useOtherUser();
 
     const mapContainer = useRef(null);
     const map = useRef<Map | null>(null);
@@ -105,7 +106,9 @@ const SessionMap = () => {
             const checkStatus = async (userId: string) => {
                 onValue(ref(db, 'users/' + userId + '/online'), async (snapshot) => {
                     const userName = await getUserName(userId);
-                    if (snapshot.val()) addUserSource(userId, userName);
+                    const icon = await getIcon(userId);
+                    const color = await getColor(userId);
+                    if (snapshot.val()) addUserSource(userId, userName, icon, color);
                     else if (map.current!.getSource(userName)) {
                         map.current!.removeLayer(userId);
                         map.current!.removeSource(userName);
@@ -113,40 +116,45 @@ const SessionMap = () => {
                 });
             }
 
-            const addUserSource = async (userId: string, userName: string) => {                
-                await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
-                    const {lat, lng} = snapshot.val();
-                    const geojson = await getGeoJson(lat, lng);
-
-                    if (map.current!.getLayer(userId)) {
-                        map.current!.removeLayer(userId);
-                    }
-            
-                    if (map.current!.getSource(userName)) {
-                        map.current!.removeSource(userName);
-                    }
-
-                    map.current!.addSource(userName, {
-                        type: 'geojson',
-                        data: geojson
-                    });
-
-                    map.current!.addLayer({
-                        'id': userId,
-                        'type': 'symbol',
-                        'source': userName,
-                        'layout': {
-                            'icon-image': 'rocket',
-                            'icon-size': 1.5,
-                        }
-                    });
-                    layerArray.current.push(userId);
-                });
+            const addUserSource = async (userId: string, userName: string, icon: string, color: string) => {
+                const htmlElement = document.createElement('div');
+                let materialIcon;
+                switch (icon) {
+                    case 'basketball':
+                        materialIcon = <SportsBasketball fontSize='large' sx={{ color }} />;
+                        break;
+                    case 'soccer':
+                        materialIcon = <SportsSoccer fontSize='large' sx={{ color }} />;
+                        break;
+                    case 'gaming':
+                        materialIcon = <SportsEsports fontSize='large' sx={{ color }} />;
+                        break;
+                    case 'piano':
+                        materialIcon = <Piano fontSize='large' sx={{ color }} />;
+                        break;
+                    case 'tractor':
+                        materialIcon = <Agriculture fontSize='large' sx={{ color }} />;
+                        break;
+                    default:
+                        materialIcon = <SportsBar fontSize='large' sx={{ color }} />;
+                }
+                // @ts-ignore
+                const root = ReactDOM.createRoot(htmlElement);
+                root.render(materialIcon);
+                const userMarker = new mapboxgl.Marker(htmlElement);
                 
                 onValue(ref(db, 'users/' + userId + '/coords'), async (snapshot) => {
                     const {lat, lng} = snapshot.val();
-                    const geojson = await getGeoJson(lat, lng);
-                    (map.current!.getSource(userName) as GeoJSONSource).setData(geojson);
+                    userMarker
+                        .setLngLat([lng, lat])
+                        .setPopup(new mapboxgl.Popup({ 
+                            className: styles.popup,
+                            offset: [0, -22],
+                            closeButton: false,
+                            closeOnClick: true,
+                            closeOnMove: true,
+                        }).setHTML(`<h3>${userName}</h3>`))
+                        .addTo(map.current!);
                 });
             }
 
@@ -188,7 +196,16 @@ const SessionMap = () => {
                 if (coordsArray.length) {
                     coordsArray.forEach((coords) => {
                         const marker = new mapboxgl.Marker();
-                        marker.setLngLat(coords).addTo(map.current!);
+                        marker
+                            .setLngLat(coords)
+                            .setPopup(new mapboxgl.Popup({ 
+                                className: styles.popup,
+                                offset: [0, -40],
+                                closeButton: false,
+                                closeOnClick: true,
+                                closeOnMove: true,
+                            }).setHTML('<h3>Point of Interest</h3>'))
+                            .addTo(map.current!);
                     })
                 }
             }
@@ -296,7 +313,16 @@ const SessionMap = () => {
 
             const marker = new mapboxgl.Marker();
             const coords = event.lngLat;
-            marker.setLngLat(coords).addTo(map.current!);
+            marker
+            .setLngLat(coords)
+            .setPopup(new mapboxgl.Popup({ 
+                className: styles.popup,
+                offset: [0, -40],
+                closeButton: false,
+                closeOnClick: true,
+                closeOnMove: true,
+            }).setHTML('<h3>Point of Interest</h3>'))
+            .addTo(map.current!);
 
             setTimeout(() => {
                 Swal.fire({

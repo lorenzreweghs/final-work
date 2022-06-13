@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture } from '@mui/icons-material';
 import Swal from 'sweetalert2';
+import randomColor from 'randomcolor';
 
 import connectionIcon from '../../public/connection_icon_color.png';
 import useSession from '../../src/hooks/useSession';
@@ -67,13 +68,16 @@ const JoinSession = () => {
             else userArray = [...users, {id: user?.sub!, name: user?.name!}];
     
             localStorage.setItem('icon', personalIcon);
+            const iconColor = randomColor({
+              luminosity: 'dark',
+            });
     
             let teamArray = teams;
             teamArray.forEach((team) => {
                 if (team.session === currentSession && !containsUser) team.people++;
             });
     
-            await updateSession(user?.sub!, userArray, teamArray, user?.name!, personalIcon, currentSession);
+            await updateSession(user?.sub!, userArray, teamArray, user?.name!, personalIcon, iconColor, currentSession);
             router.push('/map/' + currentSession);
         } else {
             Swal.fire({

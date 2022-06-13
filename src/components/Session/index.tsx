@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { generate } from 'generate-password';
 import { useUser } from '@auth0/nextjs-auth0';
 import { Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture } from '@mui/icons-material';
+import randomColor from 'randomcolor';
 
 import connectionIcon from '../../../public/connection_icon_color.png';
 import useSession from '../../hooks/useSession';
@@ -56,8 +57,13 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
         excludeSimilarCharacters: true,
       });
       setActiveSession(session);
+      
       localStorage.setItem('icon', personalIcon);
-      await updateSession(user?.sub!, [{id: user?.sub!, name: user?.name!}], teams, user?.name!, personalIcon, session);
+      const iconColor = randomColor({
+        luminosity: 'dark',
+      });
+
+      await updateSession(user?.sub!, [{id: user?.sub!, name: user?.name!}], teams, user?.name!, personalIcon, iconColor, session);
       setActiveStep(SessionSteps.Flag);
     }
   
@@ -78,13 +84,16 @@ export const Session = ({ setActiveStep, setActiveSession }: SessionProps) => {
           else userArray = [...users, {id: user?.sub!, name: user?.name!}];
 
           localStorage.setItem('icon', personalIcon);
+          const iconColor = randomColor({
+            luminosity: 'dark',
+          });
 
           let teamArray = teams;
           teamArray.forEach((team) => {
             if (team.session === session && !containsUser) team.people++;
           });
 
-          await updateSession(user?.sub!, userArray, teamArray, user?.name!, personalIcon, session);
+          await updateSession(user?.sub!, userArray, teamArray, user?.name!, personalIcon, iconColor, session);
           router.push('/map/' + session);
         }
       }
