@@ -5,7 +5,8 @@ import { useRouter } from 'next/router';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import classNames from 'classnames';
 import { generate } from 'generate-password';
-import { Person } from '@mui/icons-material';
+import { SvgIconProps } from '@mui/material';
+import { Person, Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture, Help } from '@mui/icons-material';
 
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
@@ -21,13 +22,14 @@ const Teams = () => {
     const router = useRouter();
 
     const { getUsersInSession } = useSession();
-    const { getTeams } = useOtherUser();
+    const { getTeams, getIcon, getColor } = useOtherUser();
 
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
     const [switchPage, setSwitchPage] = useState(false);
 
     const userList = useRef<Array<{id: string, name: string}>>([]);
+    const iconArray = useRef<React.ReactElement<SvgIconProps>[]>([]);
     const [userArray, setUserArray] = useState<Array<{id: string | null, name: string}>>([]);
     const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
     const [filteredTeams, setFilteredTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
@@ -58,8 +60,31 @@ const Teams = () => {
         .then(() => {
             const localUserArray: Array<{id: string | null, name: string}> = [];
 
-            userList.current.forEach((user) => {
+            userList.current.forEach(async (user) => {
                 localUserArray.push({id: user.id, name: user.name});
+
+                const icon = await getIcon(user.id!);
+                const color = await getColor(user.id!);
+    
+                switch (icon) {
+                    case 'basketball':
+                        iconArray.current.push(<SportsBasketball fontSize='large' sx={{ color }} />);
+                        break;
+                    case 'soccer':
+                        iconArray.current.push(<SportsSoccer fontSize='large' sx={{ color }} />);
+                        break;
+                    case 'gaming':
+                        iconArray.current.push(<SportsEsports fontSize='large' sx={{ color }} />);
+                        break;
+                    case 'piano':
+                        iconArray.current.push(<Piano fontSize='large' sx={{ color }} />);
+                        break;
+                    case 'tractor':
+                        iconArray.current.push(<Agriculture fontSize='large' sx={{ color }} />);
+                        break;
+                    default:
+                        iconArray.current.push(<SportsBar fontSize='large' sx={{ color }} />);
+                }
             });
 
             for (let index = 0; index < 5 - userList.current.length; index++) {
@@ -74,7 +99,7 @@ const Teams = () => {
 
             setUserArray(localUserArray);
         });
-    }, [router.isReady, isLoading]);
+    }, [router.isReady, isLoading, getColor, getIcon]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchValue = e.target.value;
@@ -106,8 +131,11 @@ const Teams = () => {
                                 <p><i>(maximaal 5 personen)</i></p>
                             </div>
                             <ul className={styles.ownTeamList}>
-                                {userArray.map((user) => 
-                                    <li key={user.id} className={classNames({ [styles.empty]: user.name === 'Resterende plek' })}>{user.name}</li>
+                                {userArray.map((user, index) =>
+                                    <li key={user.id} className={classNames({ [styles.empty]: user.name === 'Resterende plek' })}>
+                                        {user.name === 'Resterende plek' ? <Help /> : iconArray.current[index]}
+                                        <p>{user.name}</p>
+                                    </li>
                                 )}
                             </ul>
                         </div>
