@@ -186,6 +186,19 @@ export default function useSession() {
         }
     }
 
+    async function removeSessionFromUser(userId: string, name: string, icon: string, color: string) {
+        try {
+            await update(ref(db, 'users/' + userId), {
+                name,
+                icon,
+                color,
+                session: null,
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return {
         hasSession,
         existSession,
@@ -196,5 +209,6 @@ export default function useSession() {
         getUserStatus,
         addTeamName,
         updateSession,
+        removeSessionFromUser,
     }
 }
