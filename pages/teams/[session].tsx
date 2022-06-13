@@ -34,6 +34,7 @@ const Teams = () => {
     const [userArray, setUserArray] = useState<Array<{id: string | null, name: string}>>([]);
     const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
     const [filteredTeams, setFilteredTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
+    const [teamName, setTeamName] = useState('');
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
@@ -41,13 +42,6 @@ const Teams = () => {
 
         const { session } = router.query;
         setActiveSession(session);
-
-        const getTeamsArray = async () => {
-            const teamsArray = await getTeams();
-            setTeams(teamsArray);
-            setFilteredTeams(teamsArray);
-        }
-        getTeamsArray();
         
         const checkSession = async () => {
             userList.current = await getUsersInSession(session);
@@ -79,6 +73,24 @@ const Teams = () => {
             Swal.close();
         });
     }, [router.isReady, isLoading]);
+
+    useEffect(() => {
+        if (!activeSession) return;
+
+        const getTeamsArray = async () => {
+            const teamsArray = await getTeams();
+
+            teamsArray.forEach((team, index) => {
+                if (team.session === activeSession) {
+                    setTeamName(team.name);
+                    teamsArray.splice(index, 1);
+                }
+            });
+            setTeams([...teamsArray].reverse());
+            setFilteredTeams([...teamsArray].reverse());
+        }
+        getTeamsArray();
+    }, [activeSession]);
 
     useEffect(() => {
         if (isLoading) return;
@@ -136,8 +148,9 @@ const Teams = () => {
                     <div>
                         <div className={styles.ownTeam}>
                             <div className={styles.titleDiv}>
-                                <h1>Eigen <span>teamleden</span></h1>
-                                <p><i>(maximaal 5 personen)</i></p>
+                                <h1 className={styles.title}>Eigen <span>teamleden</span></h1>
+                                <p className={styles.subTitle}><i>(maximaal 5 personen)</i></p>
+                                <p className={styles.teamName}>Teamnaam: <span>{teamName}</span></p>
                             </div>
                             <ul className={styles.ownTeamList}>
                                 {userArray.map((user, index) =>
