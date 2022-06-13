@@ -142,15 +142,19 @@ const SessionMap = () => {
                 const root = ReactDOM.createRoot(htmlElement);
                 root.render(materialIcon);
                 const userMarker = new mapboxgl.Marker(htmlElement);
-
-                await get(ref(db, 'users/' + userId + '/coords')).then(async (snapshot) => {
-                    const {lat, lng} = snapshot.val();
-                    userMarker.setLngLat([lng, lat]).addTo(map.current!);
-                });
                 
                 onValue(ref(db, 'users/' + userId + '/coords'), async (snapshot) => {
                     const {lat, lng} = snapshot.val();
-                    userMarker.setLngLat([lng, lat]).addTo(map.current!);
+                    userMarker
+                        .setLngLat([lng, lat])
+                        .setPopup(new mapboxgl.Popup({ 
+                            className: styles.popup,
+                            offset: [0, -22],
+                            closeButton: false,
+                            closeOnClick: true,
+                            closeOnMove: true,
+                        }).setHTML(`<h3>${userName}</h3>`))
+                        .addTo(map.current!);
                 });
             }
 
@@ -192,7 +196,16 @@ const SessionMap = () => {
                 if (coordsArray.length) {
                     coordsArray.forEach((coords) => {
                         const marker = new mapboxgl.Marker();
-                        marker.setLngLat(coords).addTo(map.current!);
+                        marker
+                            .setLngLat(coords)
+                            .setPopup(new mapboxgl.Popup({ 
+                                className: styles.popup,
+                                offset: [0, -40],
+                                closeButton: false,
+                                closeOnClick: true,
+                                closeOnMove: true,
+                            }).setHTML('<h3>Point of Interest</h3>'))
+                            .addTo(map.current!);
                     })
                 }
             }
@@ -300,7 +313,16 @@ const SessionMap = () => {
 
             const marker = new mapboxgl.Marker();
             const coords = event.lngLat;
-            marker.setLngLat(coords).addTo(map.current!);
+            marker
+            .setLngLat(coords)
+            .setPopup(new mapboxgl.Popup({ 
+                className: styles.popup,
+                offset: [0, -40],
+                closeButton: false,
+                closeOnClick: true,
+                closeOnMove: true,
+            }).setHTML('<h3>Point of Interest</h3>'))
+            .addTo(map.current!);
 
             setTimeout(() => {
                 Swal.fire({
