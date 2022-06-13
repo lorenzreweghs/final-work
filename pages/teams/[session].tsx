@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { generate } from 'generate-password';
 import { SvgIconProps } from '@mui/material';
 import { Person, Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture, Help } from '@mui/icons-material';
+import Swal from 'sweetalert2';
 
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
@@ -29,7 +30,7 @@ const Teams = () => {
     const [switchPage, setSwitchPage] = useState(false);
 
     const userList = useRef<Array<{id: string, name: string}>>([]);
-    const iconArray = useRef<React.ReactElement<SvgIconProps>[]>([]);
+    const [iconArray, setIconArray] = useState<React.ReactElement<SvgIconProps>[]>([]);
     const [userArray, setUserArray] = useState<Array<{id: string | null, name: string}>>([]);
     const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
     const [filteredTeams, setFilteredTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
@@ -62,29 +63,6 @@ const Teams = () => {
 
             userList.current.forEach(async (user) => {
                 localUserArray.push({id: user.id, name: user.name});
-
-                const icon = await getIcon(user.id!);
-                const color = await getColor(user.id!);
-    
-                switch (icon) {
-                    case 'basketball':
-                        iconArray.current.push(<SportsBasketball fontSize='large' sx={{ color }} />);
-                        break;
-                    case 'soccer':
-                        iconArray.current.push(<SportsSoccer fontSize='large' sx={{ color }} />);
-                        break;
-                    case 'gaming':
-                        iconArray.current.push(<SportsEsports fontSize='large' sx={{ color }} />);
-                        break;
-                    case 'piano':
-                        iconArray.current.push(<Piano fontSize='large' sx={{ color }} />);
-                        break;
-                    case 'tractor':
-                        iconArray.current.push(<Agriculture fontSize='large' sx={{ color }} />);
-                        break;
-                    default:
-                        iconArray.current.push(<SportsBar fontSize='large' sx={{ color }} />);
-                }
             });
 
             for (let index = 0; index < 5 - userList.current.length; index++) {
@@ -98,8 +76,39 @@ const Teams = () => {
             }
 
             setUserArray(localUserArray);
+            Swal.close();
         });
-    }, [router.isReady, isLoading, getColor, getIcon]);
+    }, [router.isReady, isLoading]);
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        const setIcons = async () => {
+            const icon = await getIcon(user?.sub!);
+            const color = await getColor(user?.sub!);
+
+            switch (icon) {
+                case 'basketball':
+                    setIconArray([...iconArray, <SportsBasketball key='basketball' fontSize='large' sx={{ color }} />]);
+                    break;
+                case 'soccer':
+                    setIconArray([...iconArray, <SportsSoccer key='soccer' fontSize='large' sx={{ color }} />]);
+                    break;
+                case 'gaming':
+                    setIconArray([...iconArray, <SportsEsports key='basketball' fontSize='large' sx={{ color }} />]);
+                    break;
+                case 'piano':
+                    setIconArray([...iconArray, <Piano key='basketball' fontSize='large' sx={{ color }} />]);
+                    break;
+                case 'tractor':
+                    setIconArray([...iconArray, <Agriculture key='basketball' fontSize='large' sx={{ color }} />]);
+                    break;
+                default:
+                    setIconArray([...iconArray, <SportsBar key='basketball' fontSize='large' sx={{ color }} />]);
+            }            
+        }
+        setIcons();
+    }, [isLoading])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchValue = e.target.value;
@@ -133,7 +142,7 @@ const Teams = () => {
                             <ul className={styles.ownTeamList}>
                                 {userArray.map((user, index) =>
                                     <li key={user.id} className={classNames({ [styles.empty]: user.name === 'Resterende plek' })}>
-                                        {user.name === 'Resterende plek' ? <Help /> : iconArray.current[index]}
+                                        {user.name === 'Resterende plek' ? <Help /> : iconArray[index]}
                                         <p>{user.name}</p>
                                     </li>
                                 )}

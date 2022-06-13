@@ -25,8 +25,8 @@ interface NavigationProps {
 export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps) => {
     const { user } = useUser();
     const router = useRouter();
-    const { getUsersInSession, updateSession } = useSession();
-    const { getTeams } = useOtherUser();
+    const { getUsersInSession, updateSession, removeSessionFromUser } = useSession();
+    const { getTeams, getColor } = useOtherUser();
 
     const [progressIsOpen, setProgressIsOpen] = useState(false);
 
@@ -44,7 +44,11 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
           if (team.session === activeSession) team.people--;
         });
 
-        await updateSession(user?.sub!, users, teams, user?.name!, localStorage.getItem('icon') ?? '', activeSession);
+        const icon = localStorage.getItem('icon') ?? '';
+        const color = await getColor(user?.sub!);
+
+        await updateSession(user?.sub!, users, teams, user?.name!, icon, color, activeSession);
+        await removeSessionFromUser(user?.sub!, user?.name!, icon, color);
         router.push('/session');
     }
 

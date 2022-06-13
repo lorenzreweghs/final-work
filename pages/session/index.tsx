@@ -6,12 +6,11 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Head from 'next/head';
 import classNames from 'classnames';
 
-import logo from '../../public/rock-werchter-2022.png';
-import styles from '../../styles/Session.module.css';
 import { Session } from '../../src/components/Session';
 import { Flag } from '../../src/components/Flag';
 import { Team } from '../../src/components/Team';
 import { Share } from '../../src/components/Share';
+import styles from '../../styles/Session.module.css';
 
 export enum SessionSteps {
   Session,

@@ -27,7 +27,7 @@
 
 .codeText {
     text-align: center;
-    margin: 40px 20px 0;
+    margin: 30px 20px 0;
 }
 
 .codeText span {
@@ -40,7 +40,12 @@
     font-size: var(--font-size-subTitle);
 }
 
-.button {
-    position: absolute;
-    bottom: 75px;
+.teamsButton {
+    position: fixed;
+    bottom: 22.5vh;
+}
+
+.mapButton {
+    position: fixed;
+    bottom: 12.5vh;
 }

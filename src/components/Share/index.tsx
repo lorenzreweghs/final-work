@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import supportIcon from '../../../public/support_icon_color.png';
-import { Button } from '../Button';
+import { Button, ButtonTypes } from '../Button';
 
 import styles from './Share.module.css';
 
@@ -10,7 +10,8 @@ interface ShareProps {
 }
 
 export const Share = ({ activeSession }: ShareProps) => {
-    const [loadingSpinner, setLoadingSpinner] = useState(false);
+    const [teamsLoadingSpinner, setTeamsLoadingSpinner] = useState(false);
+    const [mapLoadingSpinner, setMapLoadingSpinner] = useState(false);
 
     return (
         <div className={styles.container}>
@@ -20,8 +21,12 @@ export const Share = ({ activeSession }: ShareProps) => {
 
             <p className={styles.codeText}>Deel deze <span>unieke code</span> met je vrienden (max <span>5 personen</span> per team): <span className={styles.activeSession}>{activeSession}</span></p>
         
-            <div className={styles.button} onClick={() => setLoadingSpinner(true)}>
-                <Button href={`/map/${activeSession}`} text='Verdergaan' loadingSpinner={loadingSpinner} loadingText='Map inladen' />
+            <div className={styles.teamsButton} onClick={() => setTeamsLoadingSpinner(true)}>
+                <Button href={`/teams/${activeSession}`} text='Teams uitdagen' type={ButtonTypes.teams} loadingSpinner={teamsLoadingSpinner} loadingText='Teams inladen' />
+            </div>
+
+            <div className={styles.mapButton} onClick={() => setMapLoadingSpinner(true)}>
+                <Button href={`/map/${activeSession}`} text='Verdergaan' type={ButtonTypes.map} loadingSpinner={mapLoadingSpinner} loadingText='Map inladen' />
             </div>
         </div>
     );
