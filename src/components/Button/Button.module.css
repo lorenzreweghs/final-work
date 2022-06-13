@@ -8,6 +8,12 @@
     width: 300px;
     height: 50px;
     border-radius: 12px;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
+    padding: 0 15px;
+}
+
+.teams {
+    background-color: transparent;
+    border: 2px solid var(--color-primary);
 }
