@@ -10,24 +10,20 @@
     position: relative;
 }
 
-.imageMain h1 {
+.imageMain .title {
     margin: 0;
-    font-family: var(--font-family-highlight);
+    font-family: var(--font-family-logo);
+    font-size: 60px;
+    font-weight: 400;
+    padding-top: 25px;
     color: var(--color-secondary-light);
 }
 
 .imageMain .logo {
-    width: 300px;
-    margin-top: 50px;
+    width: 225px;
+    margin-top: 20px;
     -webkit-filter: drop-shadow(var(--shadow));
     filter: drop-shadow(var(--shadow));
-}
-
-.title {
-    font-size: 32px;
-    font-weight: 700;
-    text-align: center;
-    padding-top: 15px;
 }
 
 .subTitle {
