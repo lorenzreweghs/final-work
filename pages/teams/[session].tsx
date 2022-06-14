@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
-import useChallenge from '../../src/hooks/useChallenge';
+import useChallenge, { ChallengeType } from '../../src/hooks/useChallenge';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
 import { Search } from '../../src/components/Search';
@@ -42,6 +42,8 @@ const Teams = () => {
     const [teamName, setTeamName] = useState('');
     const [dateTime, setDateTime] = useState('');
     const [activity, setActivity] = useState('');
+    const [fromChallenges, setFromChallenges] = useState<Array<ChallengeType>>([]);
+    const [toChallenges, setToChallenges] = useState<Array<ChallengeType>>([]);
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
@@ -100,6 +102,24 @@ const Teams = () => {
     }, [activeSession]);
 
     useEffect(() => {
+        if (!teamName) return;
+
+        const getChallengeArrays = async () => {
+            const challengeArray = await getAllChallenges();
+            let fromArray: Array<ChallengeType> = [];
+            let toArray: Array<ChallengeType> = [];
+
+            challengeArray.forEach((challenge) => {
+                if (challenge.fromTeam === teamName) fromArray.push(challenge);
+                if (challenge.toTeam === teamName) toArray.push(challenge);
+            });
+            setFromChallenges(fromArray);
+            setToChallenges(toArray);
+        }
+        getChallengeArrays();
+    }, [teamName]);
+
+    useEffect(() => {
         if (isLoading) return;
 
         const setIcons = async () => {
@@ -144,13 +164,16 @@ const Teams = () => {
         e.preventDefault();
         if (!dateTime || !activity || !challengedTeam) return;
 
-        await updateChallenge(activeSession, {
+        const newChallenge = {
             fromTeam: teamName,
             toTeam: challengedTeam.name,
             dateTime,
             activity,
             isConfirmed: false,
-        });
+        };
+
+        await updateChallenge(activeSession, newChallenge);
+        setFromChallenges([...fromChallenges, newChallenge]);
 
         setModalIsOpen(false);
         setChallengedTeam(null);
