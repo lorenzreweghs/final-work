@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
@@ -14,6 +14,7 @@ import useOtherUser from '../../src/hooks/useOtherUser';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
 import { Search } from '../../src/components/Search';
+import { Modal } from '../../src/components/Modal';
 
 import styles from '../../styles/Teams.module.css';
 
@@ -28,13 +29,17 @@ const Teams = () => {
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
     const [switchPage, setSwitchPage] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const userList = useRef<Array<{id: string, name: string}>>([]);
     const [iconArray, setIconArray] = useState<React.ReactElement<SvgIconProps>[]>([]);
     const [userArray, setUserArray] = useState<Array<{id: string | null, name: string}>>([]);
     const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
     const [filteredTeams, setFilteredTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
+    const [challengedTeam, setChallengedTeam] = useState<{name: string, session: string, people: number} | null>(null);
     const [teamName, setTeamName] = useState('');
+    const [dateTime, setDateTime] = useState('');
+    const [activity, setActivity] = useState('');
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
@@ -128,6 +133,15 @@ const Teams = () => {
         setFilteredTeams(teamMatches);
     }
 
+    const handleChallenge = (team: {name: string, session: string, people: number}) => {
+        setChallengedTeam(team);
+        setModalIsOpen(true);
+    }
+
+    const handleChallengeSubmit = (e: FormEvent) => {
+        e.preventDefault();
+    } 
+
     return (
         <div className={styles.container}>
             <Head>
@@ -175,12 +189,38 @@ const Teams = () => {
                                             <Person />
                                             {team.people}
                                         </div>
-                                        <button>Uitdagen</button>
+                                        <button onClick={() => handleChallenge(team)}>Uitdagen</button>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </div>
+            }
+
+            {
+                (modalIsOpen && challengedTeam) &&
+                    <Modal onClose={() => {
+                        setModalIsOpen(false);
+                        setChallengedTeam(null);
+                    }}>
+                        <h1 className={styles.modalTitle}>Zeker dat je <span>{challengedTeam?.name}</span> wilt uitdagen?</h1>
+                        <form className={styles.modalForm} onSubmit={handleChallengeSubmit}>
+                            <label htmlFor='timeInput'>Tijdstip</label>
+                            <input type='datetime-local' className={styles.modalTime} onChange={(e) => setDateTime(e.target.value)} id='timeInput' min='2022-06-30T12:00' max='2022-07-04T12:00' required />
+                            <label htmlFor='activity'>Activiteit</label>
+                            <select onChange={(e) => setActivity(e.target.value)} className={styles.modalSelect} id='activity' required>
+                                <option value='' selected disabled hidden>Selecteer een activiteit</option>
+                                <option value='kbc'>KBC - Raden</option>
+                                <option value='winforlife'>Win for Life - Uitbeelden</option>
+                                <option value='cola'>Coca Cola - Selfie</option>
+                                <option value='twitch'>Twitch - Muziekgenres</option>
+                                <option value='jupiler'>Jupiler - Snelheid</option>
+                                <option value='stubru'>Studio Brussel - Quiz</option>
+                                <option value='redbull'>Red Bull - Behendigheid</option>
+                            </select>
+                            <input type='submit' className={styles.modalSubmit} value='Bevestigen' />                              
+                        </form>
+                    </Modal>
             }
 
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />
