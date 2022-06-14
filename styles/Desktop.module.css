@@ -8,11 +8,11 @@
 
 .title {
     margin: 0;
-    font-family: var(--font-family-highlight);
-    font-size: 32px;
-    font-weight: 700;
+    font-family: var(--font-family-logo);
+    font-size: 100px;
+    font-weight: 400;
     text-align: center;
-    padding-top: 15px;
+    padding-top: 10px;
     color: var(--color-secondary-heavy);
 }
 
