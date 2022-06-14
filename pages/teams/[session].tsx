@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
+import useChallenge from '../../src/hooks/useChallenge';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
 import { Search } from '../../src/components/Search';
@@ -25,6 +26,7 @@ const Teams = () => {
 
     const { getUsersInSession } = useSession();
     const { getTeams, getIcon, getColor } = useOtherUser();
+    const { getAllChallenges, getChallenge, updateChallenge } = useChallenge();
 
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
@@ -138,8 +140,21 @@ const Teams = () => {
         setModalIsOpen(true);
     }
 
-    const handleChallengeSubmit = (e: FormEvent) => {
+    const handleChallengeSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        if (!dateTime || !activity || !challengedTeam) return;
+
+        await updateChallenge(activeSession, {
+            fromTeam: teamName,
+            toTeam: challengedTeam.name,
+            dateTime,
+            activity,
+            isConfirmed: false,
+        });
+
+        setModalIsOpen(false);
+        setChallengedTeam(null);
+        setSwitchPage(true);
     } 
 
     return (
