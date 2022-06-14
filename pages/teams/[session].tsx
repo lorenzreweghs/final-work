@@ -203,8 +203,8 @@ const Teams = () => {
                         <div className={styles.fromChallenges}>
                             <h1>Verstuurd</h1>
                             {fromChallenges.map((challenge) =>
-                                <div key={challenge.fromTeam + challenge.toTeam} className={styles.challengeCard}>
-
+                                <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
+                                    <div className={styles.cardTop}></div>
                                 </div>
                             )}
                         </div>
@@ -212,8 +212,8 @@ const Teams = () => {
                         <div className={styles.toChallenges}>
                             <h1>Ontvangen</h1>
                             {toChallenges.map((challenge) =>
-                                <div key={challenge.toTeam + challenge.fromTeam} className={styles.challengeCard}>
-
+                                <div key={challenge.toTeam + challenge.fromTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
+                                    <div className={styles.cardTop}></div>
                                 </div>
                             )}
                         </div>
