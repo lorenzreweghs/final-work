@@ -26,7 +26,7 @@ const Teams = () => {
 
     const { getUsersInSession } = useSession();
     const { getTeams, getIcon, getColor } = useOtherUser();
-    const { getAllChallenges, getChallenge, updateChallenge } = useChallenge();
+    const { getAllChallenges, updateChallenge } = useChallenge();
 
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
@@ -42,6 +42,7 @@ const Teams = () => {
     const [teamName, setTeamName] = useState('');
     const [dateTime, setDateTime] = useState('');
     const [activity, setActivity] = useState('');
+    const [allChallenges, setAllChallenges] = useState<Array<ChallengeType>>([]);
     const [fromChallenges, setFromChallenges] = useState<Array<ChallengeType>>([]);
     const [toChallenges, setToChallenges] = useState<Array<ChallengeType>>([]);
 
@@ -113,6 +114,7 @@ const Teams = () => {
                 if (challenge.fromTeam === teamName) fromArray.push(challenge);
                 if (challenge.toTeam === teamName) toArray.push(challenge);
             });
+            setAllChallenges(challengeArray);
             setFromChallenges(fromArray);
             setToChallenges(toArray);
         }
@@ -172,7 +174,8 @@ const Teams = () => {
             isConfirmed: false,
         };
 
-        await updateChallenge(activeSession, newChallenge);
+        await updateChallenge([...allChallenges, newChallenge]);
+        setAllChallenges([...allChallenges, newChallenge]);
         setFromChallenges([...fromChallenges, newChallenge]);
 
         setModalIsOpen(false);
@@ -196,7 +199,25 @@ const Teams = () => {
             
             {
                 switchPage ? 
-                    null :
+                    <div>
+                        <div className={styles.fromChallenges}>
+                            <h1>Verstuurd</h1>
+                            {fromChallenges.map((challenge) =>
+                                <div key={challenge.fromTeam + challenge.toTeam} className={styles.challengeCard}>
+
+                                </div>
+                            )}
+                        </div>
+
+                        <div className={styles.toChallenges}>
+                            <h1>Ontvangen</h1>
+                            {toChallenges.map((challenge) =>
+                                <div key={challenge.toTeam + challenge.fromTeam} className={styles.challengeCard}>
+
+                                </div>
+                            )}
+                        </div>
+                    </div> :
                     <div>
                         <div className={styles.ownTeam}>
                             <div className={styles.titleDiv}>
@@ -246,8 +267,8 @@ const Teams = () => {
                             <label htmlFor='timeInput'>Tijdstip</label>
                             <input type='datetime-local' className={styles.modalTime} onChange={(e) => setDateTime(e.target.value)} id='timeInput' min='2022-06-30T12:00' max='2022-07-04T12:00' required />
                             <label htmlFor='activity'>Activiteit</label>
-                            <select onChange={(e) => setActivity(e.target.value)} className={styles.modalSelect} id='activity' required>
-                                <option value='' selected disabled hidden>Selecteer een activiteit</option>
+                            <select onChange={(e) => setActivity(e.target.value)} className={styles.modalSelect} id='activity' defaultValue='' required>
+                                <option value='' disabled hidden>Selecteer een activiteit</option>
                                 <option value='kbc'>KBC - Raden</option>
                                 <option value='winforlife'>Win for Life - Uitbeelden</option>
                                 <option value='cola'>Coca Cola - Selfie</option>
