@@ -27,35 +27,10 @@ export default function useChallenge() {
         return arr;
     }
 
-    async function getChallenge(session: string | string[] | undefined): Promise<ChallengeType> {
-        let obj: ChallengeType = {
-            fromTeam: '',
-            toTeam: '',
-            dateTime: '',
-            activity: '',
-            isConfirmed: false,
-        };
+    async function updateChallenge(challengeArray: Array<ChallengeType>) {
         try {
-            await get(child(ref(db), 'challenges/' + session))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    obj = snapshot.val();
-                }
-            })
-        } catch (e) {
-            console.error(e);
-        }
-        return obj;
-    }
-
-    async function updateChallenge(session: string | string[] | undefined, { fromTeam, toTeam, dateTime, activity, isConfirmed }: ChallengeType) {
-        try {
-            await update(ref(db, 'challenges/' + session), {
-                fromTeam,
-                toTeam,
-                dateTime,
-                activity,
-                isConfirmed,
+            await update(ref(db, 'challenges/'), {
+                ...challengeArray
             });
         } catch (e) {
             console.error(e);
@@ -64,7 +39,6 @@ export default function useChallenge() {
 
     return {
         getAllChallenges,
-        getChallenge,
         updateChallenge,
     };
 }
