@@ -1,7 +1,7 @@
 import { getDatabase, ref, update, get, child } from "firebase/database";
 import { app } from "../../config/firebase";
 
-interface ChallengeType {
+export interface ChallengeType {
     fromTeam: string,
     toTeam: string,
     dateTime: string,
