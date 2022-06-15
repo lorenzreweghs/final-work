@@ -6,6 +6,7 @@ export interface ChallengeType {
     toTeam: string,
     dateTime: string,
     activity: string,
+    theme: string,
     isConfirmed: boolean,
 }
 

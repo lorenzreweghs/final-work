@@ -6,7 +6,7 @@ import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import classNames from 'classnames';
 import { generate } from 'generate-password';
 import { SvgIconProps } from '@mui/material';
-import { Person, Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture, Help } from '@mui/icons-material';
+import { Person, Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture, Help, Check, Close } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 
 import useSession from '../../src/hooks/useSession';
@@ -166,11 +166,37 @@ const Teams = () => {
         e.preventDefault();
         if (!dateTime || !activity || !challengedTeam) return;
 
+        let theme = '';
+        switch (activity) {
+            case 'kbc':
+                theme = 'raden';
+                break;
+            case 'win for life':
+                theme = 'uitbeelden';
+                break;
+            case 'coca cola':
+                theme = 'selfie';
+                break;
+            case 'twitch':
+                theme = 'muziekgenres';
+                break;
+            case 'jupiler':
+                theme = 'snelheid';
+                break;
+            case 'studio brussel':
+                theme = 'quiz';
+                break;
+            case 'red bull':
+                theme = 'behendigheid';
+                break;
+        }
+
         const newChallenge = {
             fromTeam: teamName,
             toTeam: challengedTeam.name,
             dateTime,
             activity,
+            theme,
             isConfirmed: false,
         };
 
@@ -202,72 +228,93 @@ const Teams = () => {
                     <div>
                         <div className={styles.fromChallenges}>
                             <h1>Verstuurd</h1>
-                            {fromChallenges.map((challenge) => {
-                                const [date, time] = challenge.dateTime.split('T');
-                                const [year, month, day] = date.split('-');
-                                const [hour, minute] = time.split(':');
-                                let dayText = '';
-                                switch (day) {
-                                    case '30':
-                                        dayText = 'Donderdag';
-                                        break;
-                                    case '01':
-                                        dayText = 'Vrijdag';
-                                        break;
-                                    case '02':
-                                        dayText = 'Zaterdag';
-                                        break;
-                                    case '03':
-                                        dayText = 'Zondag';
-                                        break;
-                                    case '04':
-                                        dayText = 'Maandag';
-                                        break;
-                                }
-                                return (
-                                    <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
-                                        <div className={styles.cardTop}>
-                                            <p>{dayText}</p>
-                                            <p>{hour}u{minute}</p>
+                            <div className={styles.challengeCards}>
+                                {fromChallenges.map((challenge) => {
+                                    const [date, time] = challenge.dateTime.split('T');
+                                    const [year, month, day] = date.split('-');
+                                    const [hour, minute] = time.split(':');
+                                    let dayText = '';
+                                    switch (day) {
+                                        case '30':
+                                            dayText = 'DONDERDAG';
+                                            break;
+                                        case '01':
+                                            dayText = 'VRIJDAG';
+                                            break;
+                                        case '02':
+                                            dayText = 'ZATERDAG';
+                                            break;
+                                        case '03':
+                                            dayText = 'ZONDAG';
+                                            break;
+                                        case '04':
+                                            dayText = 'MAANDAG';
+                                            break;
+                                    }
+                                    return (
+                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed })}>
+                                            <div className={styles.cardTop}>
+                                                <p>{dayText}</p>
+                                                <p>{hour}u{minute}</p>
+                                            </div>
+                                            <p className={styles.cardTheme}>{challenge.theme}</p>
+                                            <p className={styles.cardTeam}>{challenge.toTeam}</p>
+                                            {
+                                                challenge.isConfirmed ?
+                                                    <button className={styles.cardButtonConfirmed}>Bevestigd</button> :
+                                                    <button className={styles.cardDelete}>Verwijderen</button>
+                                            }
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}                                
+                            </div>
                         </div>
 
                         <div className={styles.toChallenges}>
                             <h1>Ontvangen</h1>
-                            {toChallenges.map((challenge) => {
-                                const [date, time] = challenge.dateTime.split('T');
-                                const [year, month, day] = date.split('-');
-                                const [hour, minute] = time.split(':');
-                                let dayText = '';
-                                switch (day) {
-                                    case '30':
-                                        dayText = 'Donderdag';
-                                        break;
-                                    case '01':
-                                        dayText = 'Vrijdag';
-                                        break;
-                                    case '02':
-                                        dayText = 'Zaterdag';
-                                        break;
-                                    case '03':
-                                        dayText = 'Zondag';
-                                        break;
-                                    case '04':
-                                        dayText = 'Maandag';
-                                        break;
-                                }
-                                return (
-                                    <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
-                                        <div className={styles.cardTop}>
-                                            <p>{dayText}</p>
-                                            <p>{hour}u{minute}</p>
+                            <div className={styles.challengeCards}>
+                                {toChallenges.map((challenge) => {
+                                    const [date, time] = challenge.dateTime.split('T');
+                                    const [year, month, day] = date.split('-');
+                                    const [hour, minute] = time.split(':');
+                                    let dayText = '';
+                                    switch (day) {
+                                        case '30':
+                                            dayText = 'DONDERDAG';
+                                            break;
+                                        case '01':
+                                            dayText = 'VRIJDAG';
+                                            break;
+                                        case '02':
+                                            dayText = 'ZATERDAG';
+                                            break;
+                                        case '03':
+                                            dayText = 'ZONDAG';
+                                            break;
+                                        case '04':
+                                            dayText = 'MAANDAG';
+                                            break;
+                                    }
+                                    return (
+                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed })}>
+                                            <div className={styles.cardTop}>
+                                                <p>{dayText}</p>
+                                                <p>{hour}u{minute}</p>
+                                            </div>
+                                            <p className={styles.cardTheme}>{challenge.theme}</p>
+                                            <p className={styles.cardTeam}>{challenge.fromTeam}</p>
+                                            {
+                                                challenge.isConfirmed ?
+                                                    <button className={styles.cardButtonConfirmed}>Bevestigd</button> :
+                                                    <div className={styles.cardButtons}>
+                                                        <button className={styles.cardButtonConfirm}><Check fontSize='large' /></button>
+                                                        <button className={styles.cardButtonCancel}><Close fontSize='large' /></button>
+                                                    </div>   
+                                            }
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div> :
                     <div>
@@ -322,12 +369,12 @@ const Teams = () => {
                             <select onChange={(e) => setActivity(e.target.value)} className={styles.modalSelect} id='activity' defaultValue='' required>
                                 <option value='' disabled hidden>Selecteer een activiteit</option>
                                 <option value='kbc'>KBC - Raden</option>
-                                <option value='winforlife'>Win for Life - Uitbeelden</option>
-                                <option value='cola'>Coca Cola - Selfie</option>
+                                <option value='win for life'>Win for Life - Uitbeelden</option>
+                                <option value='coca cola'>Coca Cola - Selfie</option>
                                 <option value='twitch'>Twitch - Muziekgenres</option>
                                 <option value='jupiler'>Jupiler - Snelheid</option>
-                                <option value='stubru'>Studio Brussel - Quiz</option>
-                                <option value='redbull'>Red Bull - Behendigheid</option>
+                                <option value='studio brussel'>Studio Brussel - Quiz</option>
+                                <option value='red bull'>Red Bull - Behendigheid</option>
                             </select>
                             <input type='submit' className={styles.modalSubmit} value='Bevestigen' />                              
                         </form>
