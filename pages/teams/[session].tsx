@@ -202,20 +202,72 @@ const Teams = () => {
                     <div>
                         <div className={styles.fromChallenges}>
                             <h1>Verstuurd</h1>
-                            {fromChallenges.map((challenge) =>
-                                <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
-                                    <div className={styles.cardTop}></div>
-                                </div>
-                            )}
+                            {fromChallenges.map((challenge) => {
+                                const [date, time] = challenge.dateTime.split('T');
+                                const [year, month, day] = date.split('-');
+                                const [hour, minute] = time.split(':');
+                                let dayText = '';
+                                switch (day) {
+                                    case '30':
+                                        dayText = 'Donderdag';
+                                        break;
+                                    case '01':
+                                        dayText = 'Vrijdag';
+                                        break;
+                                    case '02':
+                                        dayText = 'Zaterdag';
+                                        break;
+                                    case '03':
+                                        dayText = 'Zondag';
+                                        break;
+                                    case '04':
+                                        dayText = 'Maandag';
+                                        break;
+                                }
+                                return (
+                                    <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
+                                        <div className={styles.cardTop}>
+                                            <p>{dayText}</p>
+                                            <p>{hour}u{minute}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
 
                         <div className={styles.toChallenges}>
                             <h1>Ontvangen</h1>
-                            {toChallenges.map((challenge) =>
-                                <div key={challenge.toTeam + challenge.fromTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
-                                    <div className={styles.cardTop}></div>
-                                </div>
-                            )}
+                            {toChallenges.map((challenge) => {
+                                const [date, time] = challenge.dateTime.split('T');
+                                const [year, month, day] = date.split('-');
+                                const [hour, minute] = time.split(':');
+                                let dayText = '';
+                                switch (day) {
+                                    case '30':
+                                        dayText = 'Donderdag';
+                                        break;
+                                    case '01':
+                                        dayText = 'Vrijdag';
+                                        break;
+                                    case '02':
+                                        dayText = 'Zaterdag';
+                                        break;
+                                    case '03':
+                                        dayText = 'Zondag';
+                                        break;
+                                    case '04':
+                                        dayText = 'Maandag';
+                                        break;
+                                }
+                                return (
+                                    <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.confirmed]: challenge.isConfirmed })}>
+                                        <div className={styles.cardTop}>
+                                            <p>{dayText}</p>
+                                            <p>{hour}u{minute}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div> :
                     <div>
