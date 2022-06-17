@@ -76,12 +76,17 @@ const SessionMap = () => {
     useEffect(() => {
         if (map.current) return;
         mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
+        const bounds: any = [
+            [4.664462877403139, 50.95957111623669],
+            [4.6907928637406685, 50.974050165451216]
+        ];
         map.current = new mapboxgl.Map({
             container: mapContainer.current!,
             style: 'mapbox://styles/lorenzreweghs/cl3k3d254001f14mnykkhv9ct',
             center: [lng, lat],
             zoom: zoom,
             logoPosition: 'top-right',
+            maxBounds: bounds,
         });
 
         const geolocate = new mapboxgl.GeolocateControl({
