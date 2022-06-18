@@ -8,7 +8,7 @@ import '../styles/globals.css';
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const setWindowHeight = () => {
-      document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
     }
     setWindowHeight();
     window.addEventListener('resize', setWindowHeight);
