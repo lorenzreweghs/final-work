@@ -16,6 +16,7 @@
 
 .close {
     position: fixed;
+    z-index: 101;
     top: calc(var(--vh, 1vh) * 100);
     left: 10px;
     transition: top .3s ease-in-out;
@@ -27,6 +28,7 @@
 
 .banner {
     position: fixed;
+    z-index: 100;
     background-image: url('../../../public/rock-werchter-banner.jpg');
     background-size: cover;
     background-position: center;
