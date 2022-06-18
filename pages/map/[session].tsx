@@ -534,8 +534,10 @@ const SessionMap = () => {
                 </div>
                 <ActivityProgress activeSession={activeSession} />
             </div>
-            <ProgressInfo activeSession={activeSession} setIsOpen={setProgressIsOpen} isOpen={progressIsOpen} />
-            <Information setIsOpen={setInfoIsOpen} isOpen={infoIsOpen} />
+            <div onClick={() => setActiveAction(null)}>
+                <ProgressInfo activeSession={activeSession} setIsOpen={setProgressIsOpen} isOpen={progressIsOpen} />
+                <Information setIsOpen={setInfoIsOpen} isOpen={infoIsOpen} />
+            </div>
         </div>
     );
 }
