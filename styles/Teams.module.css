@@ -261,6 +261,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: var(--font-size-smallTitle);
     font-weight: 600;
     color: var(--color-secondary-light);
     padding: 0 10px;
@@ -335,6 +336,12 @@
 
 .cardConfirmed {
     border: 2px solid var(--color-primary);
+}
+
+.cardCancelled {
+    opacity: 0.6;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
 }
 
 .challengeLogo {
