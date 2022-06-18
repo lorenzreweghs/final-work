@@ -1,5 +1,8 @@
 import { getDatabase, ref, update, get, child } from "firebase/database";
+import { Timestamp } from "firebase/firestore";
+
 import { app } from "../../config/firebase";
+import { sortOnRecent } from "../helpers/helpers";
 
 export interface ChallengeType {
     fromTeam: string,
@@ -8,6 +11,8 @@ export interface ChallengeType {
     activity: string,
     theme: string,
     isConfirmed: boolean,
+    isCancelled: boolean,
+    createdAt: Timestamp,
 }
 
 export default function useChallenge() {
@@ -20,6 +25,7 @@ export default function useChallenge() {
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     arr = snapshot.val();
+                    arr.sort(sortOnRecent);
                 }
             })
         } catch (e) {
