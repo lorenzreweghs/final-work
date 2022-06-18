@@ -2,6 +2,7 @@
     position: fixed;
     left: 10px;
     top: 10px;
+    z-index: 2;
 }
 
 .banner {
@@ -16,6 +17,7 @@
     justify-content: center;
     align-items: center;
     box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.3);
+    z-index: 1;
 }
 
 .topNav {
@@ -29,7 +31,7 @@
 .topNav p {
     width: 110px;
     text-align: center;
-    text-transform: uppercase;
+    text-transform: capitalize;
 }
 
 .topNav .activeTeams {
@@ -173,11 +175,12 @@
 .modalForm {
     display: flex;
     flex-direction: column;
-    margin-left: 25px;
+    align-items: center;
 }
 
 .modalForm label {
     margin: 20px 0 5px;
+    align-self: flex-start;
 }
 
 .modalTitle {
@@ -197,7 +200,7 @@
     border: 2px solid var(--color-primary);
     border-radius: 12px;
     height: 40px;
-    width: 300px;
+    width: 100%;
 }
 
 .modalTime:focus, .modalSelect:focus {
@@ -223,7 +226,7 @@
     font-size: var(--font-size-subTitle);
     color: var(--color-secondary-heavy);
     background-color: var(--color-primary-light);
-    width: 225px;
+    width: 60%;
     height: 50px;
     border-radius: 12px;
     justify-content: space-evenly;
@@ -239,14 +242,14 @@
 .challengeCards {
     display: grid;
     justify-content: center;
-    grid-template-columns: repeat(auto-fit, 175px);
-    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, 170px);
+    grid-gap: 15px;
     padding-bottom: 5px;
     margin: 20px 0;
 }
 
 .challengeCard {
-    width: 175px;
+    width: 170px;
     height: 250px;
     box-shadow: var(--shadow);
     border-radius: 12px;
@@ -262,8 +265,8 @@
     color: var(--color-secondary-light);
     padding: 0 10px;
     height: 50px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
 }
 
 .cardTheme {
@@ -285,7 +288,7 @@
     text-overflow: ellipsis;
 }
 
-.cardDelete {
+.cardDelete, .cardButtonConfirmed {
     position: absolute;
     bottom: 15px;
     left: 50%;
@@ -298,4 +301,46 @@
     font-weight: 700;
     font-family: var(--font-family);
     text-transform: uppercase;
+}
+
+.cardButtonConfirmed {
+    background-color: var(--color-primary);
+    color: var(--color-secondary-light);
+}
+
+.cardButtons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cardButtonConfirm, .cardButtonCancel {
+    position: absolute;
+    bottom: 15px;
+    width: 42%;
+    height: 25px;
+    border: 2px solid var(--color-primary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardButtonConfirm {
+    left: 12px;
+}
+
+.cardButtonCancel {
+    right: 12px;
+}
+
+.cardConfirmed {
+    border: 2px solid var(--color-primary);
+}
+
+.challengeLogo {
+    width: 45%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }
