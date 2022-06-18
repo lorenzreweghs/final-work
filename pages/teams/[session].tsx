@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
+import { StaticImageData } from 'next/image';
 import { useRouter } from 'next/router';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import classNames from 'classnames';
@@ -16,6 +17,7 @@ import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
 import { Search } from '../../src/components/Search';
 import { Modal } from '../../src/components/Modal';
+import { sponsors } from '../../config/sponsors';
 
 import styles from '../../styles/Teams.module.css';
 
@@ -251,6 +253,12 @@ const Teams = () => {
                                             dayText = 'MAANDAG';
                                             break;
                                     }
+
+                                    let logo: StaticImageData | null = null;
+                                    sponsors.forEach((sponsor) => {
+                                        if (sponsor.id === challenge.activity) logo = sponsor.logo;
+                                    });
+
                                     return (
                                         <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed })}>
                                             <div className={styles.cardTop}>
@@ -258,6 +266,7 @@ const Teams = () => {
                                                 <p>{hour}u{minute}</p>
                                             </div>
                                             <p className={styles.cardTheme}>{challenge.theme}</p>
+                                            <img className={styles.challengeLogo} src={logo!.src} alt='sponsor logo' width='100%' height='auto' />
                                             <p className={styles.cardTeam}>{challenge.toTeam}</p>
                                             {
                                                 challenge.isConfirmed ?
@@ -295,6 +304,12 @@ const Teams = () => {
                                             dayText = 'MAANDAG';
                                             break;
                                     }
+
+                                    let logo: StaticImageData | null = null;
+                                    sponsors.forEach((sponsor) => {
+                                        if (sponsor.id === challenge.activity) logo = sponsor.logo;
+                                    });
+
                                     return (
                                         <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed })}>
                                             <div className={styles.cardTop}>
@@ -302,14 +317,15 @@ const Teams = () => {
                                                 <p>{hour}u{minute}</p>
                                             </div>
                                             <p className={styles.cardTheme}>{challenge.theme}</p>
+                                            <img className={styles.challengeLogo} src={logo!.src} alt='sponsor logo' width='100%' height='auto' />
                                             <p className={styles.cardTeam}>{challenge.fromTeam}</p>
                                             {
                                                 challenge.isConfirmed ?
                                                     <button className={styles.cardButtonConfirmed}>Bevestigd</button> :
                                                     <div className={styles.cardButtons}>
-                                                        <button className={styles.cardButtonConfirm}><Check fontSize='large' /></button>
-                                                        <button className={styles.cardButtonCancel}><Close fontSize='large' /></button>
-                                                    </div>   
+                                                        <button className={styles.cardButtonConfirm}><Check /></button>
+                                                        <button className={styles.cardButtonCancel}><Close /></button>
+                                                    </div>
                                             }
                                         </div>
                                     );
