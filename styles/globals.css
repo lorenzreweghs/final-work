@@ -32,6 +32,7 @@ body {
   margin: 0;
   font-family: var(--font-family);
   color: var(--color-secondary-heavy);
+  position: relative;
 }
 
 a {
