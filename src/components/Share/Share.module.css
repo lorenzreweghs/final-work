@@ -10,6 +10,7 @@
     font-size: var(--font-size-subTitle);
     font-weight: 700;
     margin: 0 20px;
+    text-align: center;
 }
 
 .subTitle {
