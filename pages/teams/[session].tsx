@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { StaticImageData } from 'next/image';
 import { useRouter } from 'next/router';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { Timestamp } from 'firebase/firestore';
 import classNames from 'classnames';
 import { generate } from 'generate-password';
 import { SvgIconProps } from '@mui/material';
@@ -18,6 +19,7 @@ import { Action, ActionTypes } from '../../src/components/Action';
 import { Search } from '../../src/components/Search';
 import { Modal } from '../../src/components/Modal';
 import { sponsors } from '../../config/sponsors';
+import { sortOnRecent } from '../../src/helpers/helpers';
 
 import styles from '../../styles/Teams.module.css';
 
@@ -200,16 +202,44 @@ const Teams = () => {
             activity,
             theme,
             isConfirmed: false,
+            isCancelled: false,
+            createdAt: Timestamp.now(),
         };
 
         await updateChallenge([...allChallenges, newChallenge]);
-        setAllChallenges([...allChallenges, newChallenge]);
-        setFromChallenges([...fromChallenges, newChallenge]);
+        setAllChallenges([...allChallenges, newChallenge].sort(sortOnRecent));
+        setFromChallenges([...fromChallenges, newChallenge].sort(sortOnRecent));
 
         setModalIsOpen(false);
         setChallengedTeam(null);
         setSwitchPage(true);
-    } 
+    }
+
+    const handleChallengeAction = async (challenge: ChallengeType, action: string) => {
+        if (challenge.isConfirmed || challenge.isCancelled) return;
+
+        const allChallengesArray = allChallenges;
+
+        allChallengesArray.forEach((challengeState: ChallengeType) => {
+            if (challengeState.activity === challenge.activity) {
+                if (action === 'confirm') challengeState.isConfirmed = true;
+                else if (action === 'cancel') challengeState.isCancelled = true;
+            }
+        });
+
+        let fromArray: Array<ChallengeType> = [];
+        let toArray: Array<ChallengeType> = [];
+
+        allChallengesArray.forEach((challenge) => {
+            if (challenge.fromTeam === teamName) fromArray.push(challenge);
+            if (challenge.toTeam === teamName) toArray.push(challenge);
+        });
+
+        await updateChallenge(allChallengesArray);
+        setAllChallenges(allChallengesArray);
+        setFromChallenges(fromArray);
+        setToChallenges(toArray);
+    }
 
     return (
         <div className={styles.container}>
@@ -229,7 +259,10 @@ const Teams = () => {
                 switchPage ? 
                     <div>
                         <div className={styles.fromChallenges}>
-                            <h1>Verstuurd</h1>
+                            {
+                                fromChallenges.length ?
+                                    <h1>Verstuurd</h1> : null
+                            }
                             <div className={styles.challengeCards}>
                                 {fromChallenges.map((challenge) => {
                                     const [date, time] = challenge.dateTime.split('T');
@@ -260,7 +293,7 @@ const Teams = () => {
                                     });
 
                                     return (
-                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed })}>
+                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed, [styles.cardCancelled]: challenge.isCancelled })}>
                                             <div className={styles.cardTop}>
                                                 <p>{dayText}</p>
                                                 <p>{hour}u{minute}</p>
@@ -269,9 +302,9 @@ const Teams = () => {
                                             <img className={styles.challengeLogo} src={logo!.src} alt='sponsor logo' width='100%' height='auto' />
                                             <p className={styles.cardTeam}>{challenge.toTeam}</p>
                                             {
-                                                challenge.isConfirmed ?
-                                                    <button className={styles.cardButtonConfirmed}>Bevestigd</button> :
-                                                    <button className={styles.cardDelete}>Verwijderen</button>
+                                                (challenge.isConfirmed || challenge.isCancelled) ?
+                                                    <button className={styles.cardButtonConfirmed}>{challenge.isCancelled ? 'Geannuleerd' : 'Bevestigd'}</button> :
+                                                    <button className={styles.cardDelete} onClick={() => handleChallengeAction(challenge, 'cancel')}>Annuleren</button>
                                             }
                                         </div>
                                     );
@@ -280,7 +313,10 @@ const Teams = () => {
                         </div>
 
                         <div className={styles.toChallenges}>
-                            <h1>Ontvangen</h1>
+                            {
+                                toChallenges.length ?
+                                    <h1>Ontvangen</h1> : null
+                            }
                             <div className={styles.challengeCards}>
                                 {toChallenges.map((challenge) => {
                                     const [date, time] = challenge.dateTime.split('T');
@@ -311,7 +347,7 @@ const Teams = () => {
                                     });
 
                                     return (
-                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed })}>
+                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed, [styles.cardCancelled]: challenge.isCancelled })}>
                                             <div className={styles.cardTop}>
                                                 <p>{dayText}</p>
                                                 <p>{hour}u{minute}</p>
@@ -320,11 +356,11 @@ const Teams = () => {
                                             <img className={styles.challengeLogo} src={logo!.src} alt='sponsor logo' width='100%' height='auto' />
                                             <p className={styles.cardTeam}>{challenge.fromTeam}</p>
                                             {
-                                                challenge.isConfirmed ?
-                                                    <button className={styles.cardButtonConfirmed}>Bevestigd</button> :
+                                                (challenge.isConfirmed || challenge.isCancelled) ?
+                                                    <button className={styles.cardButtonConfirmed}>{challenge.isCancelled ? 'Geannuleerd' : 'Bevestigd'}</button> :
                                                     <div className={styles.cardButtons}>
-                                                        <button className={styles.cardButtonConfirm}><Check /></button>
-                                                        <button className={styles.cardButtonCancel}><Close /></button>
+                                                        <button className={styles.cardButtonConfirm} onClick={() => handleChallengeAction(challenge, 'confirm')}><Check /></button>
+                                                        <button className={styles.cardButtonCancel} onClick={() => handleChallengeAction(challenge, 'cancel')}><Close /></button>
                                                     </div>
                                             }
                                         </div>
