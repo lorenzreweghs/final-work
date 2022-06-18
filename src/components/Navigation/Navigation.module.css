@@ -6,6 +6,7 @@
     left: -425px;
     z-index: 99;
     transition: left .3s ease-in-out;
+    user-select: none;
 }
 
 .open {
