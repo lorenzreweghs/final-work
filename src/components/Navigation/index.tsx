@@ -103,8 +103,6 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
                     </Link>
                 </div>
 
-                <img className={styles.logo} src={logo.src} alt='rock werchter 2022 logo' width='100%' height='auto' />
-
                 <div className={styles.leave} onClick={handleLeave}>
                     <ExitToApp sx={{ fontSize: 44 }} />
                     <p>SESSIE VERLATEN</p>
