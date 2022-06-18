@@ -1,8 +1,8 @@
 .container {
     width: 100vw;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     position: fixed;
-    bottom: -100vh;
+    bottom: calc(var(--vh, 1vh) * -100);
     left: 0;
     z-index: 9;
     background-color: #ffffff;
@@ -16,7 +16,7 @@
 
 .close {
     position: fixed;
-    top: 100vh;
+    top: calc(var(--vh, 1vh) * 100);
     left: 10px;
     transition: top .3s ease-in-out;
 }

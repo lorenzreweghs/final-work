@@ -1,6 +1,6 @@
 .map {
     width: 100vw;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     position: relative;
 }
 
@@ -27,7 +27,7 @@
     justify-content: space-evenly;
     align-items: center;
     position: absolute;
-    z-index: 10;
+    z-index: 8;
     top: 80px;
     width: 94vw;
     height: 45px;
@@ -54,7 +54,7 @@
 
 .progressDiv {
     padding: 0 10px;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100vw;
     height: 80px;

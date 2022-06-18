@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 @font-face {
   font-family: 'Retro Graphics';
-  src: url('../public/fonts/retro-graphics.regular.ttf');
+  src: url('/fonts/retro-graphics.regular.ttf') format("truetype");
+  font-weight: 400;
 }
 
 /* GLOBAL VARIABLES */

@@ -32,11 +32,12 @@
 
 .teamInput {
     width: 300px;
-    height: 40px;
+    height: 45px;
     border: 2px solid var(--color-secondary-heavy);
     border-radius: 12px;
     padding: 10px;
     font-family: var(--font-family);
+    font-size: 16px;
     margin-top: 50px;
 }
 
@@ -56,6 +57,6 @@
     border: none;
     border-radius: 12px;
     font-family: var(--font-family);
-    position: absolute;
-    bottom: 75px;
+    position: fixed;
+    bottom: 100px;
 }
