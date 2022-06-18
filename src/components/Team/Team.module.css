@@ -57,6 +57,6 @@
     border: none;
     border-radius: 12px;
     font-family: var(--font-family);
-    position: fixed;
-    bottom: 100px;
+    position: absolute;
+    bottom: 50px;
 }

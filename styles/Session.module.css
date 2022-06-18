@@ -1,3 +1,9 @@
+.container {
+    width: 100vw;
+    height: calc(var(--vh, 1vh) * 100);
+    position: relative;
+}
+
 .banner {
     position: fixed;
     top: 0;
@@ -13,8 +19,8 @@
 }
 
 .pagination {
-    position: fixed;
-    bottom: 25px;
+    position: absolute;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
 }
