@@ -1,19 +1,25 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
+import { StaticImageData } from 'next/image';
 import { useRouter } from 'next/router';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { Timestamp } from 'firebase/firestore';
 import classNames from 'classnames';
 import { generate } from 'generate-password';
 import { SvgIconProps } from '@mui/material';
-import { Person, Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture, Help } from '@mui/icons-material';
+import { Person, Piano, SportsBasketball, SportsSoccer, SportsEsports, SportsBar, Agriculture, Help, Check, Close } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 
 import useSession from '../../src/hooks/useSession';
 import useOtherUser from '../../src/hooks/useOtherUser';
+import useChallenge, { ChallengeType } from '../../src/hooks/useChallenge';
 import { Navigation } from '../../src/components/Navigation';
 import { Action, ActionTypes } from '../../src/components/Action';
 import { Search } from '../../src/components/Search';
+import { Modal } from '../../src/components/Modal';
+import { sponsors } from '../../config/sponsors';
+import { sortOnRecent } from '../../src/helpers/helpers';
 
 import styles from '../../styles/Teams.module.css';
 
@@ -24,17 +30,25 @@ const Teams = () => {
 
     const { getUsersInSession } = useSession();
     const { getTeams, getIcon, getColor } = useOtherUser();
+    const { getAllChallenges, updateChallenge } = useChallenge();
 
     const [activeSession, setActiveSession] = useState<string | string[] | undefined>('');
     const [navIsOpen, setNavIsOpen] = useState(false);
     const [switchPage, setSwitchPage] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const userList = useRef<Array<{id: string, name: string}>>([]);
     const [iconArray, setIconArray] = useState<React.ReactElement<SvgIconProps>[]>([]);
     const [userArray, setUserArray] = useState<Array<{id: string | null, name: string}>>([]);
     const [teams, setTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
     const [filteredTeams, setFilteredTeams] = useState<Array<{name: string, session: string, people: number}>>([]);
+    const [challengedTeam, setChallengedTeam] = useState<{name: string, session: string, people: number} | null>(null);
     const [teamName, setTeamName] = useState('');
+    const [dateTime, setDateTime] = useState('');
+    const [activity, setActivity] = useState('');
+    const [allChallenges, setAllChallenges] = useState<Array<ChallengeType>>([]);
+    const [fromChallenges, setFromChallenges] = useState<Array<ChallengeType>>([]);
+    const [toChallenges, setToChallenges] = useState<Array<ChallengeType>>([]);
 
     useEffect(() => {
         if (!router.isReady || isLoading) return;
@@ -93,6 +107,25 @@ const Teams = () => {
     }, [activeSession]);
 
     useEffect(() => {
+        if (!teamName) return;
+
+        const getChallengeArrays = async () => {
+            const challengeArray = await getAllChallenges();
+            let fromArray: Array<ChallengeType> = [];
+            let toArray: Array<ChallengeType> = [];
+
+            challengeArray.forEach((challenge) => {
+                if (challenge.fromTeam === teamName) fromArray.push(challenge);
+                if (challenge.toTeam === teamName) toArray.push(challenge);
+            });
+            setAllChallenges(challengeArray);
+            setFromChallenges(fromArray);
+            setToChallenges(toArray);
+        }
+        getChallengeArrays();
+    }, [teamName]);
+
+    useEffect(() => {
         if (isLoading) return;
 
         const setIcons = async () => {
@@ -128,6 +161,86 @@ const Teams = () => {
         setFilteredTeams(teamMatches);
     }
 
+    const handleChallenge = (team: {name: string, session: string, people: number}) => {
+        setChallengedTeam(team);
+        setModalIsOpen(true);
+    }
+
+    const handleChallengeSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        if (!dateTime || !activity || !challengedTeam) return;
+
+        let theme = '';
+        switch (activity) {
+            case 'kbc':
+                theme = 'raden';
+                break;
+            case 'win for life':
+                theme = 'uitbeelden';
+                break;
+            case 'coca cola':
+                theme = 'selfie';
+                break;
+            case 'twitch':
+                theme = 'muziekgenres';
+                break;
+            case 'jupiler':
+                theme = 'snelheid';
+                break;
+            case 'studio brussel':
+                theme = 'quiz';
+                break;
+            case 'red bull':
+                theme = 'behendigheid';
+                break;
+        }
+
+        const newChallenge = {
+            fromTeam: teamName,
+            toTeam: challengedTeam.name,
+            dateTime,
+            activity,
+            theme,
+            isConfirmed: false,
+            isCancelled: false,
+            createdAt: Timestamp.now(),
+        };
+
+        await updateChallenge([...allChallenges, newChallenge]);
+        setAllChallenges([...allChallenges, newChallenge].sort(sortOnRecent));
+        setFromChallenges([...fromChallenges, newChallenge].sort(sortOnRecent));
+
+        setModalIsOpen(false);
+        setChallengedTeam(null);
+        setSwitchPage(true);
+    }
+
+    const handleChallengeAction = async (challenge: ChallengeType, action: string) => {
+        if (challenge.isConfirmed || challenge.isCancelled) return;
+
+        const allChallengesArray = allChallenges;
+
+        allChallengesArray.forEach((challengeState: ChallengeType) => {
+            if (challengeState.activity === challenge.activity) {
+                if (action === 'confirm') challengeState.isConfirmed = true;
+                else if (action === 'cancel') challengeState.isCancelled = true;
+            }
+        });
+
+        let fromArray: Array<ChallengeType> = [];
+        let toArray: Array<ChallengeType> = [];
+
+        allChallengesArray.forEach((challenge) => {
+            if (challenge.fromTeam === teamName) fromArray.push(challenge);
+            if (challenge.toTeam === teamName) toArray.push(challenge);
+        });
+
+        await updateChallenge(allChallengesArray);
+        setAllChallenges(allChallengesArray);
+        setFromChallenges(fromArray);
+        setToChallenges(toArray);
+    }
+
     return (
         <div className={styles.container}>
             <Head>
@@ -144,7 +257,118 @@ const Teams = () => {
             
             {
                 switchPage ? 
-                    null :
+                    <div>
+                        <div className={styles.fromChallenges}>
+                            {
+                                fromChallenges.length ?
+                                    <h1>Verstuurd</h1> : null
+                            }
+                            <div className={styles.challengeCards}>
+                                {fromChallenges.map((challenge) => {
+                                    const [date, time] = challenge.dateTime.split('T');
+                                    const [year, month, day] = date.split('-');
+                                    const [hour, minute] = time.split(':');
+                                    let dayText = '';
+                                    switch (day) {
+                                        case '30':
+                                            dayText = 'DONDERDAG';
+                                            break;
+                                        case '01':
+                                            dayText = 'VRIJDAG';
+                                            break;
+                                        case '02':
+                                            dayText = 'ZATERDAG';
+                                            break;
+                                        case '03':
+                                            dayText = 'ZONDAG';
+                                            break;
+                                        case '04':
+                                            dayText = 'MAANDAG';
+                                            break;
+                                    }
+
+                                    let logo: StaticImageData | null = null;
+                                    sponsors.forEach((sponsor) => {
+                                        if (sponsor.id === challenge.activity) logo = sponsor.logo;
+                                    });
+
+                                    return (
+                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed, [styles.cardCancelled]: challenge.isCancelled })}>
+                                            <div className={styles.cardTop}>
+                                                <p>{dayText}</p>
+                                                <p>{hour}u{minute}</p>
+                                            </div>
+                                            <p className={styles.cardTheme}>{challenge.theme}</p>
+                                            <img className={styles.challengeLogo} src={logo!.src} alt='sponsor logo' width='100%' height='auto' />
+                                            <p className={styles.cardTeam}>{challenge.toTeam}</p>
+                                            {
+                                                (challenge.isConfirmed || challenge.isCancelled) ?
+                                                    <button className={styles.cardButtonConfirmed}>{challenge.isCancelled ? 'Geannuleerd' : 'Bevestigd'}</button> :
+                                                    <button className={styles.cardDelete} onClick={() => handleChallengeAction(challenge, 'cancel')}>Annuleren</button>
+                                            }
+                                        </div>
+                                    );
+                                })}                                
+                            </div>
+                        </div>
+
+                        <div className={styles.toChallenges}>
+                            {
+                                toChallenges.length ?
+                                    <h1>Ontvangen</h1> : null
+                            }
+                            <div className={styles.challengeCards}>
+                                {toChallenges.map((challenge) => {
+                                    const [date, time] = challenge.dateTime.split('T');
+                                    const [year, month, day] = date.split('-');
+                                    const [hour, minute] = time.split(':');
+                                    let dayText = '';
+                                    switch (day) {
+                                        case '30':
+                                            dayText = 'DONDERDAG';
+                                            break;
+                                        case '01':
+                                            dayText = 'VRIJDAG';
+                                            break;
+                                        case '02':
+                                            dayText = 'ZATERDAG';
+                                            break;
+                                        case '03':
+                                            dayText = 'ZONDAG';
+                                            break;
+                                        case '04':
+                                            dayText = 'MAANDAG';
+                                            break;
+                                    }
+
+                                    let logo: StaticImageData | null = null;
+                                    sponsors.forEach((sponsor) => {
+                                        if (sponsor.id === challenge.activity) logo = sponsor.logo;
+                                    });
+
+                                    return (
+                                        <div key={challenge.fromTeam + challenge.toTeam} className={classNames(styles.challengeCard, { [styles.cardConfirmed]: challenge.isConfirmed, [styles.cardCancelled]: challenge.isCancelled })}>
+                                            <div className={styles.cardTop}>
+                                                <p>{dayText}</p>
+                                                <p>{hour}u{minute}</p>
+                                            </div>
+                                            <p className={styles.cardTheme}>{challenge.theme}</p>
+                                            <img className={styles.challengeLogo} src={logo!.src} alt='sponsor logo' width='100%' height='auto' />
+                                            <p className={styles.cardTeam}>{challenge.fromTeam}</p>
+                                            {
+                                                (challenge.isConfirmed || challenge.isCancelled) ?
+                                                    <button className={styles.cardButtonConfirmed}>{challenge.isCancelled ? 'Geannuleerd' : 'Bevestigd'}</button> :
+                                                    <div className={styles.cardButtons}>
+                                                        <button className={styles.cardButtonConfirm} onClick={() => handleChallengeAction(challenge, 'confirm')}><Check /></button>
+                                                        <button className={styles.cardButtonCancel} onClick={() => handleChallengeAction(challenge, 'cancel')}><Close /></button>
+                                                    </div>
+                                            }
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div> :
                     <div>
                         <div className={styles.ownTeam}>
                             <div className={styles.titleDiv}>
@@ -175,12 +399,38 @@ const Teams = () => {
                                             <Person />
                                             {team.people}
                                         </div>
-                                        <button>Uitdagen</button>
+                                        <button onClick={() => handleChallenge(team)}>Uitdagen</button>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </div>
+            }
+
+            {
+                (modalIsOpen && challengedTeam) &&
+                    <Modal onClose={() => {
+                        setModalIsOpen(false);
+                        setChallengedTeam(null);
+                    }}>
+                        <h1 className={styles.modalTitle}>Zeker dat je <span>{challengedTeam?.name}</span> wilt uitdagen?</h1>
+                        <form className={styles.modalForm} onSubmit={handleChallengeSubmit}>
+                            <label htmlFor='timeInput'>Tijdstip</label>
+                            <input type='datetime-local' className={styles.modalTime} onChange={(e) => setDateTime(e.target.value)} id='timeInput' min='2022-06-30T12:00' max='2022-07-04T12:00' required />
+                            <label htmlFor='activity'>Activiteit</label>
+                            <select onChange={(e) => setActivity(e.target.value)} className={styles.modalSelect} id='activity' defaultValue='' required>
+                                <option value='' disabled hidden>Selecteer een activiteit</option>
+                                <option value='kbc'>KBC - Raden</option>
+                                <option value='win for life'>Win for Life - Uitbeelden</option>
+                                <option value='coca cola'>Coca Cola - Selfie</option>
+                                <option value='twitch'>Twitch - Muziekgenres</option>
+                                <option value='jupiler'>Jupiler - Snelheid</option>
+                                <option value='studio brussel'>Studio Brussel - Quiz</option>
+                                <option value='red bull'>Red Bull - Behendigheid</option>
+                            </select>
+                            <input type='submit' className={styles.modalSubmit} value='Bevestigen' />                              
+                        </form>
+                    </Modal>
             }
 
             <Navigation activeSession={activeSession} setIsOpen={setNavIsOpen} isOpen={navIsOpen} />

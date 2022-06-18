@@ -1,5 +1,9 @@
 import React from "react";
 import { StaticImageData } from "next/image";
+import { Timestamp } from "firebase/firestore";
+
+import { ActivityType } from "../hooks/useProgress";
+import { ChallengeType } from "../hooks/useChallenge";
 
 export const getGeoJson = (lat: number, lng: number): any => {
     return {
@@ -52,4 +56,57 @@ export const addSourceWithImage = (map: React.MutableRefObject<mapboxgl.Map | nu
         });
         layerArray.push(`${id}-layer`);
     });
+}
+
+export const sortOnLast = (a: ActivityType, b: ActivityType) => {
+    if (!a.completedAt && !b.completedAt) return 0;
+    if (!a.completedAt && b.completedAt) return 1;
+    if (a.completedAt && !b.completedAt) return -1;
+    if (
+        new Timestamp(a.completedAt!.seconds, a.completedAt!.nanoseconds)
+          .toDate()
+          .getTime() >
+        new Timestamp(b.completedAt!.seconds, b.completedAt!.nanoseconds)
+          .toDate()
+          .getTime()
+      ) {
+        return 1;
+      }
+      if (
+        new Timestamp(a.completedAt!.seconds, a.completedAt!.nanoseconds)
+          .toDate()
+          .getTime() <
+        new Timestamp(b.completedAt!.seconds, b.completedAt!.nanoseconds)
+          .toDate()
+          .getTime()
+      ) {
+        return -1;
+      }
+    return 0;
+}
+
+export const sortOnRecent = (a: ChallengeType, b: ChallengeType) => {
+    if (!a.isConfirmed && b.isConfirmed) return 1;
+    if (a.isConfirmed && !b.isConfirmed) return -1;
+    if (
+        new Timestamp(a.createdAt.seconds, a.createdAt.nanoseconds)
+          .toDate()
+          .getTime() >
+        new Timestamp(b.createdAt.seconds, b.createdAt.nanoseconds)
+          .toDate()
+          .getTime()
+      ) {
+        return -1;
+      }
+      if (
+        new Timestamp(a.createdAt.seconds, a.createdAt.nanoseconds)
+          .toDate()
+          .getTime() <
+        new Timestamp(b.createdAt.seconds, b.createdAt.nanoseconds)
+          .toDate()
+          .getTime()
+      ) {
+        return 1;
+      }
+    return 0;
 }
