@@ -3,6 +3,7 @@
     flex-direction: column;
     align-items: center;
     height: calc(var(--vh, 1vh) * 100);
+    width: 100vw;
 }
 
 .title {
@@ -20,12 +21,12 @@
 .flagIcon {
     width: 45px;
     height: auto;
-    margin-top: 105px;
-    margin-bottom: 15px;
+    margin-top: 25%;
+    margin-bottom: 5%;
 }
 
 .map {
     width: 95vw;
-    height: 70%;
+    height: 100%;
     margin: 15px;
 }

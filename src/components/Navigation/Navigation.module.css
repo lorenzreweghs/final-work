@@ -75,6 +75,9 @@
     background-size: cover;
     background-position: center;
     height: 64.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .map a, .teams a, .invite a, .logout a {
@@ -99,8 +102,7 @@
 .logout {
     color: var(--color-secondary-light);
     text-shadow: var(--shadow);
-    position: fixed;
-    bottom: 15px;
+    padding-bottom: 15px;
 }
 
 .leave {

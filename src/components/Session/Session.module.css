@@ -26,7 +26,7 @@
 }
 
 .iconForm .iconTitle {
-    margin-top: 40px;
+    margin-top: 8%;
     text-align: center;
     font-size: var(--font-size-smallTitle);
     font-weight: 600;
@@ -64,7 +64,7 @@
 
 .codeDiv {
     margin: auto;
-    margin-top: 40px;
+    margin-top: 8%;
     width: 300px;
     height: 50px;
     border: 2px solid var(--color-primary);
@@ -105,7 +105,7 @@
     justify-content: center;
     align-items: center;
     border: none;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     font-family: var(--font-family);
 }
 
@@ -119,8 +119,8 @@
 .connectionIcon {
     width: 120px;
     height: auto;
-    margin-top: 105px;
-    margin-bottom: 30px;
+    margin-top: 25%;
+    margin-bottom: 5%;
 }
 
 .lastSession {

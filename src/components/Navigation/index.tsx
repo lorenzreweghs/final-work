@@ -78,35 +78,38 @@ export const Navigation = ({ activeSession, setIsOpen, isOpen }: NavigationProps
             </div>
 
             <nav className={styles.navigation}>
-                <div className={styles.map} onClick={() => setIsOpen(false)}>
-                    <Link href={`/map/${activeSession}`}>
-                        <a>
-                            <MapOutlined sx={{ fontSize: 44 }} />
-                            <p>KAART</p>
-                        </a>                        
-                    </Link>
-                </div>
-                <div className={styles.teams} onClick={() => setIsOpen(false)}>
-                    <Link href={`/teams/${activeSession}`}>
-                        <a>
-                            <GroupsOutlined sx={{ fontSize: 44 }} />
-                            <p>TEAMS</p>
-                        </a>
-                    </Link>
-                </div>
-                <div className={styles.invite} onClick={() => setIsOpen(false)}>
-                    <Link href={`/invite/${activeSession}`}>
-                        <a>
-                            <ShareOutlined sx={{ fontSize: 44 }} />
-                            <p>UITNODIGEN</p>
-                        </a>
-                    </Link>
+                <div>
+                    <div className={styles.map} onClick={() => setIsOpen(false)}>
+                        <Link href={`/map/${activeSession}`}>
+                            <a>
+                                <MapOutlined sx={{ fontSize: 44 }} />
+                                <p>KAART</p>
+                            </a>                        
+                        </Link>
+                    </div>
+                    <div className={styles.teams} onClick={() => setIsOpen(false)}>
+                        <Link href={`/teams/${activeSession}`}>
+                            <a>
+                                <GroupsOutlined sx={{ fontSize: 44 }} />
+                                <p>TEAMS</p>
+                            </a>
+                        </Link>
+                    </div>
+                    <div className={styles.invite} onClick={() => setIsOpen(false)}>
+                        <Link href={`/invite/${activeSession}`}>
+                            <a>
+                                <ShareOutlined sx={{ fontSize: 44 }} />
+                                <p>UITNODIGEN</p>
+                            </a>
+                        </Link>
+                    </div>
+
+                    <div className={styles.leave} onClick={handleLeave}>
+                        <ExitToApp sx={{ fontSize: 44 }} />
+                        <p>SESSIE VERLATEN</p>
+                    </div>                    
                 </div>
 
-                <div className={styles.leave} onClick={handleLeave}>
-                    <ExitToApp sx={{ fontSize: 44 }} />
-                    <p>SESSIE VERLATEN</p>
-                </div>
 
                 <div className={styles.logout}>
                     <a href='/api/auth/logout'>
