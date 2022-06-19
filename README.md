@@ -13,7 +13,7 @@ git clone https://github.com/lorenzreweghs/final-work.git
 cd .\final-work\
 ```
 
-Maak een .env file aan op basis van .env.template
+Maak een .env.local file aan op basis van .env.template
 <br><br>
 Start vervolgens de server lokaal met het volgende commando:
 
