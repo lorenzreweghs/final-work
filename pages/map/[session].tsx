@@ -251,7 +251,11 @@ const SessionMap = () => {
         const handleGather = async (event: mapboxgl.MapMouseEvent) => {
             const coords = event.lngLat;
             const geojson = await getGeoJson(coords.lat, coords.lng);
-            (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
+            if (map.current!.getSource('flag')) {
+                (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
+            } else {
+                addSourceWithImage(map, flagIcon, 'flag', {lng: coords.lng, lat: coords.lat}, layerArray.current, 0.25, 0);
+            }
 
             setTimeout(() => {
                 Swal.fire({
@@ -268,8 +272,13 @@ const SessionMap = () => {
                         await addMarker(activeSession, [{lng: coords.lng, lat: coords.lat}], true);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         const [coords] = await getMarkersInSession(activeSession, MarkerTypes.flag);
-                        const geojson = await getGeoJson(coords.lat, coords.lng);
-                        (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);
+                        if (coords) {
+                            const geojson = await getGeoJson(coords.lat, coords.lng);
+                            (map.current!.getSource('flag') as GeoJSONSource).setData(geojson);                            
+                        } else {
+                            map.current!.removeLayer('flag-layer');
+                            map.current!.removeSource('flag');
+                        }
                     }
                     setActiveAction(null);
                 });
