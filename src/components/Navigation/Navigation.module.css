@@ -29,9 +29,9 @@
 }
 
 .name {
-    margin-left: 25px;
+    margin-left: 20px;
     font-weight: 600;
-    max-width: 170px;
+    max-width: 175px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
