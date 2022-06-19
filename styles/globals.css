@@ -47,3 +47,7 @@ a {
 .swal2-actions button {
   font-family: var(--font-family);
 }
+
+.swal2-popup .swal2-styled:focus {
+  box-shadow: none !important;
+}
